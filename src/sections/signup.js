@@ -447,43 +447,38 @@ const getWeb3 = async (isFirstLoad = boolean) => {
         </Box>
         <Box sx={styles.halfRBox}>
           <SignupFeature title={data.title} />
-
                 <form>
-                  <div className ="card-body">
-                    {/*
+                  <div className ="card-body">                   
                     <div className ="form-group">
                       <label htmlFor="tagname">Caret Tag : </label>
                       <input type="text" className ="form-control" id="sign-up-username" required="required" />
                     </div>
-
                     <div className ="form-group">
                       <label htmlFor="username">Your Name : </label>
                       <input type="text" className ="form-control" id="sign-up-title" />
                     </div>
-
-                   
+                    {/*
                     <div className ="form-group">
-                      <label htmlFor="nftname">Add NFT</label>
+                      <label htmlFor="nftname">Add NFT: </label>
                       <input type="text" className ="form-control" id="sign-up-title" />
                     </div>
-                  
+                    */}
                     <div className ="form-group">
                       <label htmlFor="email">Your Email : </label>
                       <input type="text" className ="form-control" id="sign-up-title" />
                     </div>
+
                       <p>checkbox - if no wallet address require pwd</p>
 
                     <div className ="form-group">
                       <label htmlFor="pwd">Password : </label>
                       <input type="text" className ="form-control" id="sign-up-title" />
                     </div>
-
                     <div className ="form-group">
                       <label htmlFor="username">Wallet Address :</label>
                       <span className ="eth-address"></span>
                         <input type="text" className ="form-control" id="sign-up-eth-address" value="0x..." disabled />                   
-                    </div> 
-                     */}
+                    </div>                     
                     <div>                                 
                       <button type="submit" className ="btn btn-primary" id="sign-up-button">Coming Soon</button>  
                     </div>                                 

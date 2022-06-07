@@ -109,6 +109,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    pt: [5, null, 5]
   },
   social: {
     width: '100%',

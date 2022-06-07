@@ -5,6 +5,7 @@ import 'typeface-dm-sans';
 
 import '../styles/styles.css'
 import '../styles/globals.css'
+import '../styles/bootstrap.css'
 
 export default function CustomApp({ Component, pageProps }) {
   return <Component {...pageProps} />;
