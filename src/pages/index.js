@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ThemeProvider } from 'theme-ui';
+import { Container, Box, Grid } from 'theme-ui';
 import Theme from '../theme';
 
 import SEO from 'components/seo';
@@ -18,11 +19,16 @@ import Signup from '../sections/signup';
 import CaretFeature from '../sections/caret-feature';
 
 
+
+
 export default function IndexPage() {
   return (
 
+<Container sx={styles.containerBox} >     
        <ThemeProvider theme={Theme} >
+
         <Layout>
+
           <SEO title="Welcome to Caret.Cloud" />
           <Banner />
           <KeyFeature />
@@ -34,7 +40,24 @@ export default function IndexPage() {
           <Signup />
           <CaretFeature />
           <TeamSection />
+       
         </Layout>
+
     </ThemeProvider>
+</Container> 
+  
   );
 }
+
+const styles = {
+  coreFeature: {
+      py: [0, null, null, 2, null, 7],
+      position: 'relative',
+  },
+  containerBox: {
+      pl:[10, null, null,50,null, 100],
+      pr:[10, null, null, 50,null, 100],
+  },
+
+};
+

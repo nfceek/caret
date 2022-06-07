@@ -4,14 +4,16 @@ import { Container, Box, Grid } from 'theme-ui';
 export default function Terms() {
   return (
     <header>
-        <div className="text-center">
-          <h1 className="text-5xl text-gray-900 font-bold whitespace-pre-line leading-hero"></h1>
-        </div>
-        <div className="text-left">
-          <div className="text-3xl mt-4 mb-4"></div>
-        </div>
-        <Container sx={styles.containerBox} > 
-          <p>
+      <Container sx={styles.containerBox} > 
+        <p>              
+          <h1 className="text-5xl text-gray-900 font-bold whitespace-pre-line leading-hero">Terms of Use</h1>
+            <div className="text-center">
+              <h1 className="text-5xl text-gray-900 font-bold whitespace-pre-line leading-hero"></h1>
+            </div>
+            <div className="text-left">
+              <div className="text-3xl mt-4 mb-4"></div>
+            </div>
+
             Please read these terms of use carefully before using the services offered by Caret.Cloud. (&quot;Caret.Cloud&quot;). These terms of
             use set forth the Termsly binding terms and conditions for your use of the website at http:/www.Caret.Cloud (the &quot;Site&quot;) and the
             services, features, content, applications or widgets offered by Caret.Cloud (collectively with the Site, the &quot;Service&quot;).
