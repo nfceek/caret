@@ -3,7 +3,7 @@ import { Container, Box, Flex, Button } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-scroll';
 import Logo from 'components/logo';
-import MobileDrawer from './mobile-drawer';
+////import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
 
 
@@ -15,28 +15,13 @@ export default function Header({ className }) {
     <Box id='id' className='bnrHeader' sx={styles.header} >
       <Container sx={styles.container}>
         <Logo src={cLogo} />
-        <Flex as='nav' sx={styles.nav}>
-          {menuItems.map((menuItem, i) => (
-            <Link
-              activeClass='active'
-              to={menuItem.path}
-              spy={true}
-              smooth={true}
-              offset={-70}
-              duration={500}
-              key={i}
-            >
-              {menuItem.label}
-            </Link>
-          ))}
-        </Flex>
-
+        
         <Link to='/registration'>
           <Button className='donate__btn'  variant='secondary' aria-label='Sign Up'>
               Sign Up
           </Button> 
         </Link>
-        <MobileDrawer />             
+            
       </Container>
     </Box>
   );

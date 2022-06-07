@@ -3,8 +3,26 @@
 import { Box, Container, Image, Text } from 'theme-ui';
 import { Link } from 'components/link';
 import data from './footer.data';
+import { FaFacebookF, FaTwitter, FaGithubAlt, FaDribbble } from 'react-icons/fa';
 
-
+const social = [
+  {
+    path: '/',
+    icon: <FaFacebookF />,
+  },
+  {
+    path: '/',
+    icon: <FaTwitter />,
+  },
+  {
+    path: '/',
+    icon: <FaGithubAlt />,
+  },
+  {
+    path: '/',
+    icon: <FaDribbble />,
+  },
+];
 
 export default function Footer() {
 const cLogo = '/assets/caret-logo01.png';
@@ -28,10 +46,20 @@ const cLogo = '/assets/caret-logo01.png';
               />
             ))} 
           </nav>
+ 
+          <Box sx={styles.social}>
+              {social.map((socialItem, i) =>(
+                <Box as="span" key={i} sx={styles.social.icon}>
+                  <Link to={socialItem.path}> {socialItem.icon} </Link>
+                </Box>
+              ))}            
+            </Box>  
+            <Box >
+              <Text sx={styles.copyright}>
+                Copyright {new Date().getFullYear() } Caret.Cloud
+              </Text>  
+            </Box>                 
         </Box>
-        <Text sx={styles.copyright}>
-          Copyright {new Date().getFullYear() } Caret.Cloud
-        </Text>
       </Container>
     </div> 
   );
@@ -46,7 +74,7 @@ const styles = {
     borderTopColor: 'border_color',
     display: 'flex',
     pt: [7, null, 8],
-    pb: ['40px', null, '100px'],
+    pb: ['10px', null, '10px'],
     textAlign: 'center',
     flexDirection: 'column',
   },
@@ -78,5 +106,32 @@ const styles = {
   copyright: {
     fontSize: [1, '15px'],
     width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  social: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+
+    icon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'text',
+      fontSize: 14,
+      mr: '15px',
+      transition: 'all 0.25s',
+      cursor: 'pointer',
+      ':last-child': {
+        mr: '0',
+      },
+      '&:hover': {
+        color: 'secondary',
+      },
+    },
+  },
+
 };

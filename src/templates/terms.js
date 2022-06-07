@@ -10,10 +10,10 @@ export default function Terms() {
       <div className="text-left">
         <div className="text-3xl mt-4 mb-4"></div>
       </div>
-      <div className="s1-template">
+
+      <Container sx={styles.containerBox}>
         <p>
-          Please read these terms of use carefully before using the services
-          offered by Caret.Cloud. (&quot;Caret.Cloud&quot;). These terms of
+          Please read these terms of use carefully before using the services offered by Caret.Cloud. (&quot;Caret.Cloud&quot;). These terms of
           use set forth the Termsly binding terms and conditions for your use of
           the website at http:/www.Caret.Cloud (the &quot;Site&quot;) and the
           services, features, content, applications or widgets offered by
@@ -753,7 +753,7 @@ export default function Terms() {
           Please use our Discord channel for correspondence
           <br />
         </p>
-      </div>
+      </Container>
     </header>
   );
 };

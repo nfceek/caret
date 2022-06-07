@@ -5,10 +5,10 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { userService, alertService } from '../../services';
+import { userService, alertService } from '../services';
 import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 import { keyframes } from '@emotion/react';
-import Banner from '../banner';
+import Banner from './banner';
 import SectionHeader from 'components/section-header';
 import RegisterFeature from 'components/register-feature';
 

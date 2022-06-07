@@ -5,10 +5,6 @@ export default {
       label: 'Home',
     },
     {
-      path: '/social',
-      label: 'Social',
-    },
-    {
       path: '/privacy',
       label: 'Privacy',
     },

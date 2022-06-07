@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { userService, alertService } from '../../services';
+import { userService, alertService } from '../services';
 
     const bcrypt = require('bcryptjs'); 
 
