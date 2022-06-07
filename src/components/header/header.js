@@ -1,5 +1,5 @@
 
-import { Container, Flex, Button } from 'theme-ui';
+import { Container, Box, Flex, Button } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-scroll';
 import Logo from 'components/logo';
@@ -10,7 +10,7 @@ import menuItems from './header.data';
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
   return (
-    <header id='id' className='bnrHeader' sx={styles.header} >
+    <Box id='id' className='bnrHeader' sx={styles.header} >
       <Container sx={styles.container}>
         <Logo src={cLogo} />
         <Flex as='nav' sx={styles.nav}>
@@ -36,7 +36,7 @@ export default function Header({ className }) {
         </Link>
         <MobileDrawer />             
       </Container>
-    </header>
+    </Box>
   );
 }
 

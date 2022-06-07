@@ -5,19 +5,19 @@ export default {
       label: 'Home',
     },
     {
-      path: '/',
-      label: 'Adversite',
+      path: '/social',
+      label: 'Social',
     },
     {
-      path: '/',
-      label: 'Supports',
+      path: '/privacy',
+      label: 'Privacy',
     },
     {
-      path: '/',
-      label: 'Marketing',
+      path: '/terms',
+      label: 'Legal Stuff',
     },
     {
-      path: '/',
+      path: '/social',
       label: 'Contact',
     },
   ],

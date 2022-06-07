@@ -4,6 +4,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import SectionHeader from 'components/section-header';
 import SignupFeature from 'components/signup-feature';
+import Theme from '../theme';
 
 const shapePattern = '../assets/shape-pattern1.png';
 const Smart = '../assets/services/smart.svg';
@@ -428,7 +429,7 @@ const getWeb3 = async (isFirstLoad = boolean) => {
 
  
   return (
-    <section sx={{ variant : 'section.signup' }}>
+    <Box sx={{ variant : 'section.signup' }}>
       <Container sx={styles.containerBox} >
         <Box sx={styles.halfLBox} >
           <SignupFeature subTitle={data.subTitle} />
@@ -491,7 +492,7 @@ const getWeb3 = async (isFirstLoad = boolean) => {
 
         </Box>                       
       </Container>
-    </section>
+    </Box>
   )
 
 

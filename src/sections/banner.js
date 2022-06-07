@@ -1,15 +1,17 @@
 
 
 import { Container, Box, Heading, Text, Image, Button } from 'theme-ui';
+import Theme from '../theme';
 
+  const ShapeLeft = '../assets/shape-left.png'
+  const ShapeRight = '../assets/shape-right.png'
 
 export default function Banner() {
   const BannerImg = '../assets/caret-banner02.png'
-  const ShapeLeft = '../assets/shape-left.png'
-  const ShapeRight = '../assets/shape-right.png'
+
   
   return (
-    <section sx={styles.banner} id='home'>
+    <Box sx={styles.banner} id='home'>
       <Container sx={styles.banner.container} >
         <Box sx={styles.banner.contentBox} >
           <Heading as="h2" variant='heroPrimary'>
@@ -23,11 +25,12 @@ export default function Banner() {
           <Image src={BannerImg} alt='banner' />
         </Box>
       </Container>
-    </section>
+    </Box>
   );
 }
 
 const styles = {
+  
   banner: {
     pt: ['40px', '45px', '55px', '70px', null, null, '80px', '115px'],
     //pt: ['140px', '145px', '155px', '170px', null, null, '180px', '215px'],
@@ -42,7 +45,7 @@ const styles = {
       height: '100%',
       width: '100%',
       zIndex: -1,
-      backgroundImage: `url(${Shape-left})`,
+      backgroundImage: `url(${ShapeLeft})`,
       backgroundRepeat: `no-repeat`,
       backgroundPosition: 'bottom left',
       backgroundSize: '36%',
@@ -55,7 +58,7 @@ const styles = {
       height: '100%',
       width: '100%',
       zIndex: -1,
-      backgroundImage: `url(${Shape-right})`,
+      backgroundImage: `url(${ShapeRight})`,
       backgroundRepeat: `no-repeat`,
       backgroundPosition: 'bottom right',
       backgroundSize: '32%',

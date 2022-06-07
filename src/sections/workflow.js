@@ -1,9 +1,9 @@
 
-
 import { Container, Grid, Box, Heading, Text } from 'theme-ui';
 import SectionHeader from 'components/section-header';
 
-const PatternBG = '../assets/patternBG.png';
+
+const patternBG = '../assets/patternBG.png';
 const ArrowOdd = '../assets/arrowOdd.svg';
 const ArrowEven = '../assets/arrowEven.svg';
 //import { urlObjectKeys } from 'next/dist/next-server/lib/utils';
@@ -37,7 +37,7 @@ const data = [
 
 export default function WorkFlow() {
   return (
-    <section id='workflow' sx={styles.workflow}>
+    <Box id='workflow' sx={styles.workflow}>
     <Container>
       <SectionHeader 
         slogan=''
@@ -56,14 +56,14 @@ export default function WorkFlow() {
           ))}
         </Grid>
     </Container>
-</section>
+</Box>
   );
 }
 
 const styles = {
   workflow: {
-    backgroundColor: 'primary',
-    backgroundImage: `url(${PatternBG})`,
+    backgroundColor: '#3E4248',
+    backgroundImage: `url(${patternBG})`,
     backgroundRepeat: `no-repeat`,
     backgroundPosition: 'center center',
     backgroundSize: 'cover',

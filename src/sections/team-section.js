@@ -1,6 +1,6 @@
 
 
-import { Container, Grid } from 'theme-ui';
+import { Container, Box, Grid } from 'theme-ui';
 import SectionHeader from 'components/section-header';
 import TeamCard from 'components/team-card';
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
@@ -180,7 +180,7 @@ const data = [
 
 export default function TeamSection() {
   return (
-    <section>
+    <Box>
       <Container>
         <SectionHeader
           slogan='The Team'
@@ -201,7 +201,7 @@ export default function TeamSection() {
         </Grid>
         */}
       </Container>
-    </section>
+    </Box>
   );
 }
 

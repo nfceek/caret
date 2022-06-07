@@ -2,7 +2,7 @@
 
 import { Container, Box, Image } from 'theme-ui';
 import TextFeature from 'components/text-feature';
-
+import Theme from '../theme';
 
 
 const data = {
@@ -19,7 +19,7 @@ export default function CoreFeature() {
   const  shapePattern = '/assets/shape-pattern2.png';
 
   return (
-   <section sx={{variant: 'section.coreFeature'}}>
+   <Box sx={{variant: 'section.coreFeature'}}>
     <Container sx={styles.containerBox}>
       <Box sx={styles.contentBox}>
         <TextFeature 
@@ -37,7 +37,7 @@ export default function CoreFeature() {
         </Box>
       </Box>
     </Container>
-   </section>
+   </Box>
   );
 }
 

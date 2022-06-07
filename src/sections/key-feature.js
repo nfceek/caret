@@ -1,7 +1,7 @@
 
 {/** @jsx jsx */}
 import { jsx } from 'theme-ui';
-import { Container, Grid } from 'theme-ui';
+import { Container, Box, Grid } from 'theme-ui';
 import SectionHeader from '../components/section-header';
 import FeatureCardColumn from 'components/feature-card-column.js';
 
@@ -47,7 +47,7 @@ const data = [
 
 export default function KeyFeature() {
   return (
-    <section id='feature' sx={{ variant: 'section.KeyFeature' }}>
+    <Box id='feature' sx={{ variant: 'section.feature' }}>
       <Container >
         <SectionHeader
           slogan='What we do ...'
@@ -65,11 +65,15 @@ export default function KeyFeature() {
             ))}
       </Grid>
       </Container>
-    </section>
+    </Box>
   );
 }
 
 const styles = {
+  keyFeature: {
+    pt: [8, null, 9, null, null, 10],
+    pb: ['90px', null, 9, null, null, 10, null, '165px'],
+  },
   grid: {
     width: ['100%', '80%', '100%'],
     mx: 'auto',

@@ -1,8 +1,9 @@
 
 
-import { Container, Grid } from 'theme-ui';
+import { Container, Box, Grid } from 'theme-ui';
 import SectionHeader from 'components/section-header';
 import FeatureCard from 'components/feature-card.js';
+import Theme from '../theme';
 
 const Performance = '/assets/feature/performance.svg';
 const Partnership = '/assets/feature/partnership.svg';
@@ -66,7 +67,7 @@ const data = [
 export default function CaretFeature() {
 
   return (
-   <section sx={{ variant: 'section.feature'}}>
+   <Box sx={{ variant: 'section.feature'}}>
      <Container>
        <SectionHeader  
           title='^ + Your_Word + ###'
@@ -84,7 +85,7 @@ export default function CaretFeature() {
           ))}
         </Grid>
      </Container>
-    </section>
+    </Box>
   );
 }
 

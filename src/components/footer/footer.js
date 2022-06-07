@@ -30,7 +30,7 @@ const cLogo = '/assets/caret-logo01.png';
           </nav>
         </Box>
         <Text sx={styles.copyright}>
-          Copyright by {new Date().getFullYear() } Caret.Cloud
+          Copyright {new Date().getFullYear() } Caret.Cloud
         </Text>
       </Container>
     </div> 

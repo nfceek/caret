@@ -8,6 +8,7 @@ import { keyframes } from '@emotion/react';
 import TextFeature from 'components/text-feature';
 //import ModalVideo from 'react-modal-video';
 import { IoIosPlay } from 'react-icons/io';
+import Theme from '../theme';
 
 const ServiceThumb = '../assets/service-thumb.png';
 const shapePattern = '../assets/shape-pattern-1.png';
@@ -46,7 +47,7 @@ export default function ServiceSection() {
   }
 
   return (
-    <section sx={{ variant : 'section.services' }}>
+    <Box sx={{ variant : 'section.services' }}>
       <Container sx={styles.containerBox}>
         <Box sx={styles.thumbnail}>
           <Image src={ServiceThumb} alt="thumbnail" />
@@ -86,7 +87,7 @@ export default function ServiceSection() {
         onClose={() => videoOpen(false)}
         />
             */}
-    </section>
+    </Box>
   );
 }
 
