@@ -4,11 +4,11 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import SectionHeader from 'components/section-header';
 import SignupFeature from 'components/signup-feature';
-/*
-import shapePattern from '/public/assets/shape-pattern1.png';
-import Smart from '/public/assets/services/smart.svg';
-import Secure from '/public/assets/services/secure.svg';
-*/
+
+const shapePattern = '../assets/shape-pattern1.png';
+const Smart = '../assets/services/smart.svg';
+const Secure = '../assets/services/secure.svg';
+
 import Head from 'next/head'
 //import Web3 from "web3";
 //import detectEthereumProvider from '@metamask/detect-provider'
@@ -40,7 +40,7 @@ const data = {
     {
       id: 1,
       imgSrc: Smart,
-      altText: 'Remember',
+      alttext: 'Remember',
       title: 'Pick a word, name or phrase',
       text:
         'Choose a word or phrase to use as your Caret Label.',
@@ -48,7 +48,7 @@ const data = {
     {
       id: 2,
       imgSrc: Smart,
-      altText: 'Remember',
+      alttext: 'Remember',
       title: 'Don`t add the Caret ( ^ )',
       text:
         'Do Not put a ^ before your Caret Label, we will add that create your Caret Tag',
@@ -56,7 +56,7 @@ const data = {
     {
       id: 3,
       imgSrc: Smart,
-      altText: 'Remember',
+      alttext: 'Remember',
       title: 'Why are there Numbers on the end?',
       text:
         'See Below',
@@ -64,7 +64,7 @@ const data = {
     {
       id: 4,
       imgSrc: Smart,
-      altText: 'Remember',
+      alttext: 'Remember',
       title: 'Why upgrade to a Pro or Premium plan.',
       text:
         'See Below'
@@ -435,7 +435,7 @@ const getWeb3 = async (isFirstLoad = boolean) => {
           <Grid sx={styles.grid}>
             {data.features.map((feature, i) =>(
               <Box sx={styles.card} key={feature.id}>
-                <Image src={feature.imgSrc} alt={feature.altText} sx={styles.icon} />
+                <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
                 <Box sx={styles.wrapper}>
                   <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
                   <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>

@@ -6,14 +6,14 @@ import { jsx } from '@emotion/react'
 import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import TextFeature from 'components/text-feature';
-import ModalVideo from 'react-modal-video';
+//import ModalVideo from 'react-modal-video';
 import { IoIosPlay } from 'react-icons/io';
-/*
-import ServiceThumb from '/public/assets/service-thumb.png';
-import shapePattern from '/public/assets/shape-pattern-1.png';
-import Smart from '/public/assets/services/smart.svg';
-import Secure from '/public/assets/services/secure.svg';
-*/
+
+const ServiceThumb = '../assets/service-thumb.png';
+const shapePattern = '../assets/shape-pattern-1.png';
+const Smart = '../assets/services/smart.svg';
+const Secure = '../assets/services/secure.svg';
+
 const data = {
   subTitle: 'How it works',
   title: 'Check out the video',
@@ -21,7 +21,7 @@ const data = {
     {
       id: 1,
       imgSrc: Smart,
-      altText: 'Setup',
+      alttext: 'Setup',
       title: 'Easy to Setup',
       text:
         'See how quick and easy it is to get your Caret tag.',
@@ -29,7 +29,7 @@ const data = {
     {
       id: 2,
       imgSrc: Secure,
-      altText: 'Remember',
+      alttext: 'Remember',
       title: 'Easy to Remember',
       text:
         'Never fumble for your crypto wallet address again. Use a memorable caret tag',
@@ -68,7 +68,7 @@ export default function ServiceSection() {
           <Grid sx={styles.grid}>
             {data.features.map((feature, i) =>(
               <Box sx={styles.card} key={feature.id}>
-                <Image src={feature.imgSrc} alt={feature.altText} sx={styles.icon} />
+                <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
                 <Box sx={styles.wrapper}>
                   <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
                   <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>
@@ -78,12 +78,14 @@ export default function ServiceSection() {
           </Grid>
         </Box>
       </Container>
+{/*
       <ModalVideo 
         channel='youtube'
         isOpen={videoOpen}
         videoId='RaAkhXNILAA'
         onClose={() => videoOpen(false)}
         />
+            */}
     </section>
   );
 }

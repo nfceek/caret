@@ -5,18 +5,18 @@ import SectionHeader from 'components/section-header';
 import TeamCard from 'components/team-card';
 import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 
-//import Member1 from '/public/assets/team/member-1.png';
-//import Member2 from '/public/assets/team/member-2.png';
-// import Member3 from '/public/assets/team/member-3.png';
-// import Member4 from '/public/assets/team/member-4.png';
-// import Member5 from '/public/assets/team/member-5.png';
-// import Member6 from '/public/assets/team/member-6.png';
+const Member1 = '../assets/team/member-1.png';
+const Member2 = '../assets/team/member-2.png';
+// import Member3 from '/assets/team/member-3.png';
+// import Member4 from '/assets/team/member-4.png';
+// import Member5 from '/assets/team/member-5.png';
+// import Member6 from '/assets/team/member-6.png';
 
 const data = [
   {
     id: 1,
     imgSrc: Member1,
-    altText: 'Saimon Harmer',
+    alttext: 'Saimon Harmer',
     title: 'Saimon Harmer',
     designation: 'CEO and Founder',
     socialProfile: [
@@ -43,7 +43,7 @@ const data = [
   {
     id: 2,
     imgSrc: Member2,
-    altText: 'Aaron Nunez',
+    alttext: 'Aaron Nunez',
     title: 'Aaron Nunez',
     designation: 'Founder',
     socialProfile: [
@@ -70,7 +70,7 @@ const data = [
 /*  {
     id: 3,
     imgSrc: Member3,
-    altText: 'Aaron Nunez',
+    alttext: 'Aaron Nunez',
     title: 'Aaron Nunez',
     designation: 'Web Designer',
     socialProfile: [
@@ -97,7 +97,7 @@ const data = [
   {
     id: 4,
     imgSrc: Member4,
-    altText: 'Lina Jutila',
+    alttext: 'Lina Jutila',
     title: 'Lina Jutila',
     designation: 'Web Developer',
     socialProfile: [
@@ -124,7 +124,7 @@ const data = [
   {
     id: 5,
     imgSrc: Member5,
-    altText: 'Saimon Harmer',
+    alttext: 'Saimon Harmer',
     title: 'Saimon Harmer',
     designation: 'CEO and Founder',
     socialProfile: [
@@ -151,7 +151,7 @@ const data = [
   {
     id: 6,
     imgSrc: Member6,
-    altText: 'Aaron Nunez',
+    alttext: 'Aaron Nunez',
     title: 'Aaron Nunez',
     designation: 'Web Designer',
     socialProfile: [
@@ -192,7 +192,7 @@ export default function TeamSection() {
             <TeamCard 
               key={item.id}
               src={item.imgSrc}
-              altText={item.altText}
+              alttext={item.alttext}
               title={item.title}
               designation={item.designation}
               social={item.socialProfile}

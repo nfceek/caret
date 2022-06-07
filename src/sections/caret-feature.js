@@ -4,18 +4,17 @@ import { Container, Grid } from 'theme-ui';
 import SectionHeader from 'components/section-header';
 import FeatureCard from 'components/feature-card.js';
 
-import Performance from '/public/assets/feature/performance.svg';
-import Partnership from '/public/assets/feature/partnership.svg';
-import Subscription from '/public/assets/feature/subscription.svg';
-
-import Support from '/public/assets/feature/support.svg';
-import Secure from '/public/assets/services/secure.svg';
+const Performance = '/assets/feature/performance.svg';
+const Partnership = '/assets/feature/partnership.svg';
+const Subscription = '/assets/feature/subscription.svg';
+const Support = '/assets/feature/support.svg';
+const Secure = '/assets/services/secure.svg';
 
 const data = [
   {
     id: 1,
     imgSrc: Performance,
-    altText: 'Caret Symbol',
+    alttext: 'Caret Symbol',
     title: 'The Caret ( ^ ) Symbol',
     text:
       'Just like an email has an @ symbol, a hashtag has a # symbol, we use the Caret symbol to define your Caret Tag.',
@@ -23,7 +22,7 @@ const data = [
   {
     id: 2,
     imgSrc: Subscription,
-    altText: 'verified',
+    alttext: 'verified',
     title: 'Verified Carets',
     text:
       'Golden Carets. They announce that you have arrived and we know you! ... coming soon',
@@ -32,7 +31,7 @@ const data = [
   {
     id: 3,
     imgSrc: Performance,
-    altText: 'word',
+    alttext: 'word',
     title: 'The Word you pick',
     text:
       'We advise you pick a word that is at least 5 characters long. Shorter words are at a premium. And famous or trademarked names, places or people may not be available.',
@@ -40,7 +39,7 @@ const data = [
   {
     id: 4,
     imgSrc: Subscription,
-    altText: 'addl costs',
+    alttext: 'addl costs',
     title: 'Reserved, Premium & Banned words',
     text:
       'Some words are special. Premium words are more money because of they are rare. Reserved words are held for the copyright or domain name holder. And, Profanity is BANNED',
@@ -48,7 +47,7 @@ const data = [
   {
     id: 5,
     imgSrc: Performance,
-    altText: 'digits',
+    alttext: 'digits',
     title: 'When are 3 digits added to the Caret Tag',
     text:
       'This applies to Free Plans. Available word choices are limited and so we add numbers to the end of Free Caret Tags to allow for variations.'
@@ -57,7 +56,7 @@ const data = [
   {
     id: 6,
     imgSrc: Partnership,
-    altText: 'future',
+    alttext: 'future',
     title: 'Now what do I do?',
     text:
       'I have my Caret Tag ... Now what? How to use and share Carets ... coming soon. ',
@@ -65,6 +64,7 @@ const data = [
 ];
 
 export default function CaretFeature() {
+
   return (
    <section sx={{ variant: 'section.feature'}}>
      <Container>
@@ -77,7 +77,7 @@ export default function CaretFeature() {
             <FeatureCard 
               key={item.id}
               src={item.imgSrc}
-              alt={item.altText}
+              alt={item.alttext}
               title={item.title}
               text={item.text}
             />

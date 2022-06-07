@@ -1,4 +1,10 @@
-node_modules
-.next
+
+.env
+.env.local
+
+package.json
 package-lock.json
-out
+
+/node_modules
+/.next
+/out

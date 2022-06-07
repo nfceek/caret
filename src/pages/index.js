@@ -1,6 +1,8 @@
+
+
 import React from 'react';
 import { ThemeProvider } from 'theme-ui';
-import theme from 'theme';
+import Theme from '../theme';
 
 import SEO from 'components/seo';
 import Layout from 'components/layout';
@@ -18,7 +20,8 @@ import CaretFeature from '../sections/caret-feature';
 
 export default function IndexPage() {
   return (
-    <ThemeProvider theme={theme}>
+
+       <ThemeProvider theme={Theme} >
         <Layout>
           <SEO title="Welcome to Caret.Cloud" />
           <Banner />

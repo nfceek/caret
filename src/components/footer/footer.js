@@ -3,10 +3,12 @@
 import { Box, Container, Image, Text } from 'theme-ui';
 import { Link } from 'components/link';
 import data from './footer.data';
-//import cLogo from '/public//public/assets/caret-logo01.png';
+
 
 
 export default function Footer() {
+const cLogo = '/assets/caret-logo01.png';
+  
   return (
     <div >
       <Container>

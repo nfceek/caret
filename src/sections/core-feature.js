@@ -3,8 +3,7 @@
 import { Container, Box, Image } from 'theme-ui';
 import TextFeature from 'components/text-feature';
 
-//import FeatureThumb from '/public/assets/core-feature.png';
-//import shapePattern from '/public/assets/shape-pattern2.png';
+
 
 const data = {
   subTitle: 'Caret features',
@@ -16,6 +15,9 @@ const data = {
 };
 
 export default function CoreFeature() {
+  const FeatureThumb = '/assets/core-feature.png';
+  const  shapePattern = '/assets/shape-pattern2.png';
+
   return (
    <section sx={{variant: 'section.coreFeature'}}>
     <Container sx={styles.containerBox}>

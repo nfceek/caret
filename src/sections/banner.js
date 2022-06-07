@@ -1,11 +1,13 @@
 
 
 import { Container, Box, Heading, Text, Image, Button } from 'theme-ui';
-//import BannerImg from '/public/assets/caret-banner02.png';
-//import ShapeLeft from '/public/assets/shape-left.png';
-//import ShapeRight from '/public/assets/shape-right.png';
+
 
 export default function Banner() {
+  const BannerImg = '../assets/caret-banner02.png'
+  const ShapeLeft = '../assets/shape-left.png'
+  const ShapeRight = '../assets/shape-right.png'
+  
   return (
     <section sx={styles.banner} id='home'>
       <Container sx={styles.banner.container} >
@@ -40,7 +42,7 @@ const styles = {
       height: '100%',
       width: '100%',
       zIndex: -1,
-      backgroundImage: `url(${ShapeLeft})`,
+      backgroundImage: `url(${Shape-left})`,
       backgroundRepeat: `no-repeat`,
       backgroundPosition: 'bottom left',
       backgroundSize: '36%',
@@ -53,7 +55,7 @@ const styles = {
       height: '100%',
       width: '100%',
       zIndex: -1,
-      backgroundImage: `url(${ShapeRight})`,
+      backgroundImage: `url(${Shape-right})`,
       backgroundRepeat: `no-repeat`,
       backgroundPosition: 'bottom right',
       backgroundSize: '32%',

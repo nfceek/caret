@@ -1,17 +1,17 @@
 
 
-import { Box, Container, Image, Text } from 'theme-ui';
+import { Box, Container, Image, Text, Heading } from 'theme-ui';
 
 
 export default function FeatureCard({
   src,
-  altText = 'default alt text',
+  alttext = 'default alt text',
   title,
   text,
 }) {
   return (
     <Box sx={styles.card} >
-    <Image src={src} altText={altText} sx={styles.img} />
+    <Image src={src} alttext={alttext} sx={styles.img} />
     <Box sx={styles.wrapper}>
       <Heading sx={styles.wrapper.title}>{title}</Heading>
       <Text sx={styles.wrapper.subTitle}>{text}</Text>
