@@ -1,9 +1,9 @@
 import React from 'react';
-
+import { Container, Box, Grid } from 'theme-ui';
 
 export default function Privacy() {
   return (
-    <header>
+    <Container >
       <div className="text-center">
         <h1 className="text-5xl text-gray-900 font-bold whitespace-pre-line leading-hero"></h1>
       </div>
@@ -186,7 +186,7 @@ export default function Privacy() {
       June 2022
       <br />
       <br />
-    </header>
+      </Container >
   );
 };
 

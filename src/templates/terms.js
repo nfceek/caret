@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Container, Box, Grid } from 'theme-ui';
 
 export default function Terms() {
   return (
@@ -11,7 +11,7 @@ export default function Terms() {
         <div className="text-3xl mt-4 mb-4"></div>
       </div>
 
-      <Container sx={styles.containerBox}>
+      <Container >
         <p>
           Please read these terms of use carefully before using the services offered by Caret.Cloud. (&quot;Caret.Cloud&quot;). These terms of
           use set forth the Termsly binding terms and conditions for your use of

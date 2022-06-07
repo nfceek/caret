@@ -5,9 +5,7 @@ import { ThemeProvider } from 'theme-ui';
 import Theme from '../theme';
 import SEO from '../components/seo';
 import Layout from '../components/layoutInner';
-import Banner from '../sections/banner';
-import Register from '../sections/register';
-
+import Dashboard from '../sections/dashboard';
 
 export default function IndexPage() {
   return (

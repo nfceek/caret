@@ -13,7 +13,7 @@ export default {
       label: 'Legal Stuff',
     },
     {
-      path: '/social',
+      path: '/contact',
       label: 'Contact',
     },
   ],
