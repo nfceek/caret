@@ -63,7 +63,7 @@ import RegisterFeature from 'components/register-feature';
        
         user.password = bcrypt.hashSync(user.password, 10);  
         //console.log(user.password)
-        const response = await fetch('../api/acctRegister', {
+        const response = await fetch('../../api/acctRegister', {
             method: 'POST',
             body:  [JSON.stringify(user.firstName), JSON.stringify(user.lastName), JSON.stringify(user.username), JSON.stringify(user.email), JSON.stringify(user.password),JSON.stringify(user.account)],
             headers: {
@@ -180,10 +180,10 @@ import RegisterFeature from 'components/register-feature';
                                 <div className='flex display-inline'>
                                     <div className='noted'>
                                     </div>
-                                    <div className='ml-4'>
+                                    <Box className='ml-4'>
                                         <input type="checkdiv" id="agree" onClick={() => agreeHandler()} />
                                         <label htmlFor="agree" className='ml-6 mb-8'> I agree to site terms and conditions</label>
-                                    </div>   
+                                    </Box>   
                                 </div>
                             </div>
                             <div>

@@ -5,6 +5,7 @@ import { keyframes } from '@emotion/react';
 import SectionHeader from 'components/section-header';
 import SignupFeature from 'components/signup-feature';
 import Theme from '../theme';
+import { useRouter } from 'next/router'
 
 const shapePattern = '../assets/shape-pattern1.png';
 const Smart = '../assets/services/smart.svg';
@@ -14,14 +15,14 @@ import Head from 'next/head'
 //import Web3 from "web3";
 //import detectEthereumProvider from '@metamask/detect-provider'
 //import metaCoinArtifact from "../../build/contracts/MetaCoin.json";
-//import { create as ipfsHttpClient }  from 'ipfs-http-client'
+import { create as ipfsHttpClient }  from 'ipfs-http-client'
 //import jQuery from 'jquery';
 //import user_artifacts from '../../build/contracts/User.json'
 
 
 const projectId = `26IXlbgxpsdnDo4BOq6nFGoOmWx`;
 const projectSecret = `b3b58185b53409baa4e6aa9fc0c95fb0`;
-/*
+
 const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64')
   const ipfs = ipfsHttpClient({
     protocol: 'https',
@@ -32,7 +33,7 @@ const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('b
       authorization: auth
     }
   })
-*/
+
 
 const data = {
   subTitle: 'How it works',
@@ -82,6 +83,12 @@ export default function Signup() {
   var meta = '' 
   var accounts = ''
   var account = ''
+
+  const router = useRouter()
+
+  async function caretCheck(){
+
+  }
 //var User = contract(user_artifacts);
   
 /*
@@ -450,19 +457,20 @@ const getWeb3 = async (isFirstLoad = boolean) => {
                 <form>
                   <div className ="card-body">                   
                     <div className ="form-group">
-                      <label htmlFor="tagname">Caret Tag : </label>
+                      <label htmlFor="tagname">Step 1) Choose your Caret Word : </label>
                       <input type="text" className ="form-control" id="sign-up-username" required="required" />
                     </div>
+                     {/*
                     <div className ="form-group">
-                      <label htmlFor="username">Your Name : </label>
+                      <label htmlFor="username">Step 1 ->  : </label>
                       <input type="text" className ="form-control" id="sign-up-title" />
                     </div>
-                    {/*
+                   
                     <div className ="form-group">
                       <label htmlFor="nftname">Add NFT: </label>
                       <input type="text" className ="form-control" id="sign-up-title" />
                     </div>
-                    */}
+                    
                     <div className ="form-group">
                       <label htmlFor="email">Your Email : </label>
                       <input type="text" className ="form-control" id="sign-up-title" />
@@ -478,9 +486,10 @@ const getWeb3 = async (isFirstLoad = boolean) => {
                       <label htmlFor="username">Wallet Address :</label>
                       <span className ="eth-address"></span>
                         <input type="text" className ="form-control" id="sign-up-eth-address" value="0x..." disabled />                   
-                    </div>                     
+                    </div>
+                    */}                    
                     <div>                                 
-                      <button type="submit" className ="btn btn-primary" id="sign-up-button">Coming Soon</button>  
+                      <button type="submit" className ="btn btn-primary" id="caretCheck" onClick={caretCheck}>Coming Soon</button>  
                     </div>                                 
                   </div>
                 </form>

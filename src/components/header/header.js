@@ -5,11 +5,15 @@ import { Link } from 'react-scroll';
 import Logo from 'components/logo';
 import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
-
+import { useRouter } from 'next/router'
 
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
+  const router = useRouter()
 
+  async function SignIn(){
+    router.push('/login')
+  }
   
   return (
     <Box id='id' className='bnrHeader' sx={styles.header} >
@@ -32,8 +36,8 @@ export default function Header({ className }) {
         </Flex>
 
         <Link to='/registration'>
-          <Button className='donate__btn'  variant='secondary' aria-label='Sign Up'>
-              Sign Up
+          <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={SignIn}>
+              My Caret
           </Button> 
         </Link>
         <MobileDrawer />             
@@ -56,6 +60,7 @@ const positionAnim = keyframes`
 `;
 
 const styles = {
+
   header: {
     color: 'text',
     fontWeight: 'body',
@@ -67,7 +72,9 @@ const styles = {
     backgroundColor: 'white',
     transition: 'all 0.4s ease',
     animation: `${positionAnim} 0.4s ease`,
-    '.donate__btn': {
+    '.signin__btn': {
+      //backgroundImage: `url(/assets/bksignup.png)`,
+      backgroundColor: '#FF7F27',
       flexShrink: 0,
       mr: [15, 20, null, null, 0],
       ml: ['auto', null, null, null, 0],

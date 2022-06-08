@@ -34,13 +34,13 @@ CREATE TABLE IF NOT EXISTS `user` (
   `lastname` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `username` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `plan` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  `plan` int(11) NOT NULL DEFAULT '1',
   `admin` tinyint(4) NOT NULL DEFAULT '0',
   `level` int(11) NOT NULL DEFAULT '1',
   `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `chain` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '', 
   `account` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `join_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `join_date` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `dateupdated` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

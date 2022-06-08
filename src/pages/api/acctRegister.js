@@ -1,4 +1,4 @@
-import { prisma } from '../db'
+import { prisma } from '../../db'
 
 export default async(req, res) => {
     const inData = req.body
@@ -19,7 +19,7 @@ export default async(req, res) => {
 
     const response = await prisma.user.create({
         data: {
-            fkwallet: '',
+            fkwallet: 1,
             firstname: fName,
             lastname: lName,
             username: username,
@@ -28,7 +28,7 @@ export default async(req, res) => {
             admin: false,
             level: 1,
             email: email, 
-            chain: '',
+            chain: 'eth',
             account: acct,    
             join_date: curDate,
             dateupdated: curDate,

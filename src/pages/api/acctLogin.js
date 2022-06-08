@@ -1,6 +1,7 @@
 import { prisma } from '../../db'
 
 export default async(req, res) => {
+    console.log('ahola bitches')
     const inData = req.body
     var dataArr = inData.split(',');
         let username = dataArr[0]
@@ -19,7 +20,7 @@ export default async(req, res) => {
                     },
                     {                
                         AND: {
-                            handle: {
+                            username: {
                                 equals: username,
                             },                            
                             password: {

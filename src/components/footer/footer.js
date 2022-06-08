@@ -73,6 +73,7 @@ const styles = {
     borderTop: '1px solid',
     borderTopColor: 'border_color',
     display: 'flex',
+    alignItems: 'center',
     pt: [7, null, 8],
     pb: ['10px', null, '10px'],
     textAlign: 'center',

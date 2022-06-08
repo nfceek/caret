@@ -15,13 +15,7 @@ export default function Header({ className }) {
     <Box id='id' className='bnrHeader' sx={styles.header} >
       <Container sx={styles.container}>
         <Logo src={cLogo} />
-        
-        <Link to='/registration'>
-          <Button className='donate__btn'  variant='secondary' aria-label='Sign Up'>
-              Sign Up
-          </Button> 
-        </Link>
-            
+
       </Container>
     </Box>
   );

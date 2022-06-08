@@ -19,6 +19,7 @@
     "dotenv": "16.0.1",
     "framer-motion": "6.3.10",
     "globby": "13.1.1",
+    "ipfs-http-client": "^57.0.1",
     "isomorphic-unfetch": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "next": "12.1.6",
