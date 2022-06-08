@@ -1,8 +1,7 @@
 const withPlugins = require('next-compose-plugins');
 const optimizedImages = require('next-optimized-images');
 
-module.exports = {
-    
+module.exports = {   
     webpack5: true,
     webpack: (config) => {
       config.resolve.fallback = { 
@@ -17,4 +16,12 @@ module.exports = {
       // your project has ESLint errors.
       ignoreDuringBuilds: true,
     },
+    publicRuntimeConfig: {
+      apiUrl: process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/api'
+      : 'http://localhost:3000/api'
+    },
+    images: {
+      domains: ['apogolypse.mypinata.cloud'],
+    }
   };

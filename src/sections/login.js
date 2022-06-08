@@ -70,12 +70,16 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                             <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.account?.message}</div>
                         </div> 
-                        <div>
-                            <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">
-                                {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                Login
-                            </button>
-                            <Link href="/account/register" className="btn btn-link">Register</Link>                       
+                        <div className='flex display-inline'>
+                            <div>
+                                <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">
+                                    {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                    Login
+                                </button>
+                            </div>
+                            <div className='ml-6 pt-6'>
+                                <Link href="/registration" className="btn btn-link">Register</Link>  
+                            </div>               
                         </div>
                     </form>
                 </Container>

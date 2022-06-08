@@ -1,5 +1,5 @@
 {
-  "name": "landing-page",
+  "name": "caret-cloud",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -20,6 +20,7 @@
     "framer-motion": "6.3.10",
     "globby": "13.1.1",
     "isomorphic-unfetch": "^3.0.0",
+    "jsonwebtoken": "^8.5.1",
     "next": "12.1.6",
     "next-compose-plugins": "^2.2.0",
     "next-optimized-images": "^2.5.4",

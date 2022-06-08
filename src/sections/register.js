@@ -84,7 +84,6 @@ import RegisterFeature from 'components/register-feature';
     const [menuState, setMenuState] = useState('register')
     const [agreeState, setAgreeState] = useState('false')
   
-
     // form validation rules 
     const validationSchema = Yup.object().shape({
         firstName: Yup.string()
@@ -98,8 +97,6 @@ import RegisterFeature from 'components/register-feature';
         password: Yup.string()
             .required('Password is required')
             .min(6, 'Password must be at least 6 characters'),
-        account: Yup.string()
-            .required('Wallet address is required'),
     });
 
     const formOptions = { resolver: yupResolver(validationSchema) };
@@ -111,7 +108,7 @@ import RegisterFeature from 'components/register-feature';
             .then(() => {              
                 addUser(user)
                 alertService.success('Registration successful', { keepAfterRouteChange: true });
-                router.push('/account/login');
+                router.push('/login');
             })
             .catch(alertService.error);
     }
@@ -155,6 +152,13 @@ import RegisterFeature from 'components/register-feature';
                                 <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                                 <Box className="invalid-feedback">{errors.password?.message}</Box>
                             </div>
+                            <div className="form-group">
+                                <label>Wallet Chain</label>
+                                <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                                <Box className="invalid-feedback">{errors.account?.message}</Box>
+                                <Box className='ml-4 text-sm'> ( What platform is it on, ie: Ethereum )</Box>
+                            </div> 
+
                             <div className="form-group">
                                 <label>Wallet Address</label>
                                 <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />

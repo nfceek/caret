@@ -1,6 +1,6 @@
-import { apiHandler } from '../../../helpers/api/index';
-import { omit } from '../../../helpers/api/omit';
-import { usersRepo } from '../../../helpers/api/usersRepo';
+import { apiHandler } from '../../helpers/api/index';
+import { omit } from '../../helpers/api/omit';
+import { usersRepo } from '../../helpers/api/usersRepo';
 
 export default apiHandler({ get: getUsers });
 
