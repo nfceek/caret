@@ -28,7 +28,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
     async function onSubmit({ username, password, account }) {
         //const [loginPwd, setLoginPwd] = useState('')
 
-        const response = await fetch('../../api/acctLogin', {
+        const response = await fetch('../api/acctLogin', {
             method: 'POST',
             body:  [JSON.stringify(username), JSON.stringify(password), JSON.stringify(account)],
             headers: {

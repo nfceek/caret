@@ -1,11 +1,54 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model carrots {
+ id Int @id @default(autoincrement())
+ userid Int
+ word String
+ available Boolean
+ business Boolean
+ premium Boolean
+ banned Boolean
+ price Int
+ cid String
+ privkey String
+ timestamp String
+ updateinfo String
+}
+
+model plans {
+ id Int @id @default(autoincrement())
+ level Int
+ name String
+ type String
+ benefits String
+}
+
+model user {
+ id Int @id @default(autoincrement())
+ fkwallet Int
+ firstname String
+ lastname String
+ username String
+ password String
+ plan String
+ admin Boolean
+ level Int
+ email String
+ chain String
+ account String
+ join_date String
+ dateupdated String
+} 
+
+model wallet {
+ id Int @id @default(autoincrement())
+ userid Int
+ chain String
+ wallet String
 }

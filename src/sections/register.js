@@ -63,7 +63,7 @@ import RegisterFeature from 'components/register-feature';
        
         user.password = bcrypt.hashSync(user.password, 10);  
         //console.log(user.password)
-        const response = await fetch('../../api/acctRegister', {
+        const response = await fetch('../api/acctRegister', {
             method: 'POST',
             body:  [JSON.stringify(user.firstName), JSON.stringify(user.lastName), JSON.stringify(user.username), JSON.stringify(user.email), JSON.stringify(user.password),JSON.stringify(user.account)],
             headers: {
@@ -130,65 +130,65 @@ import RegisterFeature from 'components/register-feature';
                             <div className="form-group">
                                 <label>First Name: </label>
                                 <input name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
-                                <Box className="invalid-feedback">{errors.firstName?.message}</Box>
+                                <div className="invalid-feedback">{errors.firstName?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Last Name: </label>
                                 <input name="lastName" type="text" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
-                                <Box className="invalid-feedback">{errors.lastName?.message}</Box>
+                                <div className="invalid-feedback">{errors.lastName?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Username: </label>
                                 <input name="username" type="text" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
-                                <Box className="invalid-feedback">{errors.username?.message}</Box>
+                                <div className="invalid-feedback">{errors.username?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Email: </label>
                                 <input name="email" type="text" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
-                                <Box className="invalid-feedback">{errors.email?.message}</Box>
+                                <div className="invalid-feedback">{errors.email?.message}</div>
                             </div>                                
                             <div className="form-group">
                                 <label>Password: </label>
                                 <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
-                                <Box className="invalid-feedback">{errors.password?.message}</Box>
+                                <div className="invalid-feedback">{errors.password?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Wallet Chain</label>
                                 <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                                <Box className="invalid-feedback">{errors.account?.message}</Box>
-                                <Box className='ml-4 text-sm'> ( What platform is it on, ie: Ethereum )</Box>
+                                <div className="invalid-feedback">{errors.account?.message}</div>
+                                <div className='ml-4 text-sm'> ( What platform is it on, ie: Ethereum )</div>
                             </div> 
 
                             <div className="form-group">
                                 <label>Wallet Address</label>
                                 <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                                <Box className="invalid-feedback">{errors.account?.message}</Box>
-                                <Box className='ml-4 text-sm'> ( Connect wallet to add address )</Box>
+                                <div className="invalid-feedback">{errors.account?.message}</div>
+                                <div className='ml-4 text-sm'> ( Connect wallet to add address )</div>
                             </div> 
                             <div className="form-group taSiteInfo">
-                                <Box>
+                                <div>
                                     <label>Site Agreement</label>                                 
-                                </Box>
-                                <Box>
+                                </div>
+                                <div>
                                     <textarea name="siteInfo" className='{`form-control`} siteInfo border-2 bg-white' value={textValue} disabled />
-                                </Box>
-                                <Box className='text-sm ml-4'>
+                                </div>
+                                <div className='text-sm ml-4'>
                                     <Link href='/terms' > * Full Site Agreement and Terms</Link>
-                                </Box>    
+                                </div>    
                             </div>
                             <div>
-                                <Box className='flex display-inline'>
-                                    <Box className='noted'>
-                                    </Box>
-                                    <Box className='ml-4'>
-                                        <input type="checkbox" id="agree" onClick={() => agreeHandler()} />
+                                <div className='flex display-inline'>
+                                    <div className='noted'>
+                                    </div>
+                                    <div className='ml-4'>
+                                        <input type="checkdiv" id="agree" onClick={() => agreeHandler()} />
                                         <label htmlFor="agree" className='ml-6 mb-8'> I agree to site terms and conditions</label>
-                                    </Box>   
-                                </Box>
+                                    </div>   
+                                </div>
                             </div>
                             <div>
-                                <Box className='flex display-inline text-center justify-between mt-4'>
-                                    <Box className='btn-lft'>
+                                <div className='flex display-inline text-center justify-between mt-4'>
+                                    <div className='btn-lft'>
                                         { agreeState === 'false' ?
                                                 <button disabled className="btn btn-primary mr-12 mt-2 ml-8">Register</button>                   
                                         :
@@ -197,11 +197,11 @@ import RegisterFeature from 'components/register-feature';
                                                 Register
                                             </button>
                                         }
-                                    </Box>
-                                    <Box className='btns-right flex display-inline text-center justify-between mb-4' >              
+                                    </div>
+                                    <div className='btns-right flex display-inline text-center justify-between mb-4' >              
                                         <a onClick={logout} className="btn btn-link">Cancel</a>
-                                    </Box> 
-                                </Box> 
+                                    </div> 
+                                </div> 
                             </div>
                         </form>
                     </Box>

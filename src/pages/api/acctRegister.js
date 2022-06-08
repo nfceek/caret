@@ -12,12 +12,14 @@ export default async(req, res) => {
         let email = dataArr[3] 
             email = email.replace(/['"]+/g, '');
         let pwd = dataArr[4]
-            pwd =  pwd.replace(/['"]+/g, '');     
+            pwd =  pwd.replace(/['"]+/g, ''); 
+        let acct = dataArr[5]
+            acct = acct.replace(/['"]+/g, '');   
     const curDate = new Date().toISOString()
 
     const response = await prisma.user.create({
         data: {
-            FKwallet: '',
+            fkwallet: '',
             firstname: fName,
             lastname: lName,
             username: username,
@@ -25,7 +27,9 @@ export default async(req, res) => {
             plan: 1,
             admin: false,
             level: 1,
-            email: email,        
+            email: email, 
+            chain: '',
+            account: acct,    
             join_date: curDate,
             dateupdated: curDate,
         }, 
