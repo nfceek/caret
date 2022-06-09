@@ -1,4 +1,4 @@
-import { apiHandler, usersRepo } from '../../helpers/api';
+import { apiHandler, usersRepo } from '../../../helpers/api';
 
 
 const bcrypt = require('bcryptjs');

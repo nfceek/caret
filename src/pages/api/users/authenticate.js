@@ -1,9 +1,8 @@
+
+import getConfig from 'next/config';
+import { apiHandler, usersRepo } from '../../../helpers/api';
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-import getConfig from 'next/config';
-
-import { apiHandler, usersRepo } from '../../helpers/api';
-
 const { serverRuntimeConfig } = getConfig();
 
 export default apiHandler({
