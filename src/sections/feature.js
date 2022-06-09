@@ -23,7 +23,7 @@ const data = [
     id: 2,
     imgSrc: Partnership,
     alttext: 'Pack the address',
-    title: 'compact ^ tag name',
+    title: 'Compact ^ Tag name',
     text:
       'Turn this: 0xElslkdoIF0oelsldkxxxxImwlYD6c, into this: ^Gold',
   },

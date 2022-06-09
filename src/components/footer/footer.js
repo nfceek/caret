@@ -3,12 +3,12 @@
 import { Box, Container, Image, Text } from 'theme-ui';
 import { Link } from 'components/link';
 import data from './footer.data';
-import { FaFacebookF, FaTwitter, FaGithubAlt, FaDribbble } from 'react-icons/fa';
+import { FaInstagram, FaTwitter, FaTiktok, FaDiscord } from 'react-icons/fa';
 
 const social = [
   {
     path: '/',
-    icon: <FaFacebookF />,
+    icon: <FaInstagram />,
   },
   {
     path: '/',
@@ -16,11 +16,11 @@ const social = [
   },
   {
     path: '/',
-    icon: <FaGithubAlt />,
+    icon: <FaTiktok />,
   },
   {
     path: '/',
-    icon: <FaDribbble />,
+    icon: <FaDiscord />,
   },
 ];
 

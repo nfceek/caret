@@ -57,6 +57,8 @@ import RegisterFeature from 'components/register-feature';
       };
 
     async function addUser(user) { 
+        
+
         console.log('load ' + JSON.stringify(user))
         const curDate = new Date().toISOString()
         console.log(curDate)
@@ -65,7 +67,8 @@ import RegisterFeature from 'components/register-feature';
         //console.log(user.password)
         const response = await fetch('../../api/acctRegister', {
             method: 'POST',
-            body:  [JSON.stringify(user.firstName), JSON.stringify(user.lastName), JSON.stringify(user.username), JSON.stringify(user.email), JSON.stringify(user.password),JSON.stringify(user.account)],
+            body:  [JSON.stringify(user.firstName), JSON.stringify(user.lastName), JSON.stringify(user.username), JSON.stringify(user.email), 
+                JSON.stringify(user.password),JSON.stringify(user.chain), JSON.stringify(user.account)],
             headers: {
             'Content-Type':'applications/json'
             },
@@ -80,44 +83,45 @@ import RegisterFeature from 'components/register-feature';
     }
 
     function Register() {
-    const router = useRouter();
-    const [menuState, setMenuState] = useState('register')
-    const [agreeState, setAgreeState] = useState('false')
-  
-    // form validation rules 
-    const validationSchema = Yup.object().shape({
-        firstName: Yup.string()
-            .required('First Name is required'),
-        lastName: Yup.string()
-            .required('Last Name is required'),
-        username: Yup.string()
-            .required('Username is required'),
-        email: Yup.string()
-            .required('Email is required'),            
-        password: Yup.string()
-            .required('Password is required')
-            .min(6, 'Password must be at least 6 characters'),
-    });
+        const router = useRouter();
+        const [menuState, setMenuState] = useState('register')
+        const [agreeState, setAgreeState] = useState('false')
+        const [chainValue, setChainValue] = useState("Eth");
 
-    const formOptions = { resolver: yupResolver(validationSchema) };
-    const { register, handleSubmit, formState } = useForm(formOptions);
-    const { errors } = formState;
+        // form validation rules 
+        const validationSchema = Yup.object().shape({
+            firstName: Yup.string()
+                .required('First Name is required'),
+            lastName: Yup.string()
+                .required('Last Name is required'),
+            username: Yup.string()
+                .required('Username is required'),
+            email: Yup.string()
+                .required('Email is required'),            
+            password: Yup.string()
+                .required('Password is required')
+                .min(6, 'Password must be at least 6 characters'),
+        });
 
-    function onSubmit(user) {
-        return userService.register(user)
-            .then(() => {              
-                addUser(user)
-                alertService.success('Registration successful', { keepAfterRouteChange: true });
-                router.push('/login');
-            })
-            .catch(alertService.error);
-    }
+        const formOptions = { resolver: yupResolver(validationSchema) };
+        const { register, handleSubmit, formState } = useForm(formOptions);
+        const { errors } = formState;
 
-    const agreeHandler = () => {
-        {agreeState === 'false' ? setAgreeState('true') : setAgreeState('false')};
-    };
+        function onSubmit(user) {
+            return userService.register(user)
+                .then(() => {              
+                    addUser(user)
+                    alertService.success('Registration successful', { keepAfterRouteChange: true });
+                    router.push('/login');
+                })
+                .catch(alertService.error);
+        }
 
-    const textValue = 'Site rules:\n a) Be Honest & Respectful, be a Good NFT Citizen\n b) You must have a MATIC wallet to purchase our NFTs\n c) The rest is in the full agreement link below*\n\n Enjoy your stay - The Team'
+        const agreeHandler = () => {
+            {agreeState === 'false' ? setAgreeState('true') : setAgreeState('false')};
+        };
+
+        const textValue = 'Site rules:\n a) Be Honest & Respectful, be a Good NFT Citizen\n b) You must have a MATIC wallet to purchase our NFTs\n c) The rest is in the full agreement link below*\n\n Enjoy your stay - The Team'
 
     return (
  
@@ -154,7 +158,14 @@ import RegisterFeature from 'components/register-feature';
                             </div>
                             <div className="form-group">
                                 <label>Wallet Chain</label>
-                                <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                                <div className=''>
+                                    <select name="Matic Wallet" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.account ? 'is-invalid' : ''}`} >
+                                        <option value="Eth">Ethereum</option>
+                                        <option value="Btc">Bitcoin</option>
+                                        <option value="Matic">Matic</option>
+                                        <option value="Doge">Doge</option>
+                                    </select>
+                                </div>
                                 <div className="invalid-feedback">{errors.account?.message}</div>
                                 <div className='ml-4 text-sm'> ( What platform is it on, ie: Ethereum )</div>
                             </div> 
@@ -181,7 +192,7 @@ import RegisterFeature from 'components/register-feature';
                                     <div className='noted'>
                                     </div>
                                     <Box className='ml-4'>
-                                        <input type="checkdiv" id="agree" onClick={() => agreeHandler()} />
+                                        <input type="checkbox" id="agree" onClick={() => agreeHandler()} />
                                         <label htmlFor="agree" className='ml-6 mb-8'> I agree to site terms and conditions</label>
                                     </Box>   
                                 </div>
@@ -192,7 +203,7 @@ import RegisterFeature from 'components/register-feature';
                                         { agreeState === 'false' ?
                                                 <button disabled className="btn btn-primary mr-12 mt-2 ml-8">Register</button>                   
                                         :
-                                            <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">
+                                            <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
                                                 {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
                                                 Register
                                             </button>

@@ -10,7 +10,7 @@ export default {
     },
     {
       path: '/terms',
-      label: 'Legal Stuff',
+      label: 'Legal',
     },
     {
       path: '/contact',

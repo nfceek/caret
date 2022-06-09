@@ -65,11 +65,13 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                             <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.password?.message}</div>
                         </div>
+                        {/*
                         <div className="form-group">
                             <label>Wallet Address</label>
                             <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.account?.message}</div>
                         </div> 
+                        */}
                         <div className='flex display-inline'>
                             <div>
                                 <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">
@@ -77,7 +79,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                                     Login
                                 </button>
                             </div>
-                            <div className='ml-6 pt-6'>
+                            <div className='ml-6 pt-3'>
                                 <Link href="/registration" className="btn btn-link">Register</Link>  
                             </div>               
                         </div>

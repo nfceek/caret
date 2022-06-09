@@ -1,6 +1,7 @@
 import { prisma } from '../../db'
 
 export default async(req, res) => {
+    console.log('hola')
     const inData = req.body
     var dataArr = inData.split(',');
         let fName = dataArr[0]
@@ -12,8 +13,10 @@ export default async(req, res) => {
         let email = dataArr[3] 
             email = email.replace(/['"]+/g, '');
         let pwd = dataArr[4]
-            pwd =  pwd.replace(/['"]+/g, ''); 
-        let acct = dataArr[5]
+            pwd =  pwd.replace(/['"]+/g, '');             
+        let chain = dataArr[5]
+            chain =  chain.replace(/['"]+/g, '');                     
+        let acct = dataArr[6]
             acct = acct.replace(/['"]+/g, '');   
     const curDate = new Date().toISOString()
 
@@ -28,7 +31,7 @@ export default async(req, res) => {
             admin: false,
             level: 1,
             email: email, 
-            chain: 'eth',
+            chain: chain,
             account: acct,    
             join_date: curDate,
             dateupdated: curDate,
