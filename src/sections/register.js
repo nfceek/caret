@@ -10,6 +10,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 
 import SectionHeader from 'components/section-header';
 import RegisterFeature from 'components/register-feature';
+import { use } from "chai";
 
     const bcrypt = require('bcryptjs'); 
     const shapePattern = '../assets/shape-pattern1.png';
@@ -57,8 +58,6 @@ import RegisterFeature from 'components/register-feature';
       };
 
     async function addUser(user) { 
-        
-
         console.log('load ' + JSON.stringify(user))
         const curDate = new Date().toISOString()
         console.log(curDate)
@@ -84,30 +83,47 @@ import RegisterFeature from 'components/register-feature';
 
     function Register() {
         const router = useRouter();
-        const [menuState, setMenuState] = useState('register')
+        const [walletState, setwalletState] = useState(false)
         const [agreeState, setAgreeState] = useState('false')
-        const [chainValue, setChainValue] = useState("Eth");
-
+        const [chainValue, setChainValue] = useState('');
+        const [unameState, setUnameState] = useState(true)
+        
         // form validation rules 
         const validationSchema = Yup.object().shape({
+            showUname: Yup.boolean(),
             firstName: Yup.string()
-                .required('First Name is required'),
+                .required('First Name is required')
+                .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
             lastName: Yup.string()
-                .required('Last Name is required'),
+                .required('Last Name is required')
+                .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
             username: Yup.string()
-                .required('Username is required'),
+                .when("showUname", {
+                    is: true,
+                    then: Yup.string().required("User Name already in use")
+                })
+                .required('Username is required')
+                .matches(/^[a-zA-Z0-9-_]+$/, "Only Alpha & Numeric, - and _ characters are allowed for this field "),
             email: Yup.string()
                 .required('Email is required'),            
             password: Yup.string()
                 .required('Password is required')
                 .min(6, 'Password must be at least 6 characters'),
+            account: Yup.string()
+                .min(20, 'Password must be at least 20 characters')
+                .matches(/^[a-zA-Z0-9]+$/, "Only Alpha & Numeric characters are allowed for this field "),              
         });
 
         const formOptions = { resolver: yupResolver(validationSchema) };
         const { register, handleSubmit, formState } = useForm(formOptions);
         const { errors } = formState;
 
-        function onSubmit(user) {
+        async function onSubmit(user) {
+            const usernameCheck = await unameCheck(user)
+            console.log('usernameCheck back: ' + usernameCheck)
+
+/*            
+
             return userService.register(user)
                 .then(() => {              
                     addUser(user)
@@ -115,13 +131,25 @@ import RegisterFeature from 'components/register-feature';
                     router.push('/login');
                 })
                 .catch(alertService.error);
+*/
         }
-
         const agreeHandler = () => {
             {agreeState === 'false' ? setAgreeState('true') : setAgreeState('false')};
         };
 
-        const textValue = 'Site rules:\n a) Be Honest & Respectful, be a Good NFT Citizen\n b) You must have a MATIC wallet to purchase our NFTs\n c) The rest is in the full agreement link below*\n\n Enjoy your stay - The Team'
+        async function unameCheck(data) {
+            var formData = JSON.stringify(data.username)
+            console.log('formData out : ' + formData)
+            const response = await fetch('/../api/preUsername', {
+              method: 'POST',
+              body: formData, 
+              headers: {
+                'Content-Type':'applications/json'
+              },
+            })
+            const unameAvail = await response.json() 
+              return unameAvail
+          }
 
     return (
  
@@ -133,70 +161,69 @@ import RegisterFeature from 'components/register-feature';
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="form-group">
                                 <label>First Name: </label>
-                                <input name="firstName" type="text" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                                <input name="firstName" type="text" placeholder="first name" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.firstName?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Last Name: </label>
-                                <input name="lastName" type="text" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
+                                <input name="lastName" type="text" placeholder="last name" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.lastName?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Username: </label>
-                                <input name="username" type="text" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
+                                <input name="username" type="text" placeholder="username" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.username?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Email: </label>
-                                <input name="email" type="text" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
+                                <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.email?.message}</div>
                             </div>                                
                             <div className="form-group">
                                 <label>Password: </label>
-                                <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                <input name="password" type="password" placeholder='password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.password?.message}</div>
                             </div>
+
+
+
                             <div className="form-group">
                                 <label>Wallet Chain</label>
                                 <div className=''>
                                     <select name="Matic Wallet" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.account ? 'is-invalid' : ''}`} >
+                                    <option value="" disabled hidden>wallet chain</option>
                                         <option value="Eth">Ethereum</option>
                                         <option value="Btc">Bitcoin</option>
                                         <option value="Matic">Matic</option>
                                         <option value="Doge">Doge</option>
                                     </select>
                                 </div>
-                                <div className="invalid-feedback">{errors.account?.message}</div>
-                                <div className='ml-4 text-sm'> ( What platform is it on, ie: Ethereum )</div>
+                                <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
                             </div> 
 
                             <div className="form-group">
                                 <label>Wallet Address</label>
-                                <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                                <input name="Matic Wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.account?.message}</div>
-                                <div className='ml-4 text-sm'> ( Connect wallet to add address )</div>
+                                
                             </div> 
-                            <div className="form-group taSiteInfo">
-                                <div>
-                                    <label>Site Agreement</label>                                 
-                                </div>
-                                <div>
-                                    <textarea name="siteInfo" className='{`form-control`} siteInfo border-2 bg-white' value={textValue} disabled />
-                                </div>
-                                <div className='text-sm ml-4'>
-                                    <Link href='/terms' > * Full Site Agreement and Terms</Link>
-                                </div>    
-                            </div>
+
                             <div>
                                 <div className='flex display-inline'>
                                     <div className='noted'>
                                     </div>
-                                    <Box className='ml-4'>
+                                    <div className='ml-4'>
                                         <input type="checkbox" id="agree" onClick={() => agreeHandler()} />
-                                        <label htmlFor="agree" className='ml-6 mb-8'> I agree to site terms and conditions</label>
-                                    </Box>   
+                                        <label htmlFor="agree" className='ml-6 mb-2'> I agree to site terms and conditions</label>
+                                        <div className='text-sm pl-10'>
+                                            <Link href='/terms' > * Full Site Agreement and Terms</Link>
+                                        </div>    
+                                    </div>   
                                 </div>
                             </div>
+
+
+
                             <div>
                                 <div className='flex display-inline text-center justify-between mt-4'>
                                     <div className='btn-lft'>
@@ -247,6 +274,7 @@ import RegisterFeature from 'components/register-feature';
             justifyContent: ['flex-start', null, null, 'space-between'],
             flexDirection: ['column', null, null, 'row'],
             pb: [0, null, null, null, null, 7],
+            pt:[120, null, null, null, null, 50],
         },
         shapeBox: {
             position: 'absolute',

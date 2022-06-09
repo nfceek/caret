@@ -84,8 +84,8 @@ export default function Signup() {
                 <form>
                   <div className ="card-body">                   
                     <div className ="form-group">
-                      <label htmlFor="tagname">Step 1) Choose your Caret Word : </label>
-                      <input type="text" className ="form-control" id="sign-up-username" required="required" />
+                      <label htmlFor="tagname">Step 1) Let`s Get Started </label>
+                      <input type="text" placeholder='Enter your Word' className ="form-control" id="sign-up-username" required="required" />
                     </div>
                      {/*
                     <div className ="form-group">

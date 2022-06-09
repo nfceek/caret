@@ -33,14 +33,11 @@ function login(username, account) {
 }
 
 function logout() {
-    // remove user from local storage, publish null to user subscribers and redirect to login page
     localStorage.removeItem('user');
     localStorage.removeItem('wallet');
     userSubject.next(null);
     Router.push('/');
-    //Router.push('/account/login');
 }
-
 
 export async function register(user) {
     //return fetchWrapper.post(`${baseUrl}/uregister`, user);
