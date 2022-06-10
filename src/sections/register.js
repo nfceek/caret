@@ -83,10 +83,18 @@ import { use } from "chai";
 
     function Register() {
         const router = useRouter();
-        const [walletState, setwalletState] = useState(false)
+
         const [agreeState, setAgreeState] = useState('false')
         const [chainValue, setChainValue] = useState('');
-        const [unameState, setUnameState] = useState(true)
+        const [walletState, setwalletState] = useState('false')   // does user have wallet
+
+        const [unameState, setUnameState] = useState(true)      // if user, is username a dupe
+        const [emailState, setEmailState] = useState(true)      // if user, is email a dupe
+        const [accountState, setAccountState] = useState(true)  // if user, is acct a dupe
+
+        const [hasUname, setHasUname] = useState(true)          // if user has wallet, auth reply
+        const [hasEmail, setHasEmail] = useState(true)          // if user has wallet, auth reply
+        const [hasWallet, setHasWallet] = useState(true)        // if user has wallet, auth reply
         
         // form validation rules 
         const validationSchema = Yup.object().shape({
@@ -98,49 +106,65 @@ import { use } from "chai";
                 .required('Last Name is required')
                 .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
             username: Yup.string()
-                .when("showUname", {
-                    is: true,
-                    then: Yup.string().required("User Name already in use")
-                })
                 .required('Username is required')
                 .matches(/^[a-zA-Z0-9-_]+$/, "Only Alpha & Numeric, - and _ characters are allowed for this field "),
             email: Yup.string()
                 .required('Email is required'),            
             password: Yup.string()
                 .required('Password is required')
-                .min(6, 'Password must be at least 6 characters'),
-            account: Yup.string()
-                .min(20, 'Password must be at least 20 characters')
-                .matches(/^[a-zA-Z0-9]+$/, "Only Alpha & Numeric characters are allowed for this field "),              
+                .min(6, 'Password must be at least 6 characters'),              
+        });
+
+        const validationUname = Yup.object().shape({
+            username: Yup.string().required('Username already registered')
+        });
+        const validationEmail = Yup.object().shape({
+            email: Yup.string().required('Email is already registered')
+        });
+        const validationWallet = Yup.object().shape({
+            account: Yup.string().required('Wallet Address is already registered')         
         });
 
         const formOptions = { resolver: yupResolver(validationSchema) };
         const { register, handleSubmit, formState } = useForm(formOptions);
         const { errors } = formState;
 
-        async function onSubmit(user) {
-            const usernameCheck = await unameCheck(user)
-            console.log('usernameCheck back: ' + usernameCheck)
-
-/*            
-
-            return userService.register(user)
-                .then(() => {              
-                    addUser(user)
-                    alertService.success('Registration successful', { keepAfterRouteChange: true });
-                    router.push('/login');
-                })
-                .catch(alertService.error);
-*/
-        }
         const agreeHandler = () => {
             {agreeState === 'false' ? setAgreeState('true') : setAgreeState('false')};
         };
 
+        const walletValue = () => {
+            {walletState === 'false' ? setwalletState('true') : setwalletState('false')};
+        }
+        
+        async function onSubmit(user) {
+            //const checkUsername = await unameCheck(user)
+            //console.log('checkUsername back: ' + checkUsername)
+
+            if (checkUsername > 0){
+                setUnameState(false)
+            }
+
+            const checkEmail = await emailCheck(user)
+            console.log('checkEmail back: ' + checkEmail)
+
+            const checkAccount = await accountCheck(user)
+            console.log('checkAccount back: ' + checkAccount)           
+
+            return userService.register(user)
+                .then(() => {              
+                    //addUser(user)
+                    //alertService.success('Registration successful', { keepAfterRouteChange: true });
+                    //router.push('/login');
+                })
+                .catch(alertService.error);
+
+        }
+
         async function unameCheck(data) {
             var formData = JSON.stringify(data.username)
             console.log('formData out : ' + formData)
-            const response = await fetch('/../api/preUsername', {
+            const response = await fetch('/../api/validate/preUsername', {
               method: 'POST',
               body: formData, 
               headers: {
@@ -150,6 +174,36 @@ import { use } from "chai";
             const unameAvail = await response.json() 
               return unameAvail
           }
+
+          async function emailCheck(data) {
+            var formData = JSON.stringify(data.email)
+            console.log('formData out : ' + formData)
+            const response = await fetch('/../api/validate/preEmail', {
+              method: 'POST',
+              body: formData, 
+              headers: {
+                'Content-Type':'applications/json'
+              },
+            })
+            const unameAvail = await response.json() 
+              return unameAvail
+          }
+
+          async function accountCheck(data) {
+            var formData = JSON.stringify(data.account)
+            console.log('formData out : ' + formData)
+            const response = await fetch('/../api/validate/preAccount', {
+              method: 'POST',
+              body: formData, 
+              headers: {
+                'Content-Type':'applications/json'
+              },
+            })
+            const unameAvail = await response.json() 
+              return unameAvail
+          }
+
+
 
     return (
  
@@ -184,30 +238,43 @@ import { use } from "chai";
                                 <input name="password" type="password" placeholder='password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.password?.message}</div>
                             </div>
+                            <div>
+                                <div className="form-group mt-6">
+                                    <label>Do you have a Crypto Wallet? </label>
+                                    <div  className="flex display-inline">
+                                        <input type="radio" className='ml-4 mr-4' value="Yes" name="wallet" onClick={() => {walletValue(true)}} />&nbsp;Yes
+                                        <div className='ml-4 text-sm'> </div>
+                                        <input type="radio" className='l-4' value="No" name="wallet" defaultChecked="true" onClick={() => {walletValue(false)}} />&nbsp;No
+                                    </div>
 
-
-
-                            <div className="form-group">
-                                <label>Wallet Chain</label>
-                                <div className=''>
-                                    <select name="Matic Wallet" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.account ? 'is-invalid' : ''}`} >
-                                    <option value="" disabled hidden>wallet chain</option>
-                                        <option value="Eth">Ethereum</option>
-                                        <option value="Btc">Bitcoin</option>
-                                        <option value="Matic">Matic</option>
-                                        <option value="Doge">Doge</option>
-                                    </select>
                                 </div>
-                                <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
-                            </div> 
+                            </div>
+                       { walletState === 'false' ? 
+                            <div></div>
+                        :
+                            <div>
+                                <div className="form-group mt-6">
+                                    <label>Wallet Chain</label>
+                                    <div className=''>
+                                        <select name="Matic Wallet" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.account ? 'is-invalid' : ''}`} >
+                                        <option value="" disabled hidden>wallet chain</option>
+                                            <option value="Eth">Ethereum</option>
+                                            <option value="Btc">Bitcoin</option>
+                                            <option value="Matic">Matic</option>
+                                            <option value="Doge">Doge</option>
+                                        </select>
+                                    </div>
+                                    <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
+                                </div> 
 
-                            <div className="form-group">
-                                <label>Wallet Address</label>
-                                <input name="Matic Wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.account?.message}</div>
-                                
-                            </div> 
-
+                                <div className="form-group">
+                                    <label>Wallet Address</label>
+                                    <input name="Matic Wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                                    <div className="invalid-feedback">{errors.account?.message}</div>                               
+                                </div> 
+                            </div>
+                           
+                        }
                             <div>
                                 <div className='flex display-inline'>
                                     <div className='noted'>
@@ -221,9 +288,6 @@ import { use } from "chai";
                                     </div>   
                                 </div>
                             </div>
-
-
-
                             <div>
                                 <div className='flex display-inline text-center justify-between mt-4'>
                                     <div className='btn-lft'>

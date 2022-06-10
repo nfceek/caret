@@ -1,10 +1,10 @@
-import { prisma } from '../../db'
+import { prisma } from '../../../db'
 
 export default async(req, res) => {
     const data = JSON.parse(req.body)
-    const response = await prisma.carrots.count({           
+    const response = await prisma.user.count({           
         where: {
-            word: data,
+            email: data,
           },
         })
       res.status(200).json(response)   

@@ -14,6 +14,7 @@ hardhat.config.js
 projectId.js
 projectSecret.js
 
+/out
 /prisma
 
 # dependencies
