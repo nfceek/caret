@@ -3,16 +3,16 @@ DROP TABLE IF EXISTS `carrots`;
 CREATE TABLE IF NOT EXISTS `carrots` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userid` int(11) DEFAULT NULL,
-  `word` varchar(100) NOT NULL,
+  `caretword` varchar(100) NOT NULL,
   `available` tinyint(10) NOT NULL DEFAULT '0',
   `business` int(10) DEFAULT '0',
   `premium` int(10) DEFAULT '0',
   `banned` tinyint(4) DEFAULT '0',
   `price` int(10) DEFAULT '5',
-  `cid` varchar(250) DEFAULT NULL,
-  `privkey` varchar(250) DEFAULT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updateinfo` varchar(100) DEFAULT NULL,
+  `cid` varchar(250) DEFAULT '',
+  `privkey` varchar(250) DEFAULT '',
+  `timestamp` varchar(100) DEFAULT '',
+  `updateinfo` varchar(100) DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 

@@ -3,14 +3,13 @@ import React, { useState } from "react"
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { userService, alertService } from '../services';
 import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
-
-import SectionHeader from 'components/section-header';
 import RegisterFeature from 'components/register-feature';
-import { use } from "chai";
+
 
     const bcrypt = require('bcryptjs'); 
     const shapePattern = '../assets/shape-pattern1.png';
@@ -116,7 +115,7 @@ import { use } from "chai";
         });
 
         const validationUname = Yup.object().shape({
-            username: Yup.string().required('Username already registered')
+            userame: Yup.string().required('Username already registered')
         });
         const validationEmail = Yup.object().shape({
             email: Yup.string().required('Email is already registered')

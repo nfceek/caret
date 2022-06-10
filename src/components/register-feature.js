@@ -2,7 +2,7 @@
 
 import { Box, Heading, Text, Button, Link } from 'theme-ui';
 
-export default function SignupFeature({
+export default function RegisterFeature({
   subTitle,
   title,
   description,

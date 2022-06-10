@@ -6,7 +6,6 @@ import SectionHeader from 'components/section-header';
 const patternBG = '../assets/patternBG.png';
 const ArrowOdd = '../assets/arrowOdd.svg';
 const ArrowEven = '../assets/arrowEven.svg';
-//import { urlObjectKeys } from 'next/dist/next-server/lib/utils';
 
 const data = [
   {

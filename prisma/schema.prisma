@@ -13,7 +13,7 @@ datasource db {
 model carrots {
  id Int @id @default(autoincrement())
  userid Int
- word String
+ caretword String
  available Boolean
  business Boolean
  premium Boolean
