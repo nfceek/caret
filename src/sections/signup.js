@@ -6,12 +6,15 @@ import SectionHeader from 'components/section-header';
 import SignupFeature from 'components/signup-feature';
 import Theme from '../theme';
 import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form';
+
+import RegisterFeature from 'components/register-feature';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 
 const shapePattern = '../assets/shape-pattern1.png';
 const Smart = '../assets/services/smart.svg';
 const Secure = '../assets/services/secure.svg';
-
-
 const data = {
   subTitle: 'How it works',
   title: 'Create Your Caret',
@@ -54,79 +57,67 @@ const data = {
 
 
 export default function Signup() {
+    const router = useRouter()
 
-  const router = useRouter()
+    const validationRequest = Yup.object().shape({
+    request: Yup.string()
+        .matches(/^[aA-zZ-_\s]+$/, "Only Alpha characters, dash ( - ) and underscore ( _ ) are allowed.")
+        .min(4, 'Password must be at least 5 characters'),         
+    });
 
-  async function caretCheck(){
+    const formOptions = { resolver: yupResolver(validationRequest) };
+    const { register, handleSubmit, formState } = useForm(formOptions);
+    const { errors } = formState;
 
-  }
+    async function caretCheck(){
 
+    }
+    
+    async function onSubmit(user) {
+      const item = user.request
+      console.log(item)
+      router.push(
+        {
+          pathname: '/purchase',
+          query: {data: item}   
+        }, '/purchase')        
+    }
  
-  return (
-    <Box sx={{ variant : 'section.signup' }}>
-      <Container sx={styles.containerBox} >
-        <Box sx={styles.halfLBox} >
-          <SignupFeature subTitle={data.subTitle} />
-          <Grid sx={styles.grid}>
-            {data.features.map((feature, i) =>(
-              <Box sx={styles.card} key={feature.id}>
-                <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
-                <Box sx={styles.wrapper}>
-                  <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
-                  <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>
+    return (
+        <Box sx={{ variant : 'section.signup' }}>
+        <Container sx={styles.containerBox} >
+            <Box sx={styles.halfLBox} >
+            <SignupFeature subTitle={data.subTitle} />
+            <Grid sx={styles.grid}>
+                {data.features.map((feature, i) =>(
+                <Box sx={styles.card} key={feature.id}>
+                    <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
+                    <Box sx={styles.wrapper}>
+                    <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
+                    <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>
+                    </Box>
                 </Box>
-              </Box>
-            ))}
-          </Grid>
-        </Box>
-        <Box sx={styles.halfRBox}>
-          <SignupFeature title={data.title} />
-                <form>
-                  <div className ="card-body">                   
-                    <div className ="form-group">
-                      <label htmlFor="tagname">Step 1) Let`s Get Started </label>
-                      <input type="text" placeholder='Enter your Word' className ="form-control" id="sign-up-username" required="required" />
+                ))}
+            </Grid>
+            </Box>
+            <Box sx={styles.halfRBox}>
+            <SignupFeature title={data.title} />
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className ="card-body">                   
+                        <div className="form-group">
+                            <label>Step 1: </label>
+                            <input name="request" type="text" placeholder="Choose Your Caret Word" {...register('request')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                            <div className="invalid-feedback">{errors.request?.message}</div>
+                        </div>                   
+                        <div>                                 
+                        <button type="submit" className ="btn btn-primary" id="caretCheck" >Check Availability</button>  
+                        </div>                                 
                     </div>
-                     {/*
-                    <div className ="form-group">
-                      <label htmlFor="username">Step 1 ->  : </label>
-                      <input type="text" className ="form-control" id="sign-up-title" />
-                    </div>
-                   
-                    <div className ="form-group">
-                      <label htmlFor="nftname">Add NFT: </label>
-                      <input type="text" className ="form-control" id="sign-up-title" />
-                    </div>
-                    
-                    <div className ="form-group">
-                      <label htmlFor="email">Your Email : </label>
-                      <input type="text" className ="form-control" id="sign-up-title" />
-                    </div>
-
-                      <p>checkbox - if no wallet address require pwd</p>
-
-                    <div className ="form-group">
-                      <label htmlFor="pwd">Password : </label>
-                      <input type="text" className ="form-control" id="sign-up-title" />
-                    </div>
-                    <div className ="form-group">
-                      <label htmlFor="username">Wallet Address :</label>
-                      <span className ="eth-address"></span>
-                        <input type="text" className ="form-control" id="sign-up-eth-address" value="0x..." disabled />                   
-                    </div>
-                    */}                    
-                    <div>                                 
-                      <button type="submit" className ="btn btn-primary" id="caretCheck" onClick={caretCheck}>Coming Soon</button>  
-                    </div>                                 
-                  </div>
                 </form>
-
-        </Box>                       
-      </Container>
-    </Box>
+            </Box>                       
+        </Container>
+        </Box>
   )
-
-
 }
 
 const styles = {

@@ -99,10 +99,8 @@ import RegisterFeature from 'components/register-feature';
         const validationSchema = Yup.object().shape({
             showUname: Yup.boolean(),
             firstName: Yup.string()
-                .required('First Name is required')
                 .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
             lastName: Yup.string()
-                .required('Last Name is required')
                 .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
             username: Yup.string()
                 .required('Username is required')
@@ -140,9 +138,9 @@ import RegisterFeature from 'components/register-feature';
             //const checkUsername = await unameCheck(user)
             //console.log('checkUsername back: ' + checkUsername)
 
-            if (checkUsername > 0){
-                setUnameState(false)
-            }
+            //if (checkUsername > 0){
+            //    setUnameState(false)
+            //}
 
             const checkEmail = await emailCheck(user)
             console.log('checkEmail back: ' + checkEmail)
@@ -214,17 +212,17 @@ import RegisterFeature from 'components/register-feature';
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="form-group">
                                 <label>First Name: </label>
-                                <input name="firstName" type="text" placeholder="first name" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                                <input name="firstName" type="text" placeholder=" First Name *optional" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.firstName?.message}</div>
                             </div>
                             <div className="form-group">
                                 <label>Last Name: </label>
-                                <input name="lastName" type="text" placeholder="last name" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
+                                <input name="lastName" type="text" placeholder=" Last Name *optional" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.lastName?.message}</div>
                             </div>
                             <div className="form-group">
-                                <label>Username: </label>
-                                <input name="username" type="text" placeholder="username" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
+                                <label>Caret Word: </label>
+                                <input name="username" type="text" placeholder="Caret Word" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.username?.message}</div>
                             </div>
                             <div className="form-group">
@@ -234,7 +232,7 @@ import RegisterFeature from 'components/register-feature';
                             </div>                                
                             <div className="form-group">
                                 <label>Password: </label>
-                                <input name="password" type="password" placeholder='password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.password?.message}</div>
                             </div>
                             <div>
