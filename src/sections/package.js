@@ -27,7 +27,7 @@ const packages = {
         {
           id: 2,
           icon: <IoIosCheckmarkCircle />,
-          text: "Pay Gas Fees",
+          text: "You Pay Gas Fees",
           isAvailable: true,
         },
         {
@@ -38,18 +38,24 @@ const packages = {
         },
         {
           id: 4,
-          icon: <IoIosCloseCircle />,
-          text: 'Cannot choose custom Caret Tag',
+          icon: <IoIosCheckmarkCircle />,
+          text: 'Custom Caret Word + 3 digits',
           isAvailable: true,
         },
         {
           id: 5,
-          icon: <IoIosCloseCircle />,
+          icon: <IoIosCheckmarkCircle />,
           text: 'Must have Crypto Wallet Address',
           isAvailable: true,
         },
         {
-          id: 6,
+          id:6,
+          icon: <IoIosCheckmarkCircle />,
+          text: 'Single Chain',
+          isAvailable: true,
+        },
+        {
+          id: 7,
           icon: <IoIosCloseCircle />,
           text: 'No Public/Private Key Protection',
           isAvailable: true,
@@ -68,25 +74,25 @@ const packages = {
         {
           id: 1,
           icon: <IoIosCheckmarkCircle />,
-          text: 'We Register Caret',
+          text: 'We Register Caret Tag for You',
           isAvailable: true,
         },
         {
           id: 2,
           icon: <IoIosCheckmarkCircle />,
-          text: "We Pay Gas Fees* ",
+          text: "We Pay Gas Fees up to $2.50",
           isAvailable: true,
         },
         {
           id: 3,
           icon: <IoIosCheckmarkCircle />,
-          text: 'Single Crypoto Wallet & upto 3 Crypto Addresses',
+          text: 'Single Crypto Wallet Address',
           isAvailable: true,
         },
         {
           id: 4,
           icon: <IoIosCheckmarkCircle />,
-          text: 'Choose custom Caret Tag',
+          text: 'Choose Custom Caret Tag',
           isAvailable: true,
         },
         {
@@ -96,7 +102,13 @@ const packages = {
           isAvailable: true,
         },
         {
-          id: 6,
+          id:6,
+          icon: <IoIosCheckmarkCircle />,
+          text: 'Single Chain',
+          isAvailable: true,
+        },
+        {
+          id: 7,
           icon: <IoIosCheckmarkCircle />,
           text: 'Private/Public Key Protection',
           isAvailable: true,
@@ -115,19 +127,19 @@ const packages = {
         {
           id: 1,
           icon: <IoIosCheckmarkCircle />,
-          text: 'We Register Caret',
+          text: 'We Register Caret Tag for You',
           isAvailable: true,
         },
         {
           id: 2,
           icon: <IoIosCheckmarkCircle />,
-          text: "We Pay Gas Fees*",
+          text: "We Pay Gas Fees up to $12.50*",
           isAvailable: true,
         },
         {
           id: 3,
           icon: <IoIosCheckmarkCircle />,
-          text: 'Single Crypto Wallet & 10 Cypto addresses',
+          text: "5 Cypto Wallet Addresses",
           isAvailable: true,
         },
         {
@@ -144,6 +156,12 @@ const packages = {
         },
         {
           id: 6,
+          icon: <IoIosCloseCircle />,
+          text: 'Coming Soon - Caret Tag shares multi chain',
+          isAvailable: true,
+        },        
+        {
+          id: 7,
           icon: <IoIosCheckmarkCircle />,
           text: 'Private/Public Key Protection',
           isAvailable: true,

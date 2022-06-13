@@ -17,3 +17,14 @@
     overflow:hidden;
     }
   
+  #purSignUp {
+    min-width: 320px;
+  }
+
+  #bxWallet {
+    min-height: 280px;
+  }
+
+  #bxFree, #bxPro, #bxPrem {
+    min-height:180px;
+  }

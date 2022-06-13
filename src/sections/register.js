@@ -103,18 +103,18 @@ import RegisterFeature from 'components/register-feature';
             lastName: Yup.string()
                 .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
             username: Yup.string()
-                .required('Username is required')
                 .matches(/^[a-zA-Z0-9-_]+$/, "Only Alpha & Numeric, - and _ characters are allowed for this field "),
             email: Yup.string()
                 .required('Email is required'),            
             password: Yup.string()
-                .required('Password is required')
                 .min(6, 'Password must be at least 6 characters'),              
         });
-
+        /* caret word will be the username
         const validationUname = Yup.object().shape({
             userame: Yup.string().required('Username already registered')
         });
+        */
+
         const validationEmail = Yup.object().shape({
             email: Yup.string().required('Email is already registered')
         });
@@ -182,8 +182,8 @@ import RegisterFeature from 'components/register-feature';
                 'Content-Type':'applications/json'
               },
             })
-            const unameAvail = await response.json() 
-              return unameAvail
+            const emailAvail = await response.json() 
+              return emailAvail
           }
 
           async function accountCheck(data) {
@@ -196,8 +196,8 @@ import RegisterFeature from 'components/register-feature';
                 'Content-Type':'applications/json'
               },
             })
-            const unameAvail = await response.json() 
-              return unameAvail
+            const accountAvail = await response.json() 
+              return accountAvail
           }
 
 
@@ -225,16 +225,13 @@ import RegisterFeature from 'components/register-feature';
                                 <input name="username" type="text" placeholder="Caret Word" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.username?.message}</div>
                             </div>
+                            
                             <div className="form-group">
                                 <label>Email: </label>
                                 <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.email?.message}</div>
                             </div>                                
-                            <div className="form-group">
-                                <label>Password: </label>
-                                <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.password?.message}</div>
-                            </div>
+
                             <div>
                                 <div className="form-group mt-6">
                                     <label>Do you have a Crypto Wallet? </label>
@@ -247,7 +244,13 @@ import RegisterFeature from 'components/register-feature';
                                 </div>
                             </div>
                        { walletState === 'false' ? 
-                            <div></div>
+                            <div>
+                                <div className="form-group">
+                                    <label>Password: </label>
+                                    <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                    <div className="invalid-feedback">{errors.password?.message}</div>
+                                </div>
+                            </div>
                         :
                             <div>
                                 <div className="form-group mt-6">
