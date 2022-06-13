@@ -446,8 +446,8 @@ export default function PurchaseChoice() {
                                   <p> 5 Wallet Address <br />
                                       Choose multiple 3 digit addons*<br />
                                       <br />
-                                      <small>*apply a unique 3 digit extension to <br />
-                                      to your caret word upto 4 times.<br />
+                                      <small>*apply a unique 3 digit extension to
+                                      to your caret word up to 4 times.
                                       ie: ^{itemData}123, ^{itemData}234 </small>
                                   </p>
                                 </div>                                                   
