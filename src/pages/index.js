@@ -18,17 +18,26 @@ import TeamSection from '../sections/team-section';
 import Signup from '../sections/signup';
 import CaretFeature from '../sections/caret-feature';
 
+export async function getServerSideProps({ req }) {
+  console.log(req.headers);
+  const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
+
+  return {
+    props: {
+      ip,
+    }, // will be passed to the page component as props
+  };
+}
 
 
 
-export default function IndexPage() {
+export default function IndexPage({ip}) {
   return (
 
 <Container sx={styles.containerBox} >     
        <ThemeProvider theme={Theme} >
 
         <Layout>
-
           <SEO title="Welcome to Caret.Cloud" />
           <Banner />
           <KeyFeature />

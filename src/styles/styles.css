@@ -28,3 +28,7 @@
   #bxFree, #bxPro, #bxPrem {
     min-height:180px;
   }
+
+  #selChain {
+    width: 15ch;
+  }

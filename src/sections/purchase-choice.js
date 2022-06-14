@@ -8,7 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { userService, alertService } from '../services';
 import PurchaseFeature from 'components/purchase-feature';
-
+//const requestIp = require('request-ip');
 
 export default function PurchaseChoice() {
   const router = useRouter(); 
@@ -30,6 +30,7 @@ export default function PurchaseChoice() {
   const [banWord, setBanWord] = useState(false)             // is this a banned word
   const [wordPrice, setWordPrice] = useState(0)             // word cost how much
   //console.log( 'availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
+ 
   const data = {
     subTitle: '4 Simple steps',
     title: 'Caret Tag Word: ' + itemData,
@@ -64,9 +65,9 @@ export default function PurchaseChoice() {
     const isCarrotAvail = await response.json() 
     setCarrotAvail(isCarrotAvail)     
     if (isCarrotAvail > 0){
-        caretCheck(data)
+      caretCheck(data)
     } else {
-
+      
     }       
   }
 
@@ -88,12 +89,13 @@ export default function PurchaseChoice() {
 
   async function caretInformation(data) {  
     console.log('wee need moe')
-
     console.log(' data ' + JSON.stringify(data) ) 
 
     setBanWord(data.banned)
     setBusWord(data.business)
     setWordPrice(data.price)
+
+
 
     {wordPrice === 0 && setFeePrem(true) && setFeePrem(true) && setFeePro(true)}
     {wordPrice === 5 && setFeePrem(true) && setFeePrem(true) && setFeePro(true)}
@@ -101,7 +103,7 @@ export default function PurchaseChoice() {
 
     
     //feePro  feePrem busWord banWord wordPrice
-    console.log( 'availFree ' + feeFree + 'availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
+    console.log( 'availFree ' + feeFree + ' availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
     // return if word is not avail/is avail for prem/is banned, ie: call returnCaret
   }
 
@@ -111,6 +113,7 @@ export default function PurchaseChoice() {
   const validationCaret = Yup.object().shape({
     request: Yup.string()
       .min(3, 'Caret choice must be at least 5 characters') 
+      .max(12, 'Caret choice must be less than 12 characters')
       .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for Caret choice")
   });
  
@@ -124,6 +127,7 @@ export default function PurchaseChoice() {
   const formOptions = { resolver: yupResolver(validationCaret) };
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors } = formState;
+
 
   async function onSubmit(user) {
     //console.log('send out: ' + JSON.stringify(user))
@@ -258,8 +262,8 @@ export default function PurchaseChoice() {
                       <div className="form-group mt-6 justify-left text-left">
                           <label>3a) Wallet Chain</label>
                           <div className=''>
-                              <select name="Matic Wallet" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.chain ? 'is-invalid' : ''}`} >
-                              <option value="" disabled hidden>wallet chain</option>
+                              <select id='selChain' name="chain" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.chain ? 'is-invalid' : ''}`} >
+                              <option value="" disabled hidden>chain</option>
                                   <option value="Eth">Ethereum</option>
                                   <option value="Btc">Bitcoin</option>
                                   <option value="Matic">Matic</option>
@@ -271,7 +275,7 @@ export default function PurchaseChoice() {
 
                       <div className="form-group mt-6 justify-left text-left">
                           <label>3b) Wallet Address</label>
-                          <input name="Matic Wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                          <input name="wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
                           <div className="invalid-feedback">{errors.account?.message}</div>                               
                       </div> 
                    </div>
@@ -331,24 +335,24 @@ export default function PurchaseChoice() {
                           <div className='flex inline-block justify-center text-center mb-6'>
                             <div className='flex inline-block justify-left text-left'>  
                               { walletState === true ? 
-                            <div>                         
-                            <div className='flex inline-block justify-center text-center mb-6'>
-                              <div className=' inline-block justify-left text-left'>  
-                                <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                      <p> Caret Tag: ^{itemData}{numberCount} </p>
-                                    </div>                             
+                                <div>                         
+                                <div className='flex inline-block justify-center text-center mb-6'>
+                                  <div className=' inline-block justify-left text-left'>  
+                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                          <p> Caret Tag: ^{itemData}{numberCount} </p>
+                                        </div>                             
 
-                                    <div className=''></div>
-                                      <div className='text-2xl pl-4 pr-4'>
-                                        <p> 1 Wallet Address <br />
-                                            Auto 3 digit extension on Word<br />
-                                            <br />
-                                            <br />
-                                        </p>
-                                      </div>                                                   
+                                        <div className=''></div>
+                                          <div className='text-2xl pl-4 pr-4'>
+                                            <p> 1 Wallet Address <br />
+                                                Auto 3 digit extension on Word<br />
+                                                <br />
+                                                <br />
+                                            </p>
+                                          </div>                                                   
+                                      </div>
+                                    </div >
                                   </div>
-                                </div >
-                              </div>
                                 :
                                   <div>
                                     <div className='justify-center text-center text-2xl pl-4 mt-4'>
