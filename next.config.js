@@ -22,6 +22,6 @@ module.exports = {
       : 'http://localhost:3000/api'
     },
     images: {
-      domains: ['apogolypse.mypinata.cloud'],
-    }
+      domains: ['apogolypse.mypinata.cloud', 'stripe-camo.global.ssl.fastly.net'],
+	},
   };

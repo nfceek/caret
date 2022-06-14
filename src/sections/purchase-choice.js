@@ -13,7 +13,7 @@ import PurchaseFeature from 'components/purchase-feature';
 export default function PurchaseChoice() {
   const router = useRouter(); 
   const [carrotAvail, setCarrotAvail] = useState(0)
-  const [carrotInAvail, setCarrotInAvail] = useState(0) 
+  const [carrotInAvail, setCarrotInAvail] = useState(false) 
   const [carrotInfo, setCarrotInfo ] = useState(0)
   const [carrotChoose, setCarrotChoose] = useState('') 
   const [itemData, setItemData] = useState('') 
@@ -62,13 +62,14 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-    const isCarrotAvail = await response.json() 
-    setCarrotAvail(isCarrotAvail)     
-    if (isCarrotAvail > 0){
+    //const isCarrotAvail = await response.json() 
+    //setCarrotAvail(isCarrotAvail)     
+    //if (isCarrotAvail > 0){
+    const stepOne= await response.json() 
+    //setCarrotAvail(isCarrotAvail)     
+    if (stepOne > 0){
       caretCheck(data)
-    } else {
-      
-    }       
+    }    
   }
 
   async function caretCheck(data) {
@@ -88,22 +89,22 @@ export default function PurchaseChoice() {
   }
 
   async function caretInformation(data) {  
-    console.log('wee need moe')
+
     console.log(' data ' + JSON.stringify(data) ) 
 
     setBanWord(data.banned)
     setBusWord(data.business)
     setWordPrice(data.price)
+    setCarrotInAvail(data.available)
+    {carrotInAvail === true && setCarrotAvail(0)}
 
-
-
-    {wordPrice === 0 && setFeePrem(true) && setFeePrem(true) && setFeePro(true)}
-    {wordPrice === 5 && setFeePrem(true) && setFeePrem(true) && setFeePro(true)}
-    {wordPrice > 5   && setFeePrem(true) && setFeePrem(true) && setFeePro(false)}
+    {wordPrice === 0  && setFeePrem(false) && setFeePro(false)}
+    {wordPrice === 5  && setFeePrem(false) && setFeePro(true)}
+    {wordPrice > 5    && setFeePrem(true) && setFeePro(false)}
 
     
     //feePro  feePrem busWord banWord wordPrice
-    console.log( 'availFree ' + feeFree + ' availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
+    console.log( 'carrotIn ' + data.price + ' availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
     // return if word is not avail/is avail for prem/is banned, ie: call returnCaret
   }
 
@@ -181,7 +182,7 @@ export default function PurchaseChoice() {
         </div>
         <div className='purRow2'>
           <div className ="flex inline-block justify-center text-center mb-6">
-            {carrotAvail === 1 ?
+            {carrotAvail === 1 || carrotInAvail === false ?
               <div className='text-3xl mb-4'>{itemData}  is unavailable.</div>
             :
               <div>
@@ -214,16 +215,16 @@ export default function PurchaseChoice() {
                         <div>                                 
                           <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
                               {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                              Validate
+                              Check Availablity
                           </button> 
                         </div>                
                       </div>
                     </form>
                   </div>
                     <div> </div>
-                </div>
-            }
+                </div>            }
           </div>
+        {carrotAvail === 0 &&      
         <div> 
           <div className='purRow4'>
           <div className='flex inline-block justify-center text-center mb-6'>
@@ -290,40 +291,8 @@ export default function PurchaseChoice() {
             </div>
           </div>
         </div>
-
-        {feePro === true &&
-          <div> 
-            <div className='purRow5'>
-              <div className='flex inline-block justify-center text-center mb-6'>
-                <div id='purSignUp' className='flex inline-block justify-left text-left'>
-                  <div>
-                    <div className='text-2xl'><u>This is Pro Word:</u></div>
-                    <div><p>Like many things in Life; Sometimes things cost more. <br />
-                      Some Caret Words are more expensive. This is one of them.  <br />
-                      {itemData} maybe purchased as Pro, or Premium, Word for a fee,  <br />
-                      or as {itemData}{numberCount}, a Free Word with 3 digits appended to it</p></div>                 
-                  </div>
-                </div >
-              </div>
-            </div>
-          </div>
         }
-        {feePrem === true &&
-          <div> 
-          <div className='purRow5'>
-            <div className='flex inline-block justify-center text-center mb-6'>
-              <div id='purSignUp' className='flex inline-block justify-left text-left'>
-              <div>
-                <div className='text-2xl'><u>This is Prem Word:</u></div>
-                <div><p>Short words, desriptive words and Common words maybe only <br />
-                  available as a Premium Caret Tag. This is one of them.</p></div>                 
-                </div>
-              </div >
-            </div>
-          </div>
-        </div>    
-        }
-
+        <div></div>
         <div className='purRow8'>        
           <div className='grid grid-cols-5 gap-4'>
             <div className='' ></div>
@@ -358,9 +327,15 @@ export default function PurchaseChoice() {
                                     <div className='justify-center text-center text-2xl pl-4 mt-4'>
                                       NOT AVAILABLE
                                     </div>
-                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                      Must have Crypto Wallet
-                                    </div>
+                                    {carrotAvail === 0 ?
+                                        <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                            Must have Crypto Wallet
+                                        </div>
+                                    :
+                                        <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                        
+                                        </div>
+                                    }
                                   </div>
                               }
                             </div>
@@ -386,7 +361,7 @@ export default function PurchaseChoice() {
               <div className=''>
                   <div className=''>
                     <div id='bxPro' className=''>
-                      {feePro === false  ?
+                      {carrotAvail === 0 ?
                         <div>                         
                           <div className='flex inline-block justify-center text-center mb-6'>
                             <div className=' inline-block justify-left text-left'>  
@@ -410,18 +385,14 @@ export default function PurchaseChoice() {
                               <div className='justify-center text-center text-2xl pl-4 mt-4'>
                                 <p>NOT AVAILABLE</p>                        
                               </div>
-                              <div className='text-xl pl-4 pr-4'><p>Like many things in Life; Sometimes things cost more. <br />
-                                    Some Caret Words are more expensive. This is one of them.  <br />
-                                    {itemData} maybe purchased as Pro, or Premium, Word for a fee,  <br />
-                                    or as {itemData}{numberCount}, a Free Word with 3 digits appended to it</p>
-                                  </div>                     
+                    
                             </div>
                           </div >
                         </div>
                       }
                     </div>
                     <div className='flex inline-block justify-center text-center mt-4 mb-6'>                      
-                      { feePro === false  ? 
+                      {carrotAvail === 0 ? 
                         <div>                     
                            <button id='btnPro' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}> $ 5.00 USD </button>
                         </div>
@@ -438,14 +409,14 @@ export default function PurchaseChoice() {
               <div className=''>
                 <div className=''>
                   <div id='bxPrem' className=''>
-                    {feePrem === false  ?
+                    {carrotAvail === 0 ?
                       <div>                         
                           <div className='flex inline-block justify-center text-center mb-6'>
                             <div className=' inline-block justify-left text-left'>  
                               <div className='justify-center text-center text-2xl pl-4 mt-4'>
                                 <p>Caret Tag: ^{itemData}</p>
                               </div> 
-                              <div className=''></div>
+                              <div className=''>price: {wordPrice}</div>
                                 <div className='text-2xl pl-4 pr-4'>
                                   <p> 5 Wallet Address <br />
                                       Choose multiple 3 digit addons*<br />
@@ -463,7 +434,7 @@ export default function PurchaseChoice() {
                         <div className='flex inline-block justify-center text-center mb-6'>
                           <div className='justify-center text-center'>  
                             <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                            <p>Caret Tag: ^{itemData}</p>
+                            <p>NOT AVAILABLE</p>  
                             </div> 
                             <div className='justify-left text-left text-2xl pl-4 mt-4'>
 
@@ -474,13 +445,13 @@ export default function PurchaseChoice() {
                     }
                   </div>
                   <div className='flex inline-block justify-center text-center mt-4 mb-6'>
-                    { feePrem === false  ? 
+                    {carrotAvail === 0 ?
                         <div>                     
                            <button id='btnPrem' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}> $ 20.00 USD</button>  
                         </div>
                       :
                         <div>                         
-                          <button id='btnPrem' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}> $ TBD USD</button>  
+                           <button id='btnPrem' disabled className="btn btn-primary mr-12 mt-2 ml-8" >Register</button>    
                         </div>
                       }                   
                   </div>                  
@@ -489,7 +460,8 @@ export default function PurchaseChoice() {
             </div> 
             <div className=''></div> 
           </div>
-        </div>           
+        </div>
+                
       </div>
     </div>
   )

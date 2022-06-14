@@ -13,7 +13,8 @@ datasource db {
 model carrots {
  id Int @id @default(autoincrement())
  userid Int
- caretword String
+ word String
+ append Int
  available Boolean
  business Boolean
  premium Boolean
@@ -35,7 +36,9 @@ model plans {
 
 model user {
  id Int @id @default(autoincrement())
+ fkword Int
  fkwallet Int
+ fkbanned Int
  firstname String
  lastname String
  username String
@@ -55,4 +58,11 @@ model wallet {
  userid Int
  chain String
  wallet String
+}
+
+model banned {
+ id Int @id @default(autoincrement())
+ ip Int
+ count Int
+ ban Int
 }
