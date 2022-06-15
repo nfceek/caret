@@ -12,10 +12,10 @@ import PurchaseFeature from 'components/purchase-feature';
 
 export default function PurchaseChoice() {
   const router = useRouter(); 
-  const [carrotAvail, setCarrotAvail] = useState(0)
+  const [carrotAvail, setCarrotAvail] = useState('')
   const [carrotInAvail, setCarrotInAvail] = useState(false) 
-  const [carrotInfo, setCarrotInfo ] = useState(0)
-  const [carrotChoose, setCarrotChoose] = useState('') 
+  const [carrotInfo, setCarrotInfo ] = useState('')
+  const [dbCheck, setDbCheck] = useState(false) 
   const [itemData, setItemData] = useState('') 
   const [numberCount, setNumberCount] = useState(Math.floor(Math.random() * (999 - 100 + 1)) + 0)
   const [itemDataAppend, setItemDataAppend] = useState('')
@@ -54,7 +54,7 @@ export default function PurchaseChoice() {
 
   async function caretCheckIn(data) {
     var formData = JSON.stringify(data)
-    //console.log('formData out : ' + formData)
+    console.log('formData out : ' + formData)
     const response = await fetch('/../api/validate/preCarrot', {
       method: 'POST',
       body: formData, 
@@ -62,14 +62,18 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-    //const isCarrotAvail = await response.json() 
-    //setCarrotAvail(isCarrotAvail)     
-    //if (isCarrotAvail > 0){
+
+    
     const stepOne= await response.json() 
-    //setCarrotAvail(isCarrotAvail)     
+
     if (stepOne > 0){
+      var dbCheck = false
       caretCheck(data)
-    }    
+    } else {
+      dbCheck = true      
+    }
+
+    caretInformation(dbCheck, data)
   }
 
   async function caretCheck(data) {
@@ -83,15 +87,21 @@ export default function PurchaseChoice() {
       },
     })
 
+  const dbCheck = true
   const isCarrotInfo = await response.json()   
     setCarrotInfo(isCarrotInfo)  
-    caretInformation(carrotInfo)
+    caretInformation(dbCheck, isCarrotInfo)
   }
 
-  async function caretInformation(data) {  
+  async function caretInformation(dbCheck, data) {  
+    console.log(' dbCheck ' + dbCheck + ' banned ' + data.banned)
+    console.log(' caretInfo ' + JSON.stringify(data) ) 
+    console.log('ch Avail openner: ' + carrotAvail)
 
-    console.log(' data ' + JSON.stringify(data) ) 
+    {dbCheck === false && setCarrotAvail(true)}
+    {data.banned === true && setCarrotAvail(false)}
 
+    /*
     setBanWord(data.banned)
     setBusWord(data.business)
     setWordPrice(data.price)
@@ -101,14 +111,15 @@ export default function PurchaseChoice() {
     {wordPrice === 0  && setFeePrem(false) && setFeePro(false)}
     {wordPrice === 5  && setFeePrem(false) && setFeePro(true)}
     {wordPrice > 5    && setFeePrem(true) && setFeePro(false)}
+ 
+    console.log( 'carrotIn ' + carrotInAvail + ' availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
 
-    
-    //feePro  feePrem busWord banWord wordPrice
-    console.log( 'carrotIn ' + data.price + ' availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
-    // return if word is not avail/is avail for prem/is banned, ie: call returnCaret
+  */ 
+  
+    console.log('ch Avail after party : ' + carrotAvail)
   }
 
-  console.log('ch Avail: ' + carrotAvail + ' ch Info ' + JSON.stringify(carrotInfo))
+  console.log('ch Avail: ' + carrotAvail + ' ch Info ' )
   //console.log('In Avail: ' + carrotAvail + ' in Info ' + JSON.stringify(carrotInfo))
  
   const validationCaret = Yup.object().shape({
@@ -119,10 +130,10 @@ export default function PurchaseChoice() {
   });
  
   const validationEmail = Yup.object().shape({
-    email: Yup.string().required('Email is already registered')
+      email: Yup.string().required('Email is already registered')
   });
   const validationWallet = Yup.object().shape({
-    account: Yup.string().required('Wallet Address is already registered')         
+      account: Yup.string().required('Wallet Address is already registered')         
   });
 
   const formOptions = { resolver: yupResolver(validationCaret) };
@@ -155,6 +166,11 @@ export default function PurchaseChoice() {
       return unameAvail
   }
 
+  function availClick() {
+    console.log('Free click Check: ' + itemDataAppend + ' data ' + JSON.stringify(data))
+
+  }
+
   function regClick(data) {
     console.log('Free click Check: ' + itemDataAppend + ' data ' + data)
   }
@@ -182,7 +198,7 @@ export default function PurchaseChoice() {
         </div>
         <div className='purRow2'>
           <div className ="flex inline-block justify-center text-center mb-6">
-            {carrotAvail === 1 || carrotInAvail === false ?
+            {carrotAvail === false ?
               <div className='text-3xl mb-4'>{itemData}  is unavailable.</div>
             :
               <div>
@@ -203,94 +219,98 @@ export default function PurchaseChoice() {
               </div>
             </div>               
             }
-            {carrotAvail === 1 &&         
+            {carrotAvail === false &&         
               <div className='purRow3'>
-                <div className ="flex inline-block justify-center text-center">
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className ="flex inline-block justify-center text-center">                    
-                      <div className ="form-group">
-                        <input name="request" type="text" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
-                            <div className="invalid-feedback">{errors.request?.message}</div>
-                        </div>
-                        <div>                                 
-                          <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
-                              {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                              Check Availablity
-                          </button> 
-                        </div>                
-                      </div>
-                    </form>
+                <div className ="flex inline-block justify-center text-center"> 
+                    <form onSubmit={handleSubmit(availClick)}>               
+                        <div className ="flex inline-block justify-center text-center">                                    
+                          <div className ="form-group">
+                            <input name="request" type="text" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
+                                <div className="invalid-feedback">{errors.request?.message}</div>
+                            </div>
+                            <div>                                 
+                              <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
+                                  {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                  Check Availabilty
+                              </button>
+                          </div>                                      
+                        </div> 
+                      </form>                 
                   </div>
                     <div> </div>
                 </div>            }
           </div>
-        {carrotAvail === 0 &&      
-        <div> 
-          <div className='purRow4'>
-          <div className='flex inline-block justify-center text-center mb-6'>
-            <div className='' ></div>
-            <div id='purSignUp' >              
-              <form onSubmit={handleSubmit(onSubmit)}> 
-                <div id='bxWallet' className=''>         
-                  <div className="form-group mb-6 justify-left text-left">
-                      <label>1) Email: </label>
-                      <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
-                      <div className="invalid-feedback">{errors.email?.message}</div>
-                  </div>                                
-                
-                  <div>
-                      <div className="form-group mt-6 justify-left text-left">
-                          <label>2) Do you have a Crypto Wallet? </label>
-                          <div  className="flex display-inline">
-                              <input type="radio" className='ml-4 mr-4' value="Yes" name="wallet" onClick={() => {walletValue(true)}} />&nbsp;Yes
-                              <div className='ml-4 text-sm'> </div>
-                              <input type="radio" className='l-4' value="No" name="wallet" defaultChecked="true" onClick={() => {walletValue(false)}} />&nbsp;No
-                          </div>
+        {carrotAvail === false ?
+          <div></div>
+        :      
+          <div> 
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className='purRow4'>
+              <div className='flex inline-block justify-center text-center mb-6'>
+                <div className='' ></div>
+                <div id='purSignUp' >              
 
+                    <div id='bxWallet' className=''>         
+                      <div className="form-group mb-6 justify-left text-left">
+                          <label>1) Email: </label>
+                          <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
+                          <div className="invalid-feedback">{errors.email?.message}</div>
+                      </div>                                
+                    
+                      <div>
+                          <div className="form-group mt-6 justify-left text-left">
+                              <label>2) Do you have a Crypto Wallet? </label>
+                              <div  className="flex display-inline">
+                                  <input type="radio" className='ml-4 mr-4' value="Yes" name="wallet" onClick={() => {walletValue(true)}} />&nbsp;Yes
+                                  <div className='ml-4 text-sm'> </div>
+                                  <input type="radio" className='l-4' value="No" name="wallet" defaultChecked="true" onClick={() => {walletValue(false)}} />&nbsp;No
+                              </div>
+
+                          </div>
                       </div>
-                  </div>
-                  
-                  { walletState === false ? 
-                    <div>
-                        <div className="form-group mt-6 justify-left text-left">
-                            <label>3) Password: </label>
-                            <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
-                            <div className="invalid-feedback">{errors.password?.message}</div>
+                      
+                      { walletState === false ? 
+                        <div>
+                            <div className="form-group mt-6 justify-left text-left">
+                                <label>3) Password: </label>
+                                <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                <div className="invalid-feedback">{errors.password?.message}</div>
+                            </div>
                         </div>
-                    </div>
-                  :
-                    <div>
-                      <div className="form-group mt-6 justify-left text-left">
-                          <label>3a) Wallet Chain</label>
-                          <div className=''>
-                              <select id='selChain' name="chain" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.chain ? 'is-invalid' : ''}`} >
-                              <option value="" disabled hidden>chain</option>
-                                  <option value="Eth">Ethereum</option>
-                                  <option value="Btc">Bitcoin</option>
-                                  <option value="Matic">Matic</option>
-                                  <option value="Doge">Doge</option>
-                              </select>
-                          </div>
-                          <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
-                      </div> 
+                      :
+                        <div>
+                          <div className="form-group mt-6 justify-left text-left">
+                              <label>3a) Wallet Chain</label>
+                              <div className=''>
+                                  <select id='selChain' name="chain" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.chain ? 'is-invalid' : ''}`} >
+                                  <option value="" disabled hidden>chain</option>
+                                      <option value="Eth">Ethereum</option>
+                                      <option value="Btc">Bitcoin</option>
+                                      <option value="Matic">Matic</option>
+                                      <option value="Doge">Doge</option>
+                                  </select>
+                              </div>
+                              <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
+                          </div> 
 
+                          <div className="form-group mt-6 justify-left text-left">
+                              <label>3b) Wallet Address</label>
+                              <input name="wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                              <div className="invalid-feedback">{errors.account?.message}</div>                               
+                          </div> 
+                      </div>
+                      }
+                    </div>  
                       <div className="form-group mt-6 justify-left text-left">
-                          <label>3b) Wallet Address</label>
-                          <input name="wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                          <div className="invalid-feedback">{errors.account?.message}</div>                               
-                      </div> 
-                   </div>
-                  }
-                </div>  
-                  <div className="form-group mt-6 justify-left text-left">
-                      <label>4) Choose a Plan</label>                            
-                  </div>                               
-              </form>              
-            </div>
-            <div className=''></div> 
-            </div>
+                          <label>4) Choose a Plan</label>                            
+                      </div>                               
+                
+                </div>
+                <div className=''></div> 
+                </div>
+              </div>
+            </form>
           </div>
-        </div>
         }
         <div></div>
         <div className='purRow8'>        
