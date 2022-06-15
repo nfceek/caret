@@ -13,9 +13,9 @@ import PurchaseFeature from 'components/purchase-feature';
 export default function PurchaseChoice() {
   const router = useRouter(); 
   const [carrotAvail, setCarrotAvail] = useState('')
-  const [carrotInAvail, setCarrotInAvail] = useState(false) 
+  const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
   const [carrotInfo, setCarrotInfo ] = useState('')
-  const [dbCheck, setDbCheck] = useState(false) 
+  //const [dbCheck, setDbCheck] = useState(false) 
   const [itemData, setItemData] = useState('') 
   const [numberCount, setNumberCount] = useState(Math.floor(Math.random() * (999 - 100 + 1)) + 0)
   const [itemDataAppend, setItemDataAppend] = useState('')
@@ -44,41 +44,41 @@ export default function PurchaseChoice() {
   React.useEffect(() => {
     if (router.isReady) {
       try {
-        setItemData(router.query.data.toUpperCase()) 
-        caretCheckIn(router.query.data.toUpperCase())        
+        setItemData(router.query.data.toUpperCase())
+        caretCheck(router.query.data.toUpperCase())        
       } catch (error) {
         console.log('purchase routing error: ', error)
       }
     }
   }, [router.isReady]);
 
-  async function caretCheckIn(data) {
-    var formData = JSON.stringify(data)
-    console.log('formData out : ' + formData)
-    const response = await fetch('/../api/validate/preCarrot', {
-      method: 'POST',
-      body: formData, 
-      headers: {
-        'Content-Type':'applications/json'
-      },
-    })
-
-    
-    const stepOne= await response.json() 
-
-    if (stepOne > 0){
-      var dbCheck = false
-      caretCheck(data)
-    } else {
-      dbCheck = true      
+  /*
+    async function caretCheckIn(data) {
+      var formData = JSON.stringify(data)
+      //console.log('formData out : ' + formData)
+      const response = await fetch('/../api/validate/preCarrot', {
+        method: 'POST',
+        body: formData, 
+        headers: {
+          'Content-Type':'applications/json'
+        },
+      })   
+      const stepOne= await response.json() 
+        console.log('stepOne ' + stepOne + ' data ' + data)
+        if (stepOne > 0){
+          var dbCheck = true
+          caretCheck(data)
+        } else {
+          dbCheck = false      
+        }
+      console.log('now we find out ' + dbCheck + ' data ' + data)
+      caretInformation(dbCheck, data)
     }
+  */
 
-    caretInformation(dbCheck, data)
-  }
-
-  async function caretCheck(data) {
+  async function caretCheck(data) { 
     var formData = JSON.stringify(data)
-    console.log('caretCheck out : ' + data)
+
     const response = await fetch('/../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
@@ -87,46 +87,55 @@ export default function PurchaseChoice() {
       },
     })
 
-  const dbCheck = true
-  const isCarrotInfo = await response.json()   
-    setCarrotInfo(isCarrotInfo)  
-    caretInformation(dbCheck, isCarrotInfo)
+    const stepOne= await response.json() 
+    caretInformation(stepOne)
   }
 
-  async function caretInformation(dbCheck, data) {  
-    console.log(' dbCheck ' + dbCheck + ' banned ' + data.banned)
-    console.log(' caretInfo ' + JSON.stringify(data) ) 
-    console.log('ch Avail openner: ' + carrotAvail)
+  function caretInformation(data) {  
+    if(data === null){ 
+      console.log('Im null')
+      setCarrotIsAvail(' is available')
+      setCarrotAvail(true)
+    } else {
+      console.log(' caretInfo ' + JSON.stringify(data) )     
+      const dbAvail = JSON.stringify(data.available)
+      console.log(' dbAvail ' + dbAvail )
+        if(dbAvail === 'false'){
+          setCarrotIsAvail(' is NOT available ')
+          setCarrotAvail(false)
 
-    {dbCheck === false && setCarrotAvail(true)}
-    {data.banned === true && setCarrotAvail(false)}
+
+          console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+        }else{
+          setCarrotIsAvail(' is available ')
+          setCarrotAvail(true)
+
+
+          console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+        }
+
+    }
 
     /*
-    setBanWord(data.banned)
-    setBusWord(data.business)
     setWordPrice(data.price)
     setCarrotInAvail(data.available)
     {carrotInAvail === true && setCarrotAvail(0)}
-
     {wordPrice === 0  && setFeePrem(false) && setFeePro(false)}
     {wordPrice === 5  && setFeePrem(false) && setFeePro(true)}
-    {wordPrice > 5    && setFeePrem(true) && setFeePro(false)}
- 
+    {wordPrice > 5    && setFeePrem(true) && setFeePro(false)}      
     console.log( 'carrotIn ' + carrotInAvail + ' availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
+    */ 
 
-  */ 
-  
-    console.log('ch Avail after party : ' + carrotAvail)
   }
 
-  console.log('ch Avail: ' + carrotAvail + ' ch Info ' )
+  //console.log('ch Avail: ' + carrotAvail + ' ch Info ' )
   //console.log('In Avail: ' + carrotAvail + ' in Info ' + JSON.stringify(carrotInfo))
  
   const validationCaret = Yup.object().shape({
     request: Yup.string()
-      .min(3, 'Caret choice must be at least 5 characters') 
+      .min(5, 'Caret choice must be at least 5 characters') 
       .max(12, 'Caret choice must be less than 12 characters')
-      .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for Caret choice")
+      .matches(/^[aA-zZ-_\s]+$/, "Only Alpha characters are allowed for Caret choice")
   });
  
   const validationEmail = Yup.object().shape({
@@ -142,14 +151,11 @@ export default function PurchaseChoice() {
 
 
   async function onSubmit(user) {
-    //console.log('send out: ' + JSON.stringify(user))
-    // this is submit of email/chain
+
      console.log('validate data: ' + JSON.stringify(user))
     const checkCaret = await caretCheck(user)
 
-    if (checkCaret > 0){
-        setCarrotAvail(0)
-    }
+
   }
 
   async function emailCheck(data) {
@@ -166,9 +172,11 @@ export default function PurchaseChoice() {
       return unameAvail
   }
 
-  function availClick() {
-    console.log('Free click Check: ' + itemDataAppend + ' data ' + JSON.stringify(data))
-
+  function availClick(user) {
+    console.log('req ' + user.request + ' user ' + JSON.stringify(user) )
+    const availCheck = user.request.toUpperCase()
+    setItemData(availCheck)
+    caretCheck(availCheck)
   }
 
   function regClick(data) {
@@ -198,13 +206,9 @@ export default function PurchaseChoice() {
         </div>
         <div className='purRow2'>
           <div className ="flex inline-block justify-center text-center mb-6">
-            {carrotAvail === false ?
-              <div className='text-3xl mb-4'>{itemData}  is unavailable.</div>
-            :
-              <div>
-                <div className='text-3xl mb-4'>{itemData}  is available.</div>
-              </div>
-            }
+            <div>
+              <div className='text-3xl mb-4'>{itemData}{carrotIsAvail}</div>
+            </div>
           </div>
             {banWord === 1 &&
               <div> 
@@ -225,7 +229,7 @@ export default function PurchaseChoice() {
                     <form onSubmit={handleSubmit(availClick)}>               
                         <div className ="flex inline-block justify-center text-center">                                    
                           <div className ="form-group">
-                            <input name="request" type="text" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
+                            <input name="request" type="text" autocomplete="off" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.request?.message}</div>
                             </div>
                             <div>                                 
@@ -253,7 +257,7 @@ export default function PurchaseChoice() {
                     <div id='bxWallet' className=''>         
                       <div className="form-group mb-6 justify-left text-left">
                           <label>1) Email: </label>
-                          <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
+                          <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autocomplete="off" />
                           <div className="invalid-feedback">{errors.email?.message}</div>
                       </div>                                
                     
