@@ -96,6 +96,8 @@ export default function PurchaseChoice() {
       console.log('Im null')
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
+
+
     } else {
       console.log(' caretInfo ' + JSON.stringify(data) )     
       const dbAvail = JSON.stringify(data.available)
@@ -135,27 +137,45 @@ export default function PurchaseChoice() {
     request: Yup.string()
       .min(5, 'Caret choice must be at least 5 characters') 
       .max(12, 'Caret choice must be less than 12 characters')
-      .matches(/^[aA-zZ-_\s]+$/, "Only Alpha characters are allowed for Caret choice")
-  });
- 
-  const validationEmail = Yup.object().shape({
-      email: Yup.string().required('Email is already registered')
-  });
-  const validationWallet = Yup.object().shape({
-      account: Yup.string().required('Wallet Address is already registered')         
+      .matches(/^[aA-zZ0-9-_\s]+$/, "Only Alpha characters are allowed for Caret choice")
   });
 
-  const formOptions = { resolver: yupResolver(validationCaret) };
-  const { register, handleSubmit, formState } = useForm(formOptions);
+  const validationPurchaseNoWallet = Yup.object().shape({
+      email: Yup.string()
+        .required('Email is required')
+        .max(50, 'Email to long'),
+      account: Yup.string()
+        .required('Wallet Address is Required')
+        .max(12, 'Wallet Addres must be at least 12 characters')
+        .min(100, 'wallet address to long'),         
+  });
+
+  const validationPurchaseWallet = Yup.object().shape({
+    password: Yup.string()
+      .required('Passord is Required')
+      .min(6, 'Password must be at least 6 characters')
+      .max(50, 'Password to long')      
+});
+
+  if(carrotAvail === false){
+    const formOptions = { resolver: yupResolver(validationCaret) };
+    var { register, handleSubmit, formState } = useForm(formOptions);
+  } else {
+    if(walletState === true){
+      const formOptionsPurchaseNoWallet = { resolver: yupResolver(validationPurchaseNoWallet) };
+      var { register, handleSubmit, formState } = useForm(formOptionsPurchaseNoWallet); 
+    } else {
+      const formOptionsPurchaseWallet = { resolver: yupResolver(validationPurchaseWallet) };
+      var { register, handleSubmit, formState } = useForm(formOptionsPurchaseWallet);     
+    }
+    
+  }
   const { errors } = formState;
 
 
   async function onSubmit(user) {
-
      console.log('validate data: ' + JSON.stringify(user))
     const checkCaret = await caretCheck(user)
-
-
   }
 
   async function emailCheck(data) {
@@ -172,6 +192,20 @@ export default function PurchaseChoice() {
       return unameAvail
   }
 
+  async function accountCheck(data) {
+    var formData = JSON.stringify(data.account)
+    console.log('formData out : ' + formData)
+    const response = await fetch('/../api/validate/preAccount', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const accountAvail = await response.json() 
+      return accountAvail
+  }
+  
   function availClick(user) {
     console.log('req ' + user.request + ' user ' + JSON.stringify(user) )
     const availCheck = user.request.toUpperCase()
@@ -180,7 +214,8 @@ export default function PurchaseChoice() {
   }
 
   function regClick(data) {
-    console.log('Free click Check: ' + itemDataAppend + ' data ' + data)
+    console.log('Free click Check: ' + itemData + numberCount  + ' data ' + data)
+
   }
 
   function proClick(data) {
@@ -189,6 +224,15 @@ export default function PurchaseChoice() {
 
   function premClick(data) {
     console.log('Prem click Check: ' + itemData + ' data ' + data)
+  }
+
+  async function chFormData(){
+    const checkEmail = await emailCheck(user)
+    console.log('checkEmail back: ' + checkEmail)
+
+    const checkAccount = await accountCheck(user)
+    console.log('checkAccount back: ' + checkAccount)  
+
   }
 
   return (
@@ -229,7 +273,7 @@ export default function PurchaseChoice() {
                     <form onSubmit={handleSubmit(availClick)}>               
                         <div className ="flex inline-block justify-center text-center">                                    
                           <div className ="form-group">
-                            <input name="request" type="text" autocomplete="off" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
+                            <input name="request" type="text" autoComplete="off" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
                                 <div className="invalid-feedback">{errors.request?.message}</div>
                             </div>
                             <div>                                 
@@ -244,11 +288,11 @@ export default function PurchaseChoice() {
                     <div> </div>
                 </div>            }
           </div>
-        {carrotAvail === false ?
-          <div></div>
-        :      
-          <div> 
-            <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}> 
+          {carrotAvail === false ?
+            <div></div>
+          :      
+            <div>              
               <div className='purRow4'>
               <div className='flex inline-block justify-center text-center mb-6'>
                 <div className='' ></div>
@@ -257,7 +301,7 @@ export default function PurchaseChoice() {
                     <div id='bxWallet' className=''>         
                       <div className="form-group mb-6 justify-left text-left">
                           <label>1) Email: </label>
-                          <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autocomplete="off" />
+                          <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
                           <div className="invalid-feedback">{errors.email?.message}</div>
                       </div>                                
                     
@@ -313,9 +357,8 @@ export default function PurchaseChoice() {
                 <div className=''></div> 
                 </div>
               </div>
-            </form>
-          </div>
-        }
+            </div>
+          }
         <div></div>
         <div className='purRow8'>        
           <div className='grid grid-cols-5 gap-4'>
@@ -351,7 +394,7 @@ export default function PurchaseChoice() {
                                     <div className='justify-center text-center text-2xl pl-4 mt-4'>
                                       NOT AVAILABLE
                                     </div>
-                                    {carrotAvail === 0 ?
+                                    {carrotAvail === true ?
                                         <div className='justify-center text-center text-2xl pl-4 mt-4'>
                                             Must have Crypto Wallet
                                         </div>
@@ -385,7 +428,7 @@ export default function PurchaseChoice() {
               <div className=''>
                   <div className=''>
                     <div id='bxPro' className=''>
-                      {carrotAvail === 0 ?
+                      {carrotAvail === true ?
                         <div>                         
                           <div className='flex inline-block justify-center text-center mb-6'>
                             <div className=' inline-block justify-left text-left'>  
@@ -395,7 +438,7 @@ export default function PurchaseChoice() {
                               <div className=''></div>
                                 <div className='text-2xl pl-4 pr-4'>
                                   <p> 1 Wallet Address <br />
-                                      Choose word without digits<br />
+                                      No add-on digits<br />
                                       <br /><br />
                                   </p>
                                 </div>                                                   
@@ -416,7 +459,7 @@ export default function PurchaseChoice() {
                       }
                     </div>
                     <div className='flex inline-block justify-center text-center mt-4 mb-6'>                      
-                      {carrotAvail === 0 ? 
+                      {carrotAvail === true ? 
                         <div>                     
                            <button id='btnPro' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}> $ 5.00 USD </button>
                         </div>
@@ -433,17 +476,17 @@ export default function PurchaseChoice() {
               <div className=''>
                 <div className=''>
                   <div id='bxPrem' className=''>
-                    {carrotAvail === 0 ?
+                    {carrotAvail === true ?
                       <div>                         
                           <div className='flex inline-block justify-center text-center mb-6'>
                             <div className=' inline-block justify-left text-left'>  
                               <div className='justify-center text-center text-2xl pl-4 mt-4'>
                                 <p>Caret Tag: ^{itemData}</p>
                               </div> 
-                              <div className=''>price: {wordPrice}</div>
-                                <div className='text-2xl pl-4 pr-4'>
+                              <div className=''></div>
+                                <div className='justify-center text-center text-2xl pl-4 pr-4'>
                                   <p> 5 Wallet Address <br />
-                                      Choose multiple 3 digit addons*<br />
+                                      Choose unique name + num combo*<br />
                                       <br />
                                       <small>*apply a unique 3 digit extension to
                                       to your caret word up to 4 times.
@@ -469,7 +512,7 @@ export default function PurchaseChoice() {
                     }
                   </div>
                   <div className='flex inline-block justify-center text-center mt-4 mb-6'>
-                    {carrotAvail === 0 ?
+                    {carrotAvail === true ?
                         <div>                     
                            <button id='btnPrem' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}> $ 20.00 USD</button>  
                         </div>
@@ -485,7 +528,7 @@ export default function PurchaseChoice() {
             <div className=''></div> 
           </div>
         </div>
-                
+        </form>      
       </div>
     </div>
   )
