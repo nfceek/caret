@@ -8,14 +8,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { userService, alertService } from '../services';
 import PurchaseFeature from 'components/purchase-feature';
-//const requestIp = require('request-ip');
+
+const bcrypt = require('bcryptjs');
+
 
 export default function PurchaseChoice() {
   const router = useRouter(); 
   const [carrotAvail, setCarrotAvail] = useState('')
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
   const [carrotInfo, setCarrotInfo ] = useState('')
-  //const [dbCheck, setDbCheck] = useState(false) 
+  const [userCountCheck, setUserCountCheck] = useState(0) 
   const [itemData, setItemData] = useState('') 
   const [numberCount, setNumberCount] = useState(Math.floor(Math.random() * (999 - 100 + 1)) + 0)
   const [itemDataAppend, setItemDataAppend] = useState('')
@@ -29,12 +31,13 @@ export default function PurchaseChoice() {
   const [busWord, setBusWord] = useState(false)             // is this a bus word               
   const [banWord, setBanWord] = useState(false)             // is this a banned word
   const [wordPrice, setWordPrice] = useState(0)             // word cost how much
-  //console.log( 'availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
- 
+  const [pymtChoice, setPymtChoice] = useState('')
+  const [contractData, setContractData] = useState()
+  
   const data = {
     subTitle: '4 Simple steps',
     title: 'Caret Tag Word: ' + itemData,
-    features: [],
+    //features: [],
   };
 
   const walletValue = (data) => {
@@ -48,33 +51,11 @@ export default function PurchaseChoice() {
         caretCheck(router.query.data.toUpperCase())        
       } catch (error) {
         console.log('purchase routing error: ', error)
+        // test this
+        //router.push('/')
       }
     }
   }, [router.isReady]);
-
-  /*
-    async function caretCheckIn(data) {
-      var formData = JSON.stringify(data)
-      //console.log('formData out : ' + formData)
-      const response = await fetch('/../api/validate/preCarrot', {
-        method: 'POST',
-        body: formData, 
-        headers: {
-          'Content-Type':'applications/json'
-        },
-      })   
-      const stepOne= await response.json() 
-        console.log('stepOne ' + stepOne + ' data ' + data)
-        if (stepOne > 0){
-          var dbCheck = true
-          caretCheck(data)
-        } else {
-          dbCheck = false      
-        }
-      console.log('now we find out ' + dbCheck + ' data ' + data)
-      caretInformation(dbCheck, data)
-    }
-  */
 
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
@@ -106,28 +87,14 @@ export default function PurchaseChoice() {
           setCarrotIsAvail(' is NOT available ')
           setCarrotAvail(false)
 
-
           console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
         }else{
           setCarrotIsAvail(' is available ')
           setCarrotAvail(true)
 
-
           console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
         }
-
     }
-
-    /*
-    setWordPrice(data.price)
-    setCarrotInAvail(data.available)
-    {carrotInAvail === true && setCarrotAvail(0)}
-    {wordPrice === 0  && setFeePrem(false) && setFeePro(false)}
-    {wordPrice === 5  && setFeePrem(false) && setFeePro(true)}
-    {wordPrice > 5    && setFeePrem(true) && setFeePro(false)}      
-    console.log( 'carrotIn ' + carrotInAvail + ' availPro ' + feePro + ' availPrem ' +  feePrem + ' availBus ' + busWord + ' availBan ' +  banWord+ ' availPrice ' +  wordPrice)
-    */ 
-
   }
 
   //console.log('ch Avail: ' + carrotAvail + ' ch Info ' )
@@ -144,10 +111,12 @@ export default function PurchaseChoice() {
       email: Yup.string()
         .required('Email is required')
         .max(50, 'Email to long'),
+      chain: Yup.string()
+        .min(2, 'Chain Name Required'),
       account: Yup.string()
         .required('Wallet Address is Required')
-        .max(12, 'Wallet Addres must be at least 12 characters')
-        .min(100, 'wallet address to long'),         
+        .min(12, 'Wallet Addres must be at least 12 characters')
+        .max(100, 'wallet address to long'),         
   });
 
   const validationPurchaseWallet = Yup.object().shape({
@@ -157,30 +126,182 @@ export default function PurchaseChoice() {
       .max(50, 'Password to long')      
 });
 
-  if(carrotAvail === false){
-    const formOptions = { resolver: yupResolver(validationCaret) };
-    var { register, handleSubmit, formState } = useForm(formOptions);
-  } else {
-    if(walletState === true){
-      const formOptionsPurchaseNoWallet = { resolver: yupResolver(validationPurchaseNoWallet) };
-      var { register, handleSubmit, formState } = useForm(formOptionsPurchaseNoWallet); 
+  //async function chFormData(user){
+    if(carrotAvail === false){
+      const formOptions = { resolver: yupResolver(validationCaret) };
+      var { register, handleSubmit, formState } = useForm(formOptions);
     } else {
-      const formOptionsPurchaseWallet = { resolver: yupResolver(validationPurchaseWallet) };
-      var { register, handleSubmit, formState } = useForm(formOptionsPurchaseWallet);     
+      if(walletState === true){
+        const formOptionsPurchaseNoWallet = { resolver: yupResolver(validationPurchaseNoWallet) };
+        var { register, handleSubmit, formState } = useForm(formOptionsPurchaseNoWallet); 
+      } else {
+        const formOptionsPurchaseWallet = { resolver: yupResolver(validationPurchaseWallet) };
+        var { register, handleSubmit, formState } = useForm(formOptionsPurchaseWallet);     
+      }
+      
     }
-    
-  }
-  const { errors } = formState;
-
+    const { errors } = formState;
+  //}
+  
 
   async function onSubmit(user) {
+
+    //chFormData()
      console.log('validate data: ' + JSON.stringify(user))
-    const checkCaret = await caretCheck(user)
+
+    const chEmail = user.email
+    const checkEmail = await emailCheck(chEmail)
+    console.log('checkEmail back: ' + checkEmail)
+      if(checkEmail === 0) {                      // 0 means not is system now check address
+        // if using wallet -- check in db
+        console.log('wState ' + walletState)
+        if(walletState === true){
+          const chWallet = user.account          
+          console.log('validate data: ' + JSON.stringify(user) + ' chWallet ' + chWallet)
+
+          const checkWallet = await accountCheck(chWallet)
+          console.log('checkWallet back: ' + checkWallet)
+            if(checkWallet === 0){             
+              pre(user)
+            } else {
+              // dupe found
+            }
+        } else {
+          pre(user)
+        }
+      } else {
+          // dupe found
+
+      }
+
+  }
+
+
+  async function pre(data) {
+    // add acounter to prevent wholesale slamming of words
+    setUserCountCheck(userCountCheck + 1) 
+    //console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
+    preAddUser(data)
+
+    //if we get past 5 kick user to main page
+    console.log('ct check: ' + userCountCheck)
+    {userCountCheck === 5 && router.push('/')}
+  }
+
+  async function prePymt(user) {
+    console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
+    var formData = JSON.stringify(data)
+
+    const response = await fetch('/../api/validate/returnCarrot', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+
+    const stepOne= await response.json() 
+    caretInformation(stepOne)
+  }
+
+
+  function preKeys(){
+    /*
+    const crypto = require('crypto');
+    var prime_length = 60;
+    var diffHell = crypto.createDiffieHellman(prime_length);
+
+    diffHell.generateKeys('base64');
+    console.log("Public Key : " ,diffHell.getPublicKey('base64'));
+    console.log("Private Key : " ,diffHell.getPrivateKey('base64'));
+
+    console.log("Public Key : " ,diffHell.getPublicKey('hex'));
+    console.log("Private Key : " ,diffHell.getPrivateKey('hex'));
+    */
+
+    /*or
+    // Node.js program to demonstrate the
+      // crypto.generateKeyPair() method
+
+      // Including generateKeyPair from crypto module
+      const { generateKeyPair } = require('crypto');
+
+      // Calling generateKeyPair() method
+      // with its parameters
+      generateKeyPair('ec', {
+      namedCurve: 'secp256k1', // Options
+      publicKeyEncoding: {
+        type: 'spki',
+        format: 'der'
+      },
+      privateKeyEncoding: {
+        type: 'pkcs8',
+        format: 'der'
+      }
+      },
+      (err, publicKey, privateKey) => { // Callback function
+        if(!err)
+        {
+          // Prints new asymmetric key
+          // pair after encoding
+          console.log("Public Key is: ",
+              publicKey.toString('hex'));
+          console.log();
+          console.log("Private Key is: ",
+              privateKey.toString('hex'));
+        }
+        else
+        {
+          // Prints error
+          console.log("Errr is: ", err);
+        }
+          
+      });
+      */
+  }
+
+  async function preAddUser(user) { 
+
+    console.log('load ' + JSON.stringify(user) + ' data ' + JSON.stringify(data) + ' plan ' + pymtChoice)
+    const curDate = new Date().toISOString()
+    var pwd = ''
+    var uname = itemData
+    var planChoice = 1
+    console.log(curDate)
+
+    if(walletState === false){
+        pwd = bcrypt.hashSync(user.password, 10) 
+    }
+    if(pymtChoice === 'Prem'){
+      planChoice = 3;
+    } else if (pymtChoice === 'Pro') {
+      planChoice = 2;
+    } else {
+      planChoice = 1;
+    }
+
+    const response = await fetch('/../api/carrotRegister', {
+        method: 'POST',
+        body:  [JSON.stringify(user.email),uname,pwd,JSON.stringify(user.chain), JSON.stringify(user.account), planChoice],
+        headers: {
+        'Content-Type':'applications/json'
+        },
+    })
+
+  const regSuccess = await response.json()      
+      console.log(' new user ' + JSON.stringify(regSuccess))
+      //return regSuccess
+    
+  }
+
+  async function preCarrot(data){
+
+
   }
 
   async function emailCheck(data) {
-    var formData = JSON.stringify(data.email)
-    console.log('formData out : ' + formData)
+    var formData = JSON.stringify(data)
+    console.log('formData out Email: ' + formData)
     const response = await fetch('/../api/validate/preEmail', {
       method: 'POST',
       body: formData, 
@@ -188,13 +309,14 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-    const unameAvail = await response.json() 
-      return unameAvail
+    const dbEmail = await response.json() 
+      console.log(dbEmail)
+      return dbEmail
   }
 
   async function accountCheck(data) {
-    var formData = JSON.stringify(data.account)
-    console.log('formData out : ' + formData)
+    var formData = JSON.stringify(data)
+    console.log('formData out Acct: ' + formData)
     const response = await fetch('/../api/validate/preAccount', {
       method: 'POST',
       body: formData, 
@@ -202,8 +324,9 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-    const accountAvail = await response.json() 
-      return accountAvail
+    const chWallet = await response.json() 
+      console.log(chWallet)
+      return chWallet
   }
   
   function availClick(user) {
@@ -215,25 +338,19 @@ export default function PurchaseChoice() {
 
   function regClick(data) {
     console.log('Free click Check: ' + itemData + numberCount  + ' data ' + data)
-
+    setPymtChoice('free')
   }
 
   function proClick(data) {
     console.log('Pro click Check: ' + itemData + ' data ' + data)
+    setPymtChoice('Pro')
   }
 
   function premClick(data) {
     console.log('Prem click Check: ' + itemData + ' data ' + data)
+    setPymtChoice('Prem')
   }
 
-  async function chFormData(){
-    const checkEmail = await emailCheck(user)
-    console.log('checkEmail back: ' + checkEmail)
-
-    const checkAccount = await accountCheck(user)
-    console.log('checkAccount back: ' + checkAccount)  
-
-  }
 
   return (
     <div id='purForm'>
@@ -381,7 +498,7 @@ export default function PurchaseChoice() {
                                         <div className=''></div>
                                           <div className='text-2xl pl-4 pr-4'>
                                             <p> 1 Wallet Address <br />
-                                                Auto 3 digit extension on Word<br />
+                                                Auto 3 digit extension<br />
                                                 <br />
                                                 <br />
                                             </p>
