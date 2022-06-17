@@ -114,7 +114,6 @@ import RegisterFeature from 'components/register-feature';
             userame: Yup.string().required('Username already registered')
         });
         */
-
         const validationEmail = Yup.object().shape({
             email: Yup.string().required('Email is already registered')
         });

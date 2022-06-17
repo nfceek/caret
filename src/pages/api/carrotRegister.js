@@ -4,20 +4,18 @@ export default async(req, res) => {
     console.log('hola')
     const inData = req.body
     var dataArr = inData.split(',');
-        let fName = dataArr[0]
-            fName =  fName.replace(/['"]+/g, '');
-        let lName = dataArr[1]
-            lName =  lName.replace(/['"]+/g, '');
-        let username = dataArr[2]
-            username =  username.replace(/['"]+/g, '');
-        let email = dataArr[3] 
+        let email = dataArr[0] 
             email = email.replace(/['"]+/g, '');
-        let pwd = dataArr[4]
+        let uname = dataArr[1] 
+            uname = uname.replace(/['"]+/g, '');
+        let pwd = dataArr[2]
             pwd =  pwd.replace(/['"]+/g, '');             
-        let chain = dataArr[5]
+        let chain = dataArr[3]
             chain =  chain.replace(/['"]+/g, '');                     
-        let acct = dataArr[6]
-            acct = acct.replace(/['"]+/g, '');   
+        let acct = dataArr[4]
+            acct = acct.replace(/['"]+/g, '');
+        let plan = dataArr[5]
+            plan = plan.replace(/['"]+/g, '');              
     const curDate = new Date().toISOString()
 
     const response = await prisma.user.create({
@@ -25,11 +23,11 @@ export default async(req, res) => {
             fkword: 0,
             fkwallet: 0,
             fkbanned: 0,
-            firstname: fName,
-            lastname: lName,
-            username: username,
+            firstname: '',
+            lastname: '',
+            username: uname,
             password: pwd,           
-            plan: 1,
+            plan: parseInt(plan),
             admin: false,
             level: 1,
             email: email, 
