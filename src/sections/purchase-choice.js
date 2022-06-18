@@ -16,7 +16,7 @@ export default function PurchaseChoice() {
   const router = useRouter(); 
   const [carrotAvail, setCarrotAvail] = useState('')
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
-  const [carrotInfo, setCarrotInfo ] = useState('')
+  const [carrotInDb, setCarrotInDb ] = useState('')
   const [userCountCheck, setUserCountCheck] = useState(0) 
   const [itemData, setItemData] = useState('') 
   const [numberCount, setNumberCount] = useState(Math.floor(Math.random() * (999 - 100 + 1)) + 0)
@@ -33,6 +33,9 @@ export default function PurchaseChoice() {
   const [wordPrice, setWordPrice] = useState(0)             // word cost how much
   const [pymtChoice, setPymtChoice] = useState('')
   const [contractData, setContractData] = useState()
+  const [pubKey, setPubKey] = useState()
+  const [privKey, setPrivKey] = useState()
+  var secureKeys=['']
   
   const data = {
     subTitle: '4 Simple steps',
@@ -77,28 +80,28 @@ export default function PurchaseChoice() {
       console.log('Im null')
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
-
+      setCarrotInDb(false)
 
     } else {
-      console.log(' caretInfo ' + JSON.stringify(data) )     
-      const dbAvail = JSON.stringify(data.available)
-      console.log(' dbAvail ' + dbAvail )
+      //console.log(' caretInfo ' + JSON.stringify(data) )     
+      const dbAvail = JSON.stringify(' cInfo ' + data.available)
+      //console.log(' dbAvail ' + dbAvail )
         if(dbAvail === 'false'){
           setCarrotIsAvail(' is NOT available ')
           setCarrotAvail(false)
-
-          console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+          //console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
         }else{
           setCarrotIsAvail(' is available ')
           setCarrotAvail(true)
-
-          console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+          setCarrotInDb(true)
+          setWordPrice(data.price)
+          //console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
         }
     }
   }
 
   //console.log('ch Avail: ' + carrotAvail + ' ch Info ' )
-  //console.log('In Avail: ' + carrotAvail + ' in Info ' + JSON.stringify(carrotInfo))
+  //console.log('In Avail: ' + carrotAvail + ' in Info ' + JSON.stringify(carrotInDb))
  
   const validationCaret = Yup.object().shape({
     request: Yup.string()
@@ -146,50 +149,132 @@ export default function PurchaseChoice() {
 
   async function onSubmit(user) {
 
-    //chFormData()
-     console.log('validate data: ' + JSON.stringify(user))
+    //console.log('validate data: ' + JSON.stringify(user))
 
     const chEmail = user.email
     const checkEmail = await emailCheck(chEmail)
-    console.log('checkEmail back: ' + checkEmail)
+    //console.log('checkEmail back: ' + checkEmail)
       if(checkEmail === 0) {                      // 0 means not is system now check address
         // if using wallet -- check in db
-        console.log('wState ' + walletState)
+        //console.log('wState ' + walletState)
         if(walletState === true){
           const chWallet = user.account          
-          console.log('validate data: ' + JSON.stringify(user) + ' chWallet ' + chWallet)
-
+          //console.log('validate data: ' + JSON.stringify(user) + ' chWallet ' + chWallet)
           const checkWallet = await accountCheck(chWallet)
-          console.log('checkWallet back: ' + checkWallet)
+          //console.log('checkWallet back: ' + checkWallet)
             if(checkWallet === 0){             
               pre(user)
             } else {
               // dupe found
+              console.log('dupe me 1 ')
+              if(checkWallet > 0){  
+                
+              }
             }
         } else {
           pre(user)
         }
       } else {
           // dupe found
+          console.log('dupe me 2 ')
+          if(checkEmail > 0) {    
+            
+          }
 
       }
 
   }
 
-
   async function pre(data) {
     // add acounter to prevent wholesale slamming of words
-    setUserCountCheck(userCountCheck + 1) 
+    //setUserCountCheck(userCountCheck + 1) 
     //console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
-    preAddUser(data)
+    
+    // is it in db
+    //console.log('in db ' + carrotInDb + ' wallet State ' + walletState )
+    //console.log('pre validate data: ' + JSON.stringify(data))
+    // get keys
+    preKeys()
+    
+    //caret string in db parts
+    if(carrotInDb === true){
+      var dbWord = carrotInDb.word
+      var dbAppend = carrotInDb.append
+      var dbPrice = carrotInDb.price
+    }else{
+
+    }
+
+    var cWord = ''
+    var cWallet = ''
+    var cChain = ''
+    var cPwd = ''
+    var cidWallet
+    // set wallet state
+    if(walletState === true){
+      cChain = data.chain
+      cWallet = data.account
+      if(pymtChoice === 'free'){
+        cidWallet = '::NO_Wallet:TBD'
+      }else{
+        cidWallet = '::' + cChain +  '_Wallet:' + cWallet
+      }
+    }else{
+      cPwd = data.password
+      cidWallet = '::NO_Wallet:TBD'
+    }
+
+    var cAppend = numberCount
+    var cAvailable = 1
+    var cPrice = ''
+    if(pymtChoice === 'Prem'){
+      cWord = '^' + itemData
+      cPrice = 20;
+    } else if (pymtChoice === 'Pro') {
+      cWord = '^' + itemData + numberCount
+      cPrice = 5;
+    } else {
+      cWord = '^' + itemData + numberCount
+      cPrice = '';
+    }
+    var cCid
+    var cSitepublickey = secureKeys[0]
+    var cSiteprivatekey = secureKeys[1]
+    var cPublickey = secureKeys[2]
+    var cPrivkey = secureKeys[3]
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    //var dateTime = date+' '+time;
+    var setTime = date+' '+time;
+
+    //assemble caret string for CID
+    console.log(' pymt choice ' + pymtChoice + ' cid -> ' + cWord + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
+    
+    //process pymt before updating !!
+
+    //update db
+      if(carrotInDb === true){
+          //insertCarrot
+      }else{
+          // updateCarrot
+      }
+    // update/add to user
+      //preAddUser(data)
+
+    //create CID
+
+    // update IPFS
+
+    // redirect user to dashboard/ty page
 
     //if we get past 5 kick user to main page
-    console.log('ct check: ' + userCountCheck)
+    //console.log('form abuse ct check: ' + userCountCheck)
     {userCountCheck === 5 && router.push('/')}
   }
 
   async function prePymt(user) {
-    console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
+    //console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
     var formData = JSON.stringify(data)
 
     const response = await fetch('/../api/validate/returnCarrot', {
@@ -205,60 +290,26 @@ export default function PurchaseChoice() {
   }
 
 
-  function preKeys(){
-    /*
+  function preKeys(){   
     const crypto = require('crypto');
-    var prime_length = 60;
-    var diffHell = crypto.createDiffieHellman(prime_length);
+    var prime_length = 100;
+    let sitePublicKey = null
+    let sitePrivateKey = null
+    let publicKey = null
+    let privateKey = null
+    const dhSite = crypto.createDiffieHellman(prime_length);
+    dhSite.generateKeys('hex')    
+      sitePublicKey = dhSite.getPublicKey('hex')
+      sitePrivateKey = dhSite.getPrivateKey('hex')
+    const dh = crypto.createDiffieHellman(prime_length);
+    dh.generateKeys('hex')
+      publicKey = dh.getPublicKey('hex')
+      privateKey = dh.getPrivateKey('hex')
 
-    diffHell.generateKeys('base64');
-    console.log("Public Key : " ,diffHell.getPublicKey('base64'));
-    console.log("Private Key : " ,diffHell.getPrivateKey('base64'));
+    secureKeys = [sitePublicKey, sitePrivateKey, publicKey, privateKey]
+    return secureKeys
 
-    console.log("Public Key : " ,diffHell.getPublicKey('hex'));
-    console.log("Private Key : " ,diffHell.getPrivateKey('hex'));
-    */
-
-    /*or
-    // Node.js program to demonstrate the
-      // crypto.generateKeyPair() method
-
-      // Including generateKeyPair from crypto module
-      const { generateKeyPair } = require('crypto');
-
-      // Calling generateKeyPair() method
-      // with its parameters
-      generateKeyPair('ec', {
-      namedCurve: 'secp256k1', // Options
-      publicKeyEncoding: {
-        type: 'spki',
-        format: 'der'
-      },
-      privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'der'
-      }
-      },
-      (err, publicKey, privateKey) => { // Callback function
-        if(!err)
-        {
-          // Prints new asymmetric key
-          // pair after encoding
-          console.log("Public Key is: ",
-              publicKey.toString('hex'));
-          console.log();
-          console.log("Private Key is: ",
-              privateKey.toString('hex'));
-        }
-        else
-        {
-          // Prints error
-          console.log("Errr is: ", err);
-        }
-          
-      });
-      */
-  }
+}
 
   async function preAddUser(user) { 
 
@@ -301,7 +352,7 @@ export default function PurchaseChoice() {
 
   async function emailCheck(data) {
     var formData = JSON.stringify(data)
-    console.log('formData out Email: ' + formData)
+    //console.log('formData out Email: ' + formData)
     const response = await fetch('/../api/validate/preEmail', {
       method: 'POST',
       body: formData, 
@@ -310,13 +361,13 @@ export default function PurchaseChoice() {
       },
     })
     const dbEmail = await response.json() 
-      console.log(dbEmail)
+      //console.log('dbEmail ' + dbEmail)
       return dbEmail
   }
 
   async function accountCheck(data) {
     var formData = JSON.stringify(data)
-    console.log('formData out Acct: ' + formData)
+    //console.log('formData out Acct: ' + formData)
     const response = await fetch('/../api/validate/preAccount', {
       method: 'POST',
       body: formData, 
@@ -325,7 +376,7 @@ export default function PurchaseChoice() {
       },
     })
     const chWallet = await response.json() 
-      console.log(chWallet)
+      //console.log('chWallet ' + chWallet)
       return chWallet
   }
   
@@ -342,7 +393,7 @@ export default function PurchaseChoice() {
   }
 
   function proClick(data) {
-    console.log('Pro click Check: ' + itemData + ' data ' + data)
+    console.log('Pro click Check: ' + itemData + numberCount  + ' data ' + data)
     setPymtChoice('Pro')
   }
 
@@ -550,12 +601,12 @@ export default function PurchaseChoice() {
                           <div className='flex inline-block justify-center text-center mb-6'>
                             <div className=' inline-block justify-left text-left'>  
                               <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                <p> Caret Tag: ^{itemData} </p>
+                                <p> Caret Tag: ^{itemData}{numberCount} </p>
                               </div> 
                               <div className=''></div>
                                 <div className='text-2xl pl-4 pr-4'>
                                   <p> 1 Wallet Address <br />
-                                      No add-on digits<br />
+                                      Auto 3 digit extension<br />
                                       <br /><br />
                                   </p>
                                 </div>                                                   
@@ -602,12 +653,10 @@ export default function PurchaseChoice() {
                               </div> 
                               <div className=''></div>
                                 <div className='justify-center text-center text-2xl pl-4 pr-4'>
-                                  <p> 5 Wallet Address <br />
-                                      Choose unique name + num combo*<br />
+                                  <p> 5 Wallet Addresses <br />
+                                      Add extension digits*<br />
                                       <br />
-                                      <small>*apply a unique 3 digit extension to
-                                      to your caret word up to 4 times.
-                                      ie: ^{itemData}123, ^{itemData}234 </small>
+                                      <small>*apply a unique 3 digit ext <br />to caret word. ie: ^{itemData}123 </small>
                                   </p>
                                 </div>                                                   
                             </div>

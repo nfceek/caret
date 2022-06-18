@@ -17,10 +17,15 @@ model carrots {
  append Int
  available Boolean
  business Boolean
+ pro Boolean
  premium Boolean
  banned Boolean
+ sold Boolean
  price Int
  cid String
+ sitepublickey String
+ siteprivatekey String
+ publickey String
  privkey String
  timestamp String
  updateinfo String
