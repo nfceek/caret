@@ -1,7 +1,7 @@
 import { prisma } from '../../db'
 
 export default async(req, res) => {
-    console.log('hola')
+    //console.log('hola')
     const inData = req.body
     var dataArr = inData.split(',');
         let email = dataArr[0] 

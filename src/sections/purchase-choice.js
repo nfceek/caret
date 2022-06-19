@@ -9,11 +9,14 @@ import * as Yup from 'yup';
 import { userService, alertService } from '../services';
 import PurchaseFeature from 'components/purchase-feature';
 
+
 const bcrypt = require('bcryptjs');
+const pinataSDK = require('@pinata/sdk');
+const pinata = pinataSDK('95e746aca5e5bb9755a5', '08dd9abee5aa3c4e6d086d59d0029fcdaf12987f4a85d51315ae6b70a605ca54');
 
+export default function PurchaseChoice() {  
+  const router = useRouter();
 
-export default function PurchaseChoice() {
-  const router = useRouter(); 
   const [carrotAvail, setCarrotAvail] = useState('')
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
   const [carrotInDb, setCarrotInDb ] = useState('')
@@ -35,7 +38,11 @@ export default function PurchaseChoice() {
   const [contractData, setContractData] = useState()
   const [pubKey, setPubKey] = useState()
   const [privKey, setPrivKey] = useState()
+  const [newUser, setNewUser] = useState()
+  const [maxUser, setMaxUser] = useState()
+
   var secureKeys=['']
+  var maxUserNum=['']
   
   const data = {
     subTitle: '4 Simple steps',
@@ -62,7 +69,7 @@ export default function PurchaseChoice() {
 
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
-
+    console.log('caretCheck 1 ' + data)
     const response = await fetch('/../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
@@ -75,27 +82,61 @@ export default function PurchaseChoice() {
     caretInformation(stepOne)
   }
 
+  async function caretNumCheck(data) { 
+    var formData = JSON.stringify(data)
+    console.log('caretCheck 2 ' + formData)
+    const response = await fetch('/../api/validate/returnCarrot', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepTwo= await response.json() 
+    caretNumInformation(stepTwo)
+  }
+
+
   function caretInformation(data) {  
     if(data === null){ 
       console.log('Im null')
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
       setCarrotInDb(false)
-
     } else {
-      //console.log(' caretInfo ' + JSON.stringify(data) )     
-      const dbAvail = JSON.stringify(' cInfo ' + data.available)
-      //console.log(' dbAvail ' + dbAvail )
+      console.log(' caretInfo ' + JSON.stringify(data) )     
+      const dbAvail = JSON.stringify(data.available)
+      console.log(' dbAvail ' + dbAvail )
         if(dbAvail === 'false'){
           setCarrotIsAvail(' is NOT available ')
           setCarrotAvail(false)
-          //console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+          console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+        }else{         
+          var data = (data.word.toUpperCase() + numberCount.toString())
+          console.log('itemDataNum in ' + itemData + ' append ' + numberCount)
+          caretNumCheck(data)
+          //console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+        }
+    }
+  }
+
+  function caretNumInformation(data){
+    if(data === null){ 
+      console.log('Im null')
+      setCarrotIsAvail(' is available')
+      setCarrotAvail(true)
+      setCarrotInDb(false)
+    }else{
+      const dbAvailNum = JSON.stringify(data.available)
+        console.log(' dbAvailNum ' + dbAvailNum )
+        if(dbAvailNum === 'false'){
+          setCarrotIsAvail(' is NOT available ')
+          setCarrotAvail(false)
         }else{
           setCarrotIsAvail(' is available ')
           setCarrotAvail(true)
           setCarrotInDb(true)
-          setWordPrice(data.price)
-          //console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+          setWordPrice(data.price) 
         }
     }
   }
@@ -129,7 +170,7 @@ export default function PurchaseChoice() {
       .max(50, 'Password to long')      
 });
 
-  //async function chFormData(user){
+  async function chFormData(user){
     if(carrotAvail === false){
       const formOptions = { resolver: yupResolver(validationCaret) };
       var { register, handleSubmit, formState } = useForm(formOptions);
@@ -144,13 +185,11 @@ export default function PurchaseChoice() {
       
     }
     const { errors } = formState;
-  //}
+  }
   
-
   async function onSubmit(user) {
 
     //console.log('validate data: ' + JSON.stringify(user))
-
     const chEmail = user.email
     const checkEmail = await emailCheck(chEmail)
     //console.log('checkEmail back: ' + checkEmail)
@@ -201,11 +240,11 @@ export default function PurchaseChoice() {
       var dbWord = carrotInDb.word
       var dbAppend = carrotInDb.append
       var dbPrice = carrotInDb.price
-    }else{
-
     }
-
     var cWord = ''
+    var cWord2 = ''
+    var cWord3 = ''
+    var append = numberCount
     var cWallet = ''
     var cChain = ''
     var cPwd = ''
@@ -215,29 +254,29 @@ export default function PurchaseChoice() {
       cChain = data.chain
       cWallet = data.account
       if(pymtChoice === 'free'){
-        cidWallet = '::NO_Wallet:TBD'
+        cidWallet = '_NONE:TBD'
       }else{
-        cidWallet = '::' + cChain +  '_Wallet:' + cWallet
+        cidWallet = '_' + cChain +  ':' + cWallet
       }
     }else{
       cPwd = data.password
-      cidWallet = '::NO_Wallet:TBD'
+      cidWallet = '_NONE:TBD'
     }
-
-    var cAppend = numberCount
     var cAvailable = 1
     var cPrice = ''
     if(pymtChoice === 'Prem'){
-      cWord = '^' + itemData
+      cWord = itemData.toLowerCase()
+      cWord2 = itemData.toLowerCase() + '01'
+      cWord3 = itemData.toLowerCase() + '02'
       cPrice = 20;
     } else if (pymtChoice === 'Pro') {
-      cWord = '^' + itemData + numberCount
+      cWord = itemData.toLowerCase() + numberCount
       cPrice = 5;
     } else {
-      cWord = '^' + itemData + numberCount
-      cPrice = '';
+      cWord = itemData.toLowerCase() + numberCount
+      cPrice = 0;
     }
-    var cCid
+    
     var cSitepublickey = secureKeys[0]
     var cSiteprivatekey = secureKeys[1]
     var cPublickey = secureKeys[2]
@@ -245,32 +284,53 @@ export default function PurchaseChoice() {
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    //var dateTime = date+' '+time;
-    var setTime = date+' '+time;
+    var setTime = date + '-' + time;
 
     //assemble caret string for CID
-    console.log(' pymt choice ' + pymtChoice + ' cid -> ' + cWord + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
-    
+    //console.log(' pymt choice ^' + pymtChoice + ' cid -> ' + cWord + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
+    var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
+    console.log('cid ' + cCid)
     //process pymt before updating !!
 
-    //update db
-      if(carrotInDb === true){
-          //insertCarrot
-      }else{
-          // updateCarrot
-      }
-    // update/add to user
-      //preAddUser(data)
+    //update db - user and word
+    // user
+    preAddUser(data)
 
+    // get new user ID
+    var cMaxUser = 0
+    const curDate = new Date().toISOString()
+    var cInsertWord = ''
+    var cUpdateWord = []
+    cUpdateWord.push(cMaxUser)
+    cUpdateWord.push(cWord)
+    cUpdateWord.push(numberCount)
+    cUpdateWord.push(cPrice)
+    cUpdateWord.push(cSitepublickey)
+    cUpdateWord.push(cSiteprivatekey)
+    cUpdateWord.push(cPublickey)
+    cUpdateWord.push(cPrivkey)
+    cUpdateWord.push(curDate)
+    // word string   
+    console.log(' update array ->' + pymtChoice)
+    if(pymtChoice === 'Prem'){
+      // get word ID -- update
+      console.log('Prem insert')
+      updatePremCarrot(cUpdateWord)
+    }else {
+      console.log('lets insert')
+      insertCarrot(cUpdateWord)
+    }
+    
     //create CID
 
-    // update IPFS
-
+    // update IPFS    
+    //preInsertIPFS() authentication passed
+    
     // redirect user to dashboard/ty page
 
     //if we get past 5 kick user to main page
     //console.log('form abuse ct check: ' + userCountCheck)
-    {userCountCheck === 5 && router.push('/')}
+    //{userCountCheck === 5 && router.push('/')}
   }
 
   async function prePymt(user) {
@@ -284,11 +344,9 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-
     const stepOne= await response.json() 
     caretInformation(stepOne)
   }
-
 
   function preKeys(){   
     const crypto = require('crypto');
@@ -308,27 +366,29 @@ export default function PurchaseChoice() {
 
     secureKeys = [sitePublicKey, sitePrivateKey, publicKey, privateKey]
     return secureKeys
-
 }
 
   async function preAddUser(user) { 
-
     console.log('load ' + JSON.stringify(user) + ' data ' + JSON.stringify(data) + ' plan ' + pymtChoice)
     const curDate = new Date().toISOString()
     var pwd = ''
-    var uname = itemData
+    var uname = ''
     var planChoice = 1
     console.log(curDate)
 
     if(walletState === false){
         pwd = bcrypt.hashSync(user.password, 10) 
     }
+
     if(pymtChoice === 'Prem'){
       planChoice = 3;
+      uname = itemData;
     } else if (pymtChoice === 'Pro') {
       planChoice = 2;
+      uname = itemData + numberCount
     } else {
       planChoice = 1;
+      uname = itemData + numberCount
     }
 
     const response = await fetch('/../api/carrotRegister', {
@@ -339,15 +399,75 @@ export default function PurchaseChoice() {
         },
     })
 
-  const regSuccess = await response.json()      
-      console.log(' new user ' + JSON.stringify(regSuccess))
-      //return regSuccess
-    
+    const regSuccess = await response.json()      
+    setNewUser(regSuccess)
+
   }
 
-  async function preCarrot(data){
+  async function preMaxUserId(user){
+    const response = await fetch('/../api/validate/preCarrotUserId', {
+      method: 'POST',
+      body:  [JSON.stringify(user.email)],
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const preMaxUser = await response.json()
+    var returnMax = await preMaxUser[0].max      
+    setMaxUser(returnMax)
 
+  }
 
+  async function preInsertIPFS(){
+
+    pinata.testAuthentication().then((result) => {
+      //handle successful authentication here
+      console.log(result);
+    }).catch((err) => {
+        //handle error here
+        console.log(err);
+    });
+
+  }
+  
+  async function insertCarrot(data){
+    const response = await fetch('/../api/insertCarrot', {
+      method: 'POST',
+      body:  data,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+    })
+    const dbInsert = await response.json() 
+      console.log('dbInsert ' + dbInsert)
+      return dbInsert
+  }
+
+  async function updateCarrot(data){
+    console.log('word data in ' + data)
+    const response = await fetch('/../api/updateCarrot', {
+      method: 'POST',
+      body:  data,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+    })
+    const dbUpdate = await response.json() 
+      console.log('dbUpdate ' + dbUpdate)
+      return dbUpdate
+  }
+
+  async function updatePremCarrot(data){
+    const response = await fetch('/../api/updateCarrot', {
+      method: 'POST',
+      body:  data,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+    })
+    const dbUpdatePrem = await response.json() 
+      console.log('dbUpdatePrem ' + dbUpdatePrem)
+      return dbUpdatePrem
   }
 
   async function emailCheck(data) {
@@ -389,6 +509,7 @@ export default function PurchaseChoice() {
 
   function regClick(data) {
     console.log('Free click Check: ' + itemData + numberCount  + ' data ' + data)
+    //chFormData()
     setPymtChoice('free')
   }
 
@@ -653,11 +774,12 @@ export default function PurchaseChoice() {
                               </div> 
                               <div className=''></div>
                                 <div className='justify-center text-center text-2xl pl-4 pr-4'>
-                                  <p> 5 Wallet Addresses <br />
-                                      Add extension digits*<br />
+                                  <p> 3 Wallet Addresses <br />
+                                      {/*Add extension digits*<br />
                                       <br />
-                                      <small>*apply a unique 3 digit ext <br />to caret word. ie: ^{itemData}123 </small>
-                                  </p>
+                                      <small>*apply a unique 3 digit ext 
+                                        <br />to caret word. ie: ^{itemData}123 </small>*/}
+                                    </p>
                                 </div>                                                   
                             </div>
                           </div >
