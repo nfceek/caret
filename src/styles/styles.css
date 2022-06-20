@@ -29,6 +29,11 @@
     min-height:180px;
   }
 
+  #bxDash {
+    min-height:180px;
+    padding: 125px 95px 75px 95px;
+  }
+
   #selChain {
     width: 15ch;
   }

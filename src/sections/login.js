@@ -49,6 +49,14 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
             router.push('/');
         } 
     }
+    
+    function logout() {
+        localStorage.removeItem('user');
+        localStorage.removeItem('wallet');
+        localStorage.removeItem('isWalletConnected');        
+        userSubject.next(null);
+        router.push('/');
+    }
 
     return (
         <Box >                                                  

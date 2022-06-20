@@ -1,4 +1,5 @@
 
+import React from 'react'
 import { Container, Box, Flex, Button } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-scroll';
@@ -10,11 +11,22 @@ import { useRouter } from 'next/router'
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
   const router = useRouter()
+  
+  React.useEffect(() => {
+    console.log(localStorage === window.localStorage);
+  }, [])
 
   async function SignIn(){
     router.push('/login')
   }
   
+  function logout() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('wallet');
+
+    router.push('/');
+  }
+
   return (
     <Box id='id' className='bnrHeader' sx={styles.header} >
       <Container sx={styles.container}>
@@ -35,11 +47,25 @@ export default function Header({ className }) {
           ))}
         </Flex>
 
-        <Link to='/registration'>
-          <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={SignIn}>
-              My Caret
-          </Button> 
+        {typeof window !== "undefined" ?
+          <div className='flex display-inline'>
+            <div className=''>
+              <Link to='/dashboard'>
+                <img src='/user.png' alt='acct' />
+              </Link>
+            </div>
+            <div className='ml-4 mt-8'>
+              <a onClick={logout} className="btn btn-link">Logout</a>
+            </div>
+          </div>  
+        :
+          <Link to='/registration'>
+            <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={SignIn}>
+                My Caret
+            </Button>          
         </Link>
+        }
+
         <MobileDrawer />             
       </Container>
     </Box>

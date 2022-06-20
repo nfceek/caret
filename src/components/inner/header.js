@@ -7,6 +7,7 @@ import Logo from 'components/logo';
 import menuItems from './header.data';
 
 
+
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
 
