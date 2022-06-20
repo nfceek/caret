@@ -1,8 +1,16 @@
   
   
   #purForm{
-    padding: 65px 95px 75px 95px;
+    
     text-align: center;
+  }
+
+  #bxUserInfo {
+    padding: 25px 5px 5px 5px;
+  }
+
+  #bxUserLeft{
+    min-width: 260px;
   }
 
   .BnrHeader {
@@ -30,8 +38,8 @@
   }
 
   #bxDash {
-    min-height:180px;
-    padding: 125px 95px 75px 95px;
+    min-height:10px;
+    padding: 100px 95px 5px 95px;
   }
 
   #selChain {

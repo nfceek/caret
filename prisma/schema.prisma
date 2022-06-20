@@ -47,6 +47,8 @@ model user {
  firstname String
  lastname String
  username String
+ caret String
+ avatar String
  password String
  plan Int
  admin Boolean
@@ -54,6 +56,14 @@ model user {
  email String
  chain String
  account String
+ fkword2 Int
+ caret2 String
+ chain2 String
+ account2 String
+ fkword3 Int
+ caret3 String
+ chain3 String
+ account3 String
  join_date String
  dateupdated String
 } 

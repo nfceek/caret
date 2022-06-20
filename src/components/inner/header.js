@@ -1,22 +1,58 @@
 
+import React from 'react'
+import { useRouter } from 'next/router'
+
 import { Container, Box, Flex, Button } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-scroll';
 import Logo from 'components/logo';
-////import MobileDrawer from './mobile-drawer';
+import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
-
 
 
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
+  const uLogo = '/assets/user_sm.png'
 
+  const router = useRouter()
   
+  React.useEffect(() => {
+    console.log(localStorage === window.localStorage);
+  }, [])
+
+  async function SignIn(){
+    router.push('/login')
+  }
+  
+  function logout() {
+    localStorage.removeItem('caret');
+    //localStorage.removeItem('wallet');
+
+    router.push('/');
+  }
+
   return (
+
     <Box id='id' className='bnrHeader' sx={styles.header} >
       <Container sx={styles.container}>
         <Logo src={cLogo} />
+        <Flex as='nav' sx={styles.nav}>
 
+        </Flex>
+
+        {typeof window !== "undefined" && localStorage.caret !== null &&
+          <div className='flex display-inline'>
+            <div className=''>
+              <Link to='/dashboard'>
+                <img src={uLogo} alt='acct' />
+              </Link>
+            </div>
+            <div className='ml-4 '>
+              <a onClick={logout} className="btn btn-link">Logout</a>
+            </div>
+          </div>  
+        }
+        <MobileDrawer />             
       </Container>
     </Box>
   );

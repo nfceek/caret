@@ -44,16 +44,15 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                throw 'Username or password is incorrect';
         }else{
             console.log('pass')
-            localStorage.setItem('user', JSON.stringify(username));
-            localStorage.setItem('wallet', JSON.stringify(account));
+            localStorage.setItem('caret', JSON.stringify(email));
+            //localStorage.setItem('wallet', JSON.stringify(account));
             router.push('/');
         } 
     }
     
     function logout() {
-        localStorage.removeItem('user');
-        localStorage.removeItem('wallet');
-        localStorage.removeItem('isWalletConnected');        
+        localStorage.removeItem('caret');
+        //localStorage.removeItem('wallet');   
         userSubject.next(null);
         router.push('/');
     }
@@ -73,13 +72,13 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                             <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.password?.message}</div>
                         </div>
-                        {/*
+
                         <div className="form-group">
                             <label>Wallet Address</label>
-                            <input name="Matic Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                            <input name="Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.account?.message}</div>
                         </div> 
-                        */}
+
                         <div className='flex display-inline'>
                             <div>
                                 <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { userService, alertService } from '../services';
@@ -66,7 +67,7 @@ import RegisterFeature from 'components/register-feature';
         const response = await fetch('../../api/acctRegister', {
             method: 'POST',
             body:  [JSON.stringify(user.firstName), JSON.stringify(user.lastName), JSON.stringify(user.username), JSON.stringify(user.email), 
-                JSON.stringify(user.password),JSON.stringify(user.chain), JSON.stringify(user.account)],
+					JSON.stringify(user.password)],
             headers: {
             'Content-Type':'applications/json'
             },
@@ -86,39 +87,20 @@ import RegisterFeature from 'components/register-feature';
         const [agreeState, setAgreeState] = useState('false')
         const [chainValue, setChainValue] = useState('');
         const [walletState, setwalletState] = useState('false')   // does user have wallet
-
         const [unameState, setUnameState] = useState(true)      // if user, is username a dupe
         const [emailState, setEmailState] = useState(true)      // if user, is email a dupe
-        const [accountState, setAccountState] = useState(true)  // if user, is acct a dupe
 
-        const [hasUname, setHasUname] = useState(true)          // if user has wallet, auth reply
-        const [hasEmail, setHasEmail] = useState(true)          // if user has wallet, auth reply
-        const [hasWallet, setHasWallet] = useState(true)        // if user has wallet, auth reply
-        
         // form validation rules 
         const validationSchema = Yup.object().shape({
             showUname: Yup.boolean(),
-            firstName: Yup.string()
-                .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
-            lastName: Yup.string()
-                .matches(/^[aA-zZ\s]+$/, "Only Alpha characters are allowed for this field "),
-            username: Yup.string()
-                .matches(/^[a-zA-Z0-9-_]+$/, "Only Alpha & Numeric, - and _ characters are allowed for this field "),
             email: Yup.string()
                 .required('Email is required'),            
             password: Yup.string()
                 .min(6, 'Password must be at least 6 characters'),              
         });
-        /* caret word will be the username
-        const validationUname = Yup.object().shape({
-            userame: Yup.string().required('Username already registered')
-        });
-        */
+
         const validationEmail = Yup.object().shape({
             email: Yup.string().required('Email is already registered')
-        });
-        const validationWallet = Yup.object().shape({
-            account: Yup.string().required('Wallet Address is already registered')         
         });
 
         const formOptions = { resolver: yupResolver(validationSchema) };
@@ -128,38 +110,21 @@ import RegisterFeature from 'components/register-feature';
         const agreeHandler = () => {
             {agreeState === 'false' ? setAgreeState('true') : setAgreeState('false')};
         };
-
-        const walletValue = () => {
-            {walletState === 'false' ? setwalletState('true') : setwalletState('false')};
-        }
         
         async function onSubmit(user) {
-            //const checkUsername = await unameCheck(user)
-            //console.log('checkUsername back: ' + checkUsername)
-
-            //if (checkUsername > 0){
-            //    setUnameState(false)
-            //}
-
             const checkEmail = await emailCheck(user)
             console.log('checkEmail back: ' + checkEmail)
-
-            const checkAccount = await accountCheck(user)
-            console.log('checkAccount back: ' + checkAccount)           
-
-            return userService.register(user)
-                .then(() => {              
-                    //addUser(user)
-                    //alertService.success('Registration successful', { keepAfterRouteChange: true });
-                    //router.push('/login');
-                })
-                .catch(alertService.error);
-
+				setEmailState(checkEmail)
+				if(checkEmail === 0 ){           
+					addUser(user)
+					localStorage.setItem('caret', JSON.stringify(user.email));
+					router.push('/dashboard');
+		  		}
         }
 
         async function unameCheck(data) {
             var formData = JSON.stringify(data.username)
-            console.log('formData out : ' + formData)
+            console.log('formData out uname : ' + formData)
             const response = await fetch('/../api/validate/preUsername', {
               method: 'POST',
               body: formData, 
@@ -173,7 +138,7 @@ import RegisterFeature from 'components/register-feature';
 
           async function emailCheck(data) {
             var formData = JSON.stringify(data.email)
-            console.log('formData out : ' + formData)
+            console.log('formData out email: ' + formData)
             const response = await fetch('/../api/validate/preEmail', {
               method: 'POST',
               body: formData, 
@@ -220,29 +185,19 @@ import RegisterFeature from 'components/register-feature';
                                 <div className="invalid-feedback">{errors.lastName?.message}</div>
                             </div>
                             <div className="form-group">
-                                <label>Caret Word: </label>
-                                <input name="username" type="text" placeholder="Caret Word" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.username?.message}</div>
+                                <label>Username: </label>
+                                <input name="username" type="text" placeholder="User Name *optional" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
+                                <div id='errUname' className="invalid-feedback">{errors.username?.message}</div>
                             </div>
                             
                             <div className="form-group">
                                 <label>Email: </label>
                                 <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.email?.message}</div>
+                                <div className='flex display-inline'>
+												<div id='errEmail' className="invalid-feedback">{errors.email?.message}</div>
+												{emailState===1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
+										  </div>
                             </div>                                
-
-                            <div>
-                                <div className="form-group mt-6">
-                                    <label>Do you have a Crypto Wallet? </label>
-                                    <div  className="flex display-inline">
-                                        <input type="radio" className='ml-4 mr-4' value="Yes" name="wallet" onClick={() => {walletValue(true)}} />&nbsp;Yes
-                                        <div className='ml-4 text-sm'> </div>
-                                        <input type="radio" className='l-4' value="No" name="wallet" defaultChecked="true" onClick={() => {walletValue(false)}} />&nbsp;No
-                                    </div>
-
-                                </div>
-                            </div>
-                       { walletState === 'false' ? 
                             <div>
                                 <div className="form-group">
                                     <label>Password: </label>
@@ -250,30 +205,6 @@ import RegisterFeature from 'components/register-feature';
                                     <div className="invalid-feedback">{errors.password?.message}</div>
                                 </div>
                             </div>
-                        :
-                            <div>
-                                <div className="form-group mt-6">
-                                    <label>Wallet Chain</label>
-                                    <div className=''>
-                                        <select name="Matic Wallet" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.account ? 'is-invalid' : ''}`} >
-                                        <option value="" disabled hidden>wallet chain</option>
-                                            <option value="Eth">Ethereum</option>
-                                            <option value="Btc">Bitcoin</option>
-                                            <option value="Matic">Matic</option>
-                                            <option value="Doge">Doge</option>
-                                        </select>
-                                    </div>
-                                    <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
-                                </div> 
-
-                                <div className="form-group">
-                                    <label>Wallet Address</label>
-                                    <input name="Matic Wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                                    <div className="invalid-feedback">{errors.account?.message}</div>                               
-                                </div> 
-                            </div>
-                           
-                        }
                             <div>
                                 <div className='flex display-inline'>
                                     <div className='noted'>

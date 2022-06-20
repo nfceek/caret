@@ -10,6 +10,8 @@ import { useRouter } from 'next/router'
 
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
+  const uLogo = '/assets/user_sm.png'
+
   const router = useRouter()
   
   React.useEffect(() => {
@@ -21,8 +23,8 @@ export default function Header({ className }) {
   }
   
   function logout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('wallet');
+    localStorage.removeItem('caret');
+    //localStorage.removeItem('wallet');
 
     router.push('/');
   }
@@ -47,14 +49,14 @@ export default function Header({ className }) {
           ))}
         </Flex>
 
-        {typeof window !== "undefined" ?
+        {typeof window === "undefined" ?
           <div className='flex display-inline'>
-            <div className=''>
+            <div className='button' onClick={SignIn}>
               <Link to='/dashboard'>
-                <img src='/user.png' alt='acct' />
+                <img src={uLogo} alt='acct' />
               </Link>
             </div>
-            <div className='ml-4 mt-8'>
+            <div className='ml-4'>
               <a onClick={logout} className="btn btn-link">Logout</a>
             </div>
           </div>  
@@ -102,6 +104,8 @@ const styles = {
       //backgroundImage: `url(/assets/bksignup.png)`,
       backgroundColor: '#FF7F27',
       flexShrink: 0,
+      pt: [6, 6, 6, null, 2],
+      pb: [6, 6, 6, null, 2],
       mr: [15, 20, null, null, 0],
       ml: ['auto', null, null, null, 0],
     },

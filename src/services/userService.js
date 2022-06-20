@@ -33,8 +33,8 @@ function login(username, account) {
 }
 
 function logout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('wallet');
+    localStorage.removeItem('caret');
+    //localStorage.removeItem('wallet');
     userSubject.next(null);
     Router.push('/');
 }
