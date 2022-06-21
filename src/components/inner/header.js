@@ -1,10 +1,10 @@
 
-import React from 'react'
+import React, { useState } from "react"
 import { useRouter } from 'next/router'
 
 import { Container, Box, Flex, Button } from 'theme-ui';
 import { keyframes } from '@emotion/react';
-import { Link } from 'react-scroll';
+import Link from 'next/link'
 import Logo from 'components/logo';
 import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
@@ -13,11 +13,13 @@ import menuItems from './header.data';
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
   const uLogo = '/assets/user_sm.png'
-
+  const [userIn, setUserIn] = useState(0)               // is user logged in
   const router = useRouter()
   
   React.useEffect(() => {
-    console.log(localStorage === window.localStorage);
+    if(typeof window !== "undefined" || localStorage.caret !== null){
+      setUserIn(1)
+    }
   }, [])
 
   async function SignIn(){
@@ -38,10 +40,10 @@ export default function Header({ className }) {
 
         </Flex>
 
-        {typeof window !== "undefined" && localStorage.caret !== null &&
+        {userIn === 1 &&
           <div className='flex display-inline'>
             <div className=''>
-              <Link to='/dashboard'>
+              <Link href='/dashboard'>
                 <img src={uLogo} alt='acct' />
               </Link>
             </div>

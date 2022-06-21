@@ -46,7 +46,7 @@ export default function SectionUpper() {
   }, [])
 
 
-  if(typeof window !== "undefined" && localStorage.caret !== null){
+  if(typeof window !== "undefined" || localStorage.caret !== null){
     console.log('caret set ' + localStorage.caret)
     const cEmail = localStorage.caret
     caretInfo(cEmail)

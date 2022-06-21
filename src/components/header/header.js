@@ -1,21 +1,26 @@
 
-import React from 'react'
+import React, { useState } from "react"
+import { useRouter } from 'next/router'
+
 import { Container, Box, Flex, Button } from 'theme-ui';
 import { keyframes } from '@emotion/react';
 import { Link } from 'react-scroll';
 import Logo from 'components/logo';
 import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
-import { useRouter } from 'next/router'
+
 
 export default function Header({ className }) {
   const cLogo = '/assets/caret-logo01.png'
   const uLogo = '/assets/user_sm.png'
-
+  const [userIn, setUserIn] = useState(0)               // is user logged in
   const router = useRouter()
   
   React.useEffect(() => {
-    console.log(localStorage === window.localStorage);
+    if(typeof window !== "undefined" || localStorage.caret !== null || localStorage.caret !== ''){
+      setUserIn(1)
+      console.log('caret ' + localStorage.caret)
+    }
   }, [])
 
   async function SignIn(){
@@ -49,7 +54,7 @@ export default function Header({ className }) {
           ))}
         </Flex>
 
-        {typeof window === "undefined" ?
+        {userIn === 1 ?
           <div className='flex display-inline'>
             <div className='button' onClick={SignIn}>
               <Link to='/dashboard'>
@@ -60,12 +65,10 @@ export default function Header({ className }) {
               <a onClick={logout} className="btn btn-link">Logout</a>
             </div>
           </div>  
-        :
-          
-            <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={SignIn}>
-                My Caret
-            </Button>          
-        
+        :          
+          <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={SignIn}>
+            My Caret
+          </Button>                 
         }
 
         <MobileDrawer />             

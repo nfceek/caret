@@ -37,8 +37,10 @@ export default function PurchaseChoice() {
   const [privKey, setPrivKey] = useState()
   const [newUser, setNewUser] = useState()
   const [maxUser, setMaxUser] = useState()
-  const [emailDupe, setEmailDupe] = useState(0)      // if user, is email a dupe
+  const [emailDupe, setEmailDupe] = useState(0)         // if user, is email a dupe
   const [walletDupe, setWalletDupe] = useState(0)
+  const [userIn, setUserIn] = useState(0)               // is user logged in
+  
   var secureKeys=['']
   var maxUserNum=['']
   
@@ -56,7 +58,9 @@ export default function PurchaseChoice() {
       try {
         setItemData(router.query.data.toUpperCase())
         caretCheck(router.query.data.toUpperCase())
-        //console.log(localStorage === window.localStorage);        
+        if(typeof window !== "undefined" || localStorage.caret !== null){
+          setUserIn(1)
+        }
       } catch (error) {
         console.log('purchase routing error: ', error)
         //router.push('/')
@@ -98,8 +102,7 @@ export default function PurchaseChoice() {
     if(localStorage === window.localStorage){
       if(typeof window !== "undefined" && localStorage.caret !== null || localStorage.caret !== "undefined"){
         console.log('status ' + localStorage.caret)
-        //let userLoggedIn = localStorage.caret.replaceAll('"', '')
-        //  inputEmail.value = userLoggedIn || {}
+
       }
     } 
 
@@ -538,288 +541,314 @@ export default function PurchaseChoice() {
             </div>
           </div>
         </div>
-        <div className='purRow2'>
-          <div className ="flex inline-block justify-center text-center mb-6">
+        {userIn === 1 ? 
             <div>
-              <div className='text-3xl mb-4'>{itemData}{carrotIsAvail}</div>
-            </div>
-          </div>
-            {banWord === 1 &&
-              <div> 
-              <div className='purRow2a'>
-                <div className='flex inline-block justify-center text-center mb-6'>
-                  <div id='purSignUp' className='flex inline-block justify-center text-center'>
-                    <div>
-                      <div className='text-3xl'>Banned Word. Please try again.</div>              
-                    </div>
-                  </div >
-                </div>
-              </div>
-            </div>               
-            }
-            {carrotAvail === false &&         
-              <div className='purRow3'>
-                <div className ="flex inline-block justify-center text-center"> 
-                    <form onSubmit={handleSubmit(availClick)}>               
-                        <div className ="flex inline-block justify-center text-center">                                    
-                          <div className ="form-group">
-                            <input name="request" type="text" autoComplete="off" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.request?.message}</div>
-                            </div>
-                            <div>                                 
-                              <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
-                                  {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                  Check Availabilty
-                              </button>
-                          </div>                                      
-                        </div> 
-                      </form>                 
+              <div className='purRow2'>
+                <div className ="block inline-block justify-center text-center mb-6">
+                  <div>
+                    <div className='text-3xl mb-4'>{itemData}{carrotIsAvail}</div>
                   </div>
-                    <div> </div>
-                </div>            }
-          </div>
-        <form onSubmit={handleSubmit(onSubmit)}> 
-          {carrotAvail === false ?
-            <div></div>
-          :      
-            <div>              
-              <div className='purRow4'>
-              <div className='flex inline-block justify-center text-center mb-6'>
-                <div className='' ></div>
-                <div id='purSignUp' >              
-
-                    <div id='bxWallet' className=''>         
-                      <div className="form-group mb-6 justify-left text-left">
-                          <label>1) Email: </label>
-                          <input id='inputEmail' name="email" type="text" onChange={e => this.setState({ text: e.target.value })} placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
-                          <div className="invalid-feedback">{errors.email?.message}</div>
-                          {emailDupe === 1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
-										  </div>
-
-                      <div>
-                          <div className="form-group mt-6 justify-left text-left">
-                              <label>2) Do you have a Crypto Wallet? </label>
-                              <div  className="flex display-inline">
-                                  <input type="radio" className='ml-4 mr-4' value="Yes" name="wallet" onClick={() => {walletValue(true)}} />&nbsp;Yes
-                                  <div className='ml-4 text-sm'> </div>
-                                  <input type="radio" className='l-4' value="No" name="wallet" defaultChecked="true" onClick={() => {walletValue(false)}} />&nbsp;No
-                              </div>
-
-                          </div>
-                      </div>
-                      
-                      {walletState === false ? 
-                        <div>
-                            <div className="form-group mt-6 justify-left text-left">
-                                <label>3) Password: </label>
-                                <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.password?.message}</div>
-                            </div>
-                        </div>
-                      :
-                        <div>
-                          <div className="form-group mt-6 justify-left text-left">
-                              <label>3a) Wallet Chain</label>
-                              <div className=''>
-                                  <select id='selChain' name="chain" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.chain ? 'is-invalid' : ''}`} >
-                                  <option value="" disabled hidden>chain</option>
-                                      <option value="Eth">Ethereum</option>
-                                      <option value="Btc">Bitcoin</option>
-                                      <option value="Matic">Matic</option>
-                                      <option value="Doge">Doge</option>
-                                  </select>
-                              </div>
-                              <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
-                          </div> 
-
-                          <div className="form-group mt-6 justify-left text-left">
-                              <label>3b) Wallet Address</label>
-                              <input name="wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                              <div className="invalid-feedback">{errors.account?.message}</div>  
-                              {walletDupe === 1 &&<div id='errEmail' className='errEmail' >Account already in use</div>}                             
-                          </div> 
-                      </div>
-                      }
-                    </div>  
-                      <div className="form-group mt-6 justify-left text-left">
-                          <label>4) Choose a Plan</label>                            
-                      </div>                               
-                
-                </div>
-                <div className=''></div> 
-                </div>
-              </div>
-            </div>
-          }
-        <div></div>
-        <div className='purRow8'>        
-          <div className='grid grid-cols-5 gap-4'>
-            <div className='' ></div>
-            <div className='bg-slate-200 text-3xl pt-4 mt-4 mb-6 rounded-xl'> FREE Option
-                <div className=''>
-                  <div className=''>
-                    <div id='bxFree' className=''>                      
-                        <div>                         
-                          <div className='flex inline-block justify-center text-center mb-6'>
-                            <div className='flex inline-block justify-left text-left'>  
-                              { walletState === true ? 
-                                <div>                         
-                                <div className='flex inline-block justify-center text-center mb-6'>
-                                  <div className=' inline-block justify-left text-left'>  
-                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                          <p> Caret Tag: ^{itemData}{numberCount} </p>
-                                        </div>                             
-
-                                        <div className=''></div>
-                                          <div className='text-2xl pl-4 pr-4'>
-                                            <p> 1 Wallet Address <br />
-                                                Auto 3 digit extension<br />
-                                                <br />
-                                                <br />
-                                            </p>
-                                          </div>                                                   
-                                      </div>
-                                    </div >
-                                  </div>
-                                :
-                                  <div>
-                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                      NOT AVAILABLE
-                                    </div>
-                                    {carrotAvail === true ?
-                                        <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                            Must have Crypto Wallet
-                                        </div>
-                                    :
-                                        <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                        
-                                        </div>
-                                    }
-                                  </div>
-                              }
-                            </div>
-                          </div >
-                        </div>
-
+                  <div className ="flex inline-block justify-center text-center mb-6">
+                    <div>
+                      <div id='bxloggedIn' className='text-3xl mt-8 mb-4'><p>We are very happy that you want to buy another Caret Tag.<br />
+                      <br />
+                      You already have an account and are logged in. <br />
+                      <br />
+                      Please login to your dashboard to add Caret Tags <br />
+                      and/or upgrade your subscription plan
+                        </p></div>
                     </div>
-                    <div className='flex inline-block justify-center text-center mt-4 mb-6'>
-                      { walletState === false ? 
-                        <div>                     
-                          <button id='btnFree' disabled className="btn btn-primary mr-12 mt-2 ml-8" >Register</button>  
-                        </div>
-                      :
-                        <div>
-                          <button id='btnFree' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => regClick()}>FREE</button>  
-                        </div>
-                      }
-                    </div>                  
+                  </div>
                 </div>
               </div>
             </div>
-            <div className='bg-blue-200 text-3xl pt-4 mt-4 mb-6 rounded-xl'> Pro Option 
-              <div className=''>
-                  <div className=''>
-                    <div id='bxPro' className=''>
-                      {carrotAvail === true ?
-                        <div>                         
-                          <div className='flex inline-block justify-center text-center mb-6'>
-                            <div className=' inline-block justify-left text-left'>  
-                              <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                <p> Caret Tag: ^{itemData}{numberCount} </p>
-                              </div> 
-                              <div className=''></div>
-                                <div className='text-2xl pl-4 pr-4'>
-                                  <p> 1 Wallet Address <br />
-                                      Auto 3 digit extension<br />
-                                      <br /><br />
-                                  </p>
-                                </div>                                                   
-                            </div>
-                          </div >
-                        </div>
-                      :
-                        <div>                         
-                          <div className='flex inline-block justify-center text-center mb-6'>
-                            <div className='flex inline-block justify-left text-left'>  
-                              <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                <p>NOT AVAILABLE</p>                        
-                              </div>
-                    
-                            </div>
-                          </div >
-                        </div>
-                      }
-                    </div>
-                    <div className='flex inline-block justify-center text-center mt-4 mb-6'>                      
-                      {carrotAvail === true ? 
-                        <div>                     
-                           <button id='btnPro' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}> $ 5.00 USD </button>
-                        </div>
-                      :
-                        <div>                         
-                          <button id='btnPro' disabled className="btn btn-primary mr-12 mt-2 ml-8" >Register</button>   
-                        </div>
-                      }
-                    </div>                 
+            :
+            <div>
+              <div className='purRow2'>
+                <div className ="flex inline-block justify-center text-center mb-6">
+                  <div>
+                    <div className='text-3xl mb-4'>{itemData}{carrotIsAvail}</div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className='bg-gray-300 text-3xl pt-4 mt-4 mb-6 rounded-xl'> Premium Option
-              <div className=''>
-                <div className=''>
-                  <div id='bxPrem' className=''>
-                    {carrotAvail === true ?
-                      <div>                         
-                          <div className='flex inline-block justify-center text-center mb-6'>
-                            <div className=' inline-block justify-left text-left'>  
-                              <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                <p>Caret Tag: ^{itemData}</p>
-                              </div> 
-                              <div className=''></div>
-                                <div className='justify-center text-center text-2xl pl-4 pr-4'>
-                                  <p> 3 Wallet Addresses <br />
-                                      {/*Add extension digits*<br />
-                                      <br />
-                                      <small>*apply a unique 3 digit ext 
-                                        <br />to caret word. ie: ^{itemData}123 </small>*/}
-                                    </p>
-                                </div>                                                   
-                            </div>
-                          </div >
-                        </div>
-                    :
-                      <div>                         
-                        <div className='flex inline-block justify-center text-center mb-6'>
-                          <div className='justify-center text-center'>  
-                            <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                            <p>NOT AVAILABLE</p>  
-                            </div> 
-                            <div className='justify-left text-left text-2xl pl-4 mt-4'>
-
-                            </div>              
+                  {banWord === 1 &&
+                    <div> 
+                    <div className='purRow2a'>
+                      <div className='flex inline-block justify-center text-center mb-6'>
+                        <div id='purSignUp' className='flex inline-block justify-center text-center'>
+                          <div>
+                            <div className='text-3xl'>Banned Word. Please try again.</div>              
                           </div>
                         </div >
                       </div>
+                    </div>
+                  </div>               
+                  }
+                  {carrotAvail === false &&         
+                    <div className='purRow3'>
+                      <div className ="flex inline-block justify-center text-center"> 
+                          <form onSubmit={handleSubmit(availClick)}>               
+                              <div className ="flex inline-block justify-center text-center">                                    
+                                <div className ="form-group">
+                                  <input name="request" type="text" autoComplete="off" placeholder="Enter your Word" {...register('request')} className={`mt-2 form-control ${errors.request ? 'is-invalid' : ''}`} />
+                                      <div className="invalid-feedback">{errors.request?.message}</div>
+                                  </div>
+                                  <div>                                 
+                                    <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
+                                        {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                        Check Availabilty
+                                    </button>
+                                </div>                                      
+                              </div> 
+                            </form>                 
+                        </div>
+                          <div> </div>
+                      </div>            
                     }
+                </div>
+              <form onSubmit={handleSubmit(onSubmit)}> 
+                {carrotAvail === false ?
+                  <div></div>
+                :      
+                  <div>              
+                    <div className='purRow4'>
+                    <div className='flex inline-block justify-center text-center mb-6'>
+                      <div className='' ></div>
+                      <div id='purSignUp' >              
+
+                          <div id='bxWallet' className=''>         
+                            <div className="form-group mb-6 justify-left text-left">
+                                <label>1) Email: </label>
+                                <input id='inputEmail' name="email" type="text" onChange={e => this.setState({ text: e.target.value })} placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
+                                <div className="invalid-feedback">{errors.email?.message}</div>
+                                {emailDupe === 1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
+                            </div>
+
+                            <div>
+                                <div className="form-group mt-6 justify-left text-left">
+                                    <label>2) Do you have a Crypto Wallet? </label>
+                                    <div  className="flex display-inline">
+                                        <input type="radio" className='ml-4 mr-4' value="Yes" name="wallet" onClick={() => {walletValue(true)}} />&nbsp;Yes
+                                        <div className='ml-4 text-sm'> </div>
+                                        <input type="radio" className='l-4' value="No" name="wallet" defaultChecked="true" onClick={() => {walletValue(false)}} />&nbsp;No
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+                            {walletState === false ? 
+                              <div>
+                                  <div className="form-group mt-6 justify-left text-left">
+                                      <label>3) Password: </label>
+                                      <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                      <div className="invalid-feedback">{errors.password?.message}</div>
+                                  </div>
+                              </div>
+                            :
+                              <div>
+                                <div className="form-group mt-6 justify-left text-left">
+                                    <label>3a) Wallet Chain</label>
+                                    <div className=''>
+                                        <select id='selChain' name="chain" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.chain ? 'is-invalid' : ''}`} >
+                                        <option value="" disabled hidden>chain</option>
+                                            <option value="Eth">Ethereum</option>
+                                            <option value="Btc">Bitcoin</option>
+                                            <option value="Matic">Matic</option>
+                                            <option value="Doge">Doge</option>
+                                        </select>
+                                    </div>
+                                    <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
+                                </div> 
+
+                                <div className="form-group mt-6 justify-left text-left">
+                                    <label>3b) Wallet Address</label>
+                                    <input name="wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                                    <div className="invalid-feedback">{errors.account?.message}</div>  
+                                    {walletDupe === 1 &&<div id='errEmail' className='errEmail' >Account already in use</div>}                             
+                                </div> 
+                            </div>
+                            }
+                          </div>  
+                            <div className="form-group mt-6 justify-left text-left">
+                                <label>4) Choose a Plan</label>                            
+                            </div>                               
+                      
+                      </div>
+                      <div className=''></div> 
+                      </div>
+                    </div>
                   </div>
-                  <div className='flex inline-block justify-center text-center mt-4 mb-6'>
-                    {carrotAvail === true ?
-                        <div>                     
-                           <button id='btnPrem' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}> $ 20.00 USD</button>  
+                }
+              <div></div>
+              <div className='purRow8'>        
+                <div className='grid grid-cols-5 gap-4'>
+                  <div className='' ></div>
+                  <div className='bg-slate-200 text-3xl pt-4 mt-4 mb-6 rounded-xl'> FREE Option
+                      <div className=''>
+                        <div className=''>
+                          <div id='bxFree' className=''>                      
+                              <div>                         
+                                <div className='flex inline-block justify-center text-center mb-6'>
+                                  <div className='flex inline-block justify-left text-left'>  
+                                    { walletState === true ? 
+                                      <div>                         
+                                      <div className='flex inline-block justify-center text-center mb-6'>
+                                        <div className=' inline-block justify-left text-left'>  
+                                          <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                                <p> Caret Tag: ^{itemData}{numberCount} </p>
+                                              </div>                             
+
+                                              <div className=''></div>
+                                                <div className='text-2xl pl-4 pr-4'>
+                                                  <p> 1 Wallet Address <br />
+                                                      Auto 3 digit extension<br />
+                                                      <br />
+                                                      <br />
+                                                  </p>
+                                                </div>                                                   
+                                            </div>
+                                          </div >
+                                        </div>
+                                      :
+                                        <div>
+                                          <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                            NOT AVAILABLE
+                                          </div>
+                                          {carrotAvail === true ?
+                                              <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                                  Must have Crypto Wallet
+                                              </div>
+                                          :
+                                              <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                              
+                                              </div>
+                                          }
+                                        </div>
+                                    }
+                                  </div>
+                                </div >
+                              </div>
+
+                          </div>
+                          <div className='flex inline-block justify-center text-center mt-4 mb-6'>
+                            { walletState === false ? 
+                              <div>                     
+                                <button id='btnFree' disabled className="btn btn-primary mr-12 mt-2 ml-8" >Register</button>  
+                              </div>
+                            :
+                              <div>
+                                <button id='btnFree' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => regClick()}>FREE</button>  
+                              </div>
+                            }
+                          </div>                  
+                      </div>
+                    </div>
+                  </div>
+                  <div className='bg-blue-200 text-3xl pt-4 mt-4 mb-6 rounded-xl'> Pro Option 
+                    <div className=''>
+                        <div className=''>
+                          <div id='bxPro' className=''>
+                            {carrotAvail === true ?
+                              <div>                         
+                                <div className='flex inline-block justify-center text-center mb-6'>
+                                  <div className=' inline-block justify-left text-left'>  
+                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                      <p> Caret Tag: ^{itemData}{numberCount} </p>
+                                    </div> 
+                                    <div className=''></div>
+                                      <div className='text-2xl pl-4 pr-4'>
+                                        <p> 1 Wallet Address <br />
+                                            Auto 3 digit extension<br />
+                                            <br /><br />
+                                        </p>
+                                      </div>                                                   
+                                  </div>
+                                </div >
+                              </div>
+                            :
+                              <div>                         
+                                <div className='flex inline-block justify-center text-center mb-6'>
+                                  <div className='flex inline-block justify-left text-left'>  
+                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                      <p>NOT AVAILABLE</p>                        
+                                    </div>
+                          
+                                  </div>
+                                </div >
+                              </div>
+                            }
+                          </div>
+                          <div className='flex inline-block justify-center text-center mt-4 mb-6'>                      
+                            {carrotAvail === true ? 
+                              <div>                     
+                                <button id='btnPro' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}> $ 5.00 USD </button>
+                              </div>
+                            :
+                              <div>                         
+                                <button id='btnPro' disabled className="btn btn-primary mr-12 mt-2 ml-8" >Register</button>   
+                              </div>
+                            }
+                          </div>                 
+                      </div>
+                    </div>
+                  </div>
+                  <div className='bg-gray-300 text-3xl pt-4 mt-4 mb-6 rounded-xl'> Premium Option
+                    <div className=''>
+                      <div className=''>
+                        <div id='bxPrem' className=''>
+                          {carrotAvail === true ?
+                            <div>                         
+                                <div className='flex inline-block justify-center text-center mb-6'>
+                                  <div className=' inline-block justify-left text-left'>  
+                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                      <p>Caret Tag: ^{itemData}</p>
+                                    </div> 
+                                    <div className=''></div>
+                                      <div className='justify-center text-center text-2xl pl-4 pr-4'>
+                                        <p> 3 Wallet Addresses <br />
+                                            {/*Add extension digits*<br />
+                                            <br />
+                                            <small>*apply a unique 3 digit ext 
+                                              <br />to caret word. ie: ^{itemData}123 </small>*/}
+                                          </p>
+                                      </div>                                                   
+                                  </div>
+                                </div >
+                              </div>
+                          :
+                            <div>                         
+                              <div className='flex inline-block justify-center text-center mb-6'>
+                                <div className='justify-center text-center'>  
+                                  <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                  <p>NOT AVAILABLE</p>  
+                                  </div> 
+                                  <div className='justify-left text-left text-2xl pl-4 mt-4'>
+
+                                  </div>              
+                                </div>
+                              </div >
+                            </div>
+                          }
                         </div>
-                      :
-                        <div>                         
-                           <button id='btnPrem' disabled className="btn btn-primary mr-12 mt-2 ml-8" >Register</button>    
-                        </div>
-                      }                   
-                  </div>                  
+                        <div className='flex inline-block justify-center text-center mt-4 mb-6'>
+                          {carrotAvail === true ?
+                              <div>                     
+                                <button id='btnPrem' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}> $ 20.00 USD</button>  
+                              </div>
+                            :
+                              <div>                         
+                                <button id='btnPrem' disabled className="btn btn-primary mr-12 mt-2 ml-8" >Register</button>    
+                              </div>
+                            }                   
+                        </div>                  
+                      </div>
+                    </div>
+                  </div> 
+                  <div className=''></div> 
                 </div>
               </div>
-            </div> 
-            <div className=''></div> 
-          </div>
-        </div>
-        </form>      
+              </form>
+        </div> 
+      }     
       </div>
     </div>
   )

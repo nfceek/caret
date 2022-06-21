@@ -14,40 +14,99 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
     const router = useRouter();
     const [menuState, setMenuState] = useState('login')
     const [accountState, setAccountState] = useState('none')
+    const [loginChoice, setLoginChoice] = useState('pwd')
+	const [emailDupe, setEmailDupe] = useState(0)
+	const [pwdError, setPwdError] = useState(0)
+	const [accError, setAccError] = useState(0)
 
     // form validation rules 
-    const validationSchema = Yup.object().shape({
-        username: Yup.string().required('Username is required'),
-        password: Yup.string().required('Password is required'),
-        account: Yup.string().required('Wallet address is required')
-    });
+    var validationSchema = ''
+
+    if(loginChoice === 'pwd'){
+		console.log(' lets validate: pwd')
+        validationSchema = Yup.object().shape({
+            email: Yup.string()
+                .required('Username is required')
+                .min(6, 'Email to short')
+                .max(50, 'Email to long'),
+            password: Yup.string().required('Password is required'),
+        });
+    } else {
+		console.log(' lets validate: acc')
+        validationSchema = Yup.object().shape({
+            email: Yup.string()
+                .required('Username is required')
+                .min(6, 'Email to short')
+                .max(50, 'Email to long'),
+            account: Yup.string().required('Wallet address is required')
+        });
+
+    }
+
     const formOptions = { resolver: yupResolver(validationSchema) };
     const { register, handleSubmit, formState } = useForm(formOptions);
     const { errors } = formState;
 
-    async function onSubmit({ username, password, account }) {
-        //const [loginPwd, setLoginPwd] = useState('')
+    function loginValue(data) {
+        console.log(data)
+        {data === false ? setLoginChoice('wallet') : setLoginChoice('pwd')}
+    }
 
-        const response = await fetch('../../api/acctLogin', {
-            method: 'POST',
-            body:  [JSON.stringify(username), JSON.stringify(password), JSON.stringify(account)],
-            headers: {
-            'Content-Type':'applications/json'
-            },
-        })
-        
-        const loginSuccess = await response.json() 
-        //setloginPwd(loginSuccess[0].password)
-        console.log(loginSuccess)      
-        //console.log(' u/n ' + username + ' pwd ' + password + ' success pwd ' + loginSuccess[0].password)
-        if (!(username && bcrypt.compareSync(password, loginSuccess[0].password))) {
-               throw 'Username or password is incorrect';
-        }else{
-            console.log('pass')
-            localStorage.setItem('caret', JSON.stringify(email));
-            //localStorage.setItem('wallet', JSON.stringify(account));
-            router.push('/');
-        } 
+    async function onSubmit({ email, password, account }) {
+
+        console.log('incoming ',email, password, account)
+		
+        if(loginChoice === 'pwd'){
+            const response = await fetch('../../api/acctPwdLogin', {
+                method: 'POST',
+                body:  [JSON.stringify(email), JSON.stringify(password), JSON.stringify(account)],
+                headers: {
+                'Content-Type':'applications/json'
+                },
+            })
+			var loginSuccess =''			
+			loginSuccess = await response.json() 
+
+			console.log('success ' + JSON.stringify(loginSuccess) ) 
+				if(loginSuccess !== null){ 
+					setPwdError(0)
+					if (!(email && bcrypt.compareSync(password, loginSuccess.password))) {
+						setPwdError(1);
+					}else{
+						console.log('pass')
+						localStorage.setItem('caret', JSON.stringify(email));
+						//localStorage.setItem('wallet', JSON.stringify(account));
+						router.push('/dashboard');
+					} 
+				}else{
+					setPwdError(1)
+				}
+		} else {
+			const response = await fetch('../../api/acctPwdLogin', {
+				method: 'POST',
+				body:  [JSON.stringify(email), JSON.stringify(password), JSON.stringify(account)],
+				headers: {
+				'Content-Type':'applications/json'
+				},
+			})
+			var loginSuccess =''			
+			loginSuccess = await response.json() 
+
+			console.log('success ' + JSON.stringify(loginSuccess) ) 
+				if(loginSuccess !== null){ 
+					setAccError(0)
+					if (!(email && account === loginSuccess.account)) {
+						setAccError(1);
+					}else{
+						console.log('pass')
+						localStorage.setItem('caret', JSON.stringify(email));
+						router.push('/dashboard');
+					} 
+				}else{
+					setAccError(1)
+				}
+		}
+
     }
     
     function logout() {
@@ -63,22 +122,41 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                 <Container sx={styles.containerBox} >                        
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group">
-                            <label>Username</label>
-                            <input name="username" type="text" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
-                            <div className="invalid-feedback">{errors.username?.message}</div>
-                        </div>
-                        <div className="form-group">
-                            <label>Password</label>
-                            <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
-                            <div className="invalid-feedback">{errors.password?.message}</div>
+						<label>Email: </label>
+                          <input id='inputEmail' name="email" type="text" onChange={e => this.setState({ text: e.target.value })} placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
+                          <div className="invalid-feedback">{errors.email?.message}</div>
+                          {emailDupe === 1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
                         </div>
 
-                        <div className="form-group">
-                            <label>Wallet Address</label>
-                            <input name="Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                            <div className="invalid-feedback">{errors.account?.message}</div>
-                        </div> 
-
+                        <div>
+                            <div className="form-group mt-6 mb-6justify-left text-left">
+                                <label>How do you want to log in? </label>
+                                <div  className="flex display-inline">
+                                    <input type="radio" className='ml-4 mr-4' value="Yes" defaultChecked="true" name="loginChoice" onClick={() => {loginValue(true)}} />&nbsp;Password
+                                    <div className='ml-4 text-sm'> </div>
+                                    <input type="radio" className='l-4' value="No" name="loginChoice"  onClick={() => {loginValue(false)}} />&nbsp;Wallet Address
+                                </div>
+                            </div>
+                        </div>
+                    {loginChoice === 'pwd' ?
+                        <div>
+                            <div className="form-group">
+                                <label>Password</label>
+                                <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                <div className="invalid-feedback">{errors.password?.message}</div>
+								{pwdError === 1 &&<div id='errEmail' className='errEmail' >Password is incorrect</div>}
+                            </div>
+                        </div>
+                    :
+                        <div>
+                            <div className="form-group">
+                                <label>Wallet Address</label>
+                                <input name="Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                                <div className="invalid-feedback">{errors.account?.message}</div>
+								{accError === 1 &&<div id='errEmail' className='errEmail' >Wallet Address is incorrect</div>}
+                            </div> 
+                        </div>
+                    }
                         <div className='flex display-inline'>
                             <div>
                                 <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">
