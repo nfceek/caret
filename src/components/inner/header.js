@@ -26,8 +26,6 @@ export default function Header({ className }) {
   
   function logout() {
     localStorage.removeItem('caret');
-    //localStorage.removeItem('wallet');
-
     router.push('/');
   }
 

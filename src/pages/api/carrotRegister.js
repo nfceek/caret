@@ -1,7 +1,7 @@
 import { prisma } from '../../db'
 
 export default async(req, res) => {
-    //console.log('hola')
+    //console.log('auto generated ')
     const inData = req.body
     var dataArr = inData.split(',');
         let email = dataArr[0] 
@@ -35,6 +35,16 @@ export default async(req, res) => {
             account: acct,    
             join_date: curDate,
             dateupdated: curDate,
+            caret: uname, 
+            avatar: '', 
+            fkword2: 0,
+            caret2: '', 
+            chain2: '', 
+            account2: '', 
+            fkword3: 0,
+            caret3: '', 
+            chain3: '', 
+            account3: '', 
         }, 
    
     });

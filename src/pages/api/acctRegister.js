@@ -1,7 +1,7 @@
 import { prisma } from '../../db'
 
 export default async(req, res) => {
-    console.log('hola')
+    //console.log('user created reg')
     const inData = req.body
     var dataArr = inData.split(',');
         let fName = dataArr[0]
@@ -13,20 +13,14 @@ export default async(req, res) => {
         let email = dataArr[3] 
             email = email.replace(/['"]+/g, '');
         let pwd = dataArr[4]
-            pwd =  pwd.replace(/['"]+/g, ''); 
-        /*            
-        let chain = dataArr[5]
-            chain =  chain.replace(/['"]+/g, '');                     
-        let acct = dataArr[6]
-            acct = acct.replace(/['"]+/g, '');
-        */   
+            pwd =  pwd.replace(/['"]+/g, '');   
     const curDate = new Date().toISOString()
 
     const response = await prisma.user.create({
         data: {
             fkword: 0,
             fkwallet: 0,
-            fkbanned: 0,
+            fkbanned: 0, 
             firstname: fName,
             lastname: lName,
             username: username,
@@ -39,6 +33,16 @@ export default async(req, res) => {
             account: '',    
             join_date: curDate,
             dateupdated: curDate,
+            caret: '', 
+            avatar: '', 
+            fkword2: 0,
+            caret2: '', 
+            chain2: '', 
+            account2: '', 
+            fkword3: 0,
+            caret3: '', 
+            chain3: '', 
+            account3: '', 
         }, 
    
     });

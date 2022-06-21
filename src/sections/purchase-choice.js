@@ -9,7 +9,6 @@ import * as Yup from 'yup';
 import { userService, alertService } from '../services';
 import PurchaseFeature from 'components/purchase-feature';
 
-
 const bcrypt = require('bcryptjs');
 const pinataSDK = require('@pinata/sdk');
 const pinata = pinataSDK('95e746aca5e5bb9755a5', '08dd9abee5aa3c4e6d086d59d0029fcdaf12987f4a85d51315ae6b70a605ca54');
@@ -17,7 +16,7 @@ const pinata = pinataSDK('95e746aca5e5bb9755a5', '08dd9abee5aa3c4e6d086d59d0029f
 export default function PurchaseChoice() {  
   const router = useRouter();
 
-  const [carrotAvail, setCarrotAvail] = useState('')
+  const [carrotAvail, setCarrotAvail] = useState()
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
   const [carrotInDb, setCarrotInDb ] = useState('')
   const [userCountCheck, setUserCountCheck] = useState(0) 
@@ -26,8 +25,6 @@ export default function PurchaseChoice() {
   const [itemDataAppend, setItemDataAppend] = useState('')
   const [chainValue, setChainValue] = useState('');
   const [walletState, setwalletState] = useState(false)   // does user have wallet
-  const [hasEmail, setHasEmail] = useState(true)            // if user has wallet, auth reply
-  const [hasWallet, setHasWallet] = useState(false)         // if user has wallet, auth reply
   const [feeFree, setFeeFree] = useState(false)             // no strings attached
   const [feePro, setFeePro] = useState(false)               // is this a paid word -- Pro
   const [feePrem, setFeePrem] = useState(false)             // is this a paid word == Prem
@@ -40,14 +37,14 @@ export default function PurchaseChoice() {
   const [privKey, setPrivKey] = useState()
   const [newUser, setNewUser] = useState()
   const [maxUser, setMaxUser] = useState()
-
+  const [emailDupe, setEmailDupe] = useState(0)      // if user, is email a dupe
+  const [walletDupe, setWalletDupe] = useState(0)
   var secureKeys=['']
   var maxUserNum=['']
   
   const data = {
     subTitle: '4 Simple steps',
     title: 'Caret Tag Word: ' + itemData,
-    //features: [],
   };
 
   const walletValue = (data) => {
@@ -58,15 +55,15 @@ export default function PurchaseChoice() {
     if (router.isReady) {
       try {
         setItemData(router.query.data.toUpperCase())
-        caretCheck(router.query.data.toUpperCase())        
+        caretCheck(router.query.data.toUpperCase())
+        //console.log(localStorage === window.localStorage);        
       } catch (error) {
         console.log('purchase routing error: ', error)
-        // test this
         //router.push('/')
       }
     }
   }, [router.isReady]);
-
+  
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
     console.log('caretCheck 1 ' + data)
@@ -77,7 +74,6 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-
     const stepOne= await response.json() 
     caretInformation(stepOne)
   }
@@ -96,24 +92,31 @@ export default function PurchaseChoice() {
     caretNumInformation(stepTwo)
   }
 
+  
+  function caretInformation(data) { 
+    // is person logged in
+    if(localStorage === window.localStorage){
+      if(typeof window !== "undefined" && localStorage.caret !== null || localStorage.caret !== "undefined"){
+        console.log('status ' + localStorage.caret)
+        //let userLoggedIn = localStorage.caret.replaceAll('"', '')
+        //  inputEmail.value = userLoggedIn || {}
+      }
+    } 
 
-  function caretInformation(data) {  
     if(data === null){ 
       console.log('Im null')
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
       setCarrotInDb(false)
     } else {
-      console.log(' caretInfo ' + JSON.stringify(data) )     
+      //console.log(' caretInfo ' + JSON.stringify(data) )     
       const dbAvail = JSON.stringify(data.available)
-      console.log(' dbAvail ' + dbAvail )
         if(dbAvail === 'false'){
           setCarrotIsAvail(' is NOT available ')
           setCarrotAvail(false)
-          console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
+          //console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
         }else{         
           var data = (data.word.toUpperCase() + numberCount.toString())
-          console.log('itemDataNum in ' + itemData + ' append ' + numberCount)
           caretNumCheck(data)
           //console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
         }
@@ -143,56 +146,49 @@ export default function PurchaseChoice() {
 
   //console.log('ch Avail: ' + carrotAvail + ' ch Info ' )
   //console.log('In Avail: ' + carrotAvail + ' in Info ' + JSON.stringify(carrotInDb))
- 
-  const validationCaret = Yup.object().shape({
-    request: Yup.string()
-      .min(5, 'Caret choice must be at least 5 characters') 
-      .max(12, 'Caret choice must be less than 12 characters')
-      .matches(/^[aA-zZ0-9-_\s]+$/, "Only Alpha characters are allowed for Caret choice")
-  });
-
-  const validationPurchaseNoWallet = Yup.object().shape({
-      email: Yup.string()
-        .required('Email is required')
-        .max(50, 'Email to long'),
-      chain: Yup.string()
-        .min(2, 'Chain Name Required'),
-      account: Yup.string()
-        .required('Wallet Address is Required')
-        .min(12, 'Wallet Addres must be at least 12 characters')
-        .max(100, 'wallet address to long'),         
-  });
-
-  const validationPurchaseWallet = Yup.object().shape({
-    password: Yup.string()
-      .required('Passord is Required')
-      .min(6, 'Password must be at least 6 characters')
-      .max(50, 'Password to long')      
-});
-
-  async function chFormData(user){
-    if(carrotAvail === false){
-      const formOptions = { resolver: yupResolver(validationCaret) };
-      var { register, handleSubmit, formState } = useForm(formOptions);
+  var validationProcess = ''
+  if(carrotAvail === false){
+    validationProcess = Yup.object().shape({
+      request: Yup.string()
+        .min(5, 'Caret choice must be at least 5 characters') 
+        .max(12, 'Caret choice must be less than 12 characters')
+        .matches(/^[aA-zZ0-9-_\s]+$/, "Only Alpha characters are allowed for Caret choice")
+    });
+    
+  } else {
+    if(walletState === true){
+     validationProcess = Yup.object().shape({
+        email: Yup.string()
+          .required('Email is required')
+          .min(6, 'Email to short')
+          .max(50, 'Email to long'),
+        chain: Yup.string()
+          .min(2, 'Chain Name Required'),
+        account: Yup.string()
+          .required('Wallet Address is Required')
+          .min(12, 'Wallet Addres must be at least 12 characters')
+          .max(100, 'wallet address to long'),         
+      });
     } else {
-      if(walletState === true){
-        const formOptionsPurchaseNoWallet = { resolver: yupResolver(validationPurchaseNoWallet) };
-        var { register, handleSubmit, formState } = useForm(formOptionsPurchaseNoWallet); 
-      } else {
-        const formOptionsPurchaseWallet = { resolver: yupResolver(validationPurchaseWallet) };
-        var { register, handleSubmit, formState } = useForm(formOptionsPurchaseWallet);     
-      }
-      
-    }
-    const { errors } = formState;
+      validationProcess = Yup.object().shape({
+       email: Yup.string()
+          .required('Email is required')
+          .min(6, 'Email to short')
+          .max(50, 'Email to long'),
+        password: Yup.string()
+          .required('Passord is Required')
+          .min(6, 'Password must be at least 6 characters')
+          .max(50, 'Password to long')      
+      });
+    }  
   }
-  
-  async function onSubmit(user) {
+    const formOptions = { resolver: yupResolver(validationProcess)};
+    var { register, handleSubmit, formState } = useForm(formOptions);
+    const { errors } = formState;  
 
-    //console.log('validate data: ' + JSON.stringify(user))
+  async function onSubmit(user) {
     const chEmail = user.email
     const checkEmail = await emailCheck(chEmail)
-    //console.log('checkEmail back: ' + checkEmail)
       if(checkEmail === 0) {                      // 0 means not is system now check address
         // if using wallet -- check in db
         //console.log('wState ' + walletState)
@@ -205,9 +201,10 @@ export default function PurchaseChoice() {
               pre(user)
             } else {
               // dupe found
-              console.log('dupe me 1 ')
-              if(checkWallet > 0){  
-                
+              if(checkWallet > 0){    
+                  setWalletDupe(1)
+                }else{
+                  setWalletDupe(0)                
               }
             }
         } else {
@@ -215,13 +212,12 @@ export default function PurchaseChoice() {
         }
       } else {
           // dupe found
-          console.log('dupe me 2 ')
           if(checkEmail > 0) {    
-            
+            setEmailDupe(1)
+          }else{
+            setEmailDupe(0)
           }
-
       }
-
   }
 
   async function pre(data) {
@@ -297,11 +293,11 @@ export default function PurchaseChoice() {
     preAddUser(data)
 
     // get new user ID
-    var cMaxUser = 0
+    var cUserEmail = data.email
     const curDate = new Date().toISOString()
     var cInsertWord = ''
     var cUpdateWord = []
-    cUpdateWord.push(cMaxUser)
+    cUpdateWord.push(cUserEmail)
     cUpdateWord.push(cWord)
     cUpdateWord.push(numberCount)
     cUpdateWord.push(cPrice)
@@ -312,12 +308,12 @@ export default function PurchaseChoice() {
     cUpdateWord.push(curDate)
     // word string   
     console.log(' update array ->' + pymtChoice)
-    if(pymtChoice === 'Prem'){
+    if(carrotInDb === true){
       // get word ID -- update
-      console.log('Prem insert')
+      console.log('UpdateDB')
       updatePremCarrot(cUpdateWord)
     }else {
-      console.log('lets insert')
+      console.log('InsertDB')
       insertCarrot(cUpdateWord)
     }
     
@@ -331,6 +327,10 @@ export default function PurchaseChoice() {
     //if we get past 5 kick user to main page
     //console.log('form abuse ct check: ' + userCountCheck)
     //{userCountCheck === 5 && router.push('/')}
+  }
+
+  function flush(data){
+
   }
 
   async function prePymt(user) {
@@ -431,6 +431,7 @@ export default function PurchaseChoice() {
   }
   
   async function insertCarrot(data){
+
     const response = await fetch('/../api/insertCarrot', {
       method: 'POST',
       body:  data,
@@ -481,7 +482,7 @@ export default function PurchaseChoice() {
       },
     })
     const dbEmail = await response.json() 
-      //console.log('dbEmail ' + dbEmail)
+      console.log('dbEmail ' + dbEmail)
       return dbEmail
   }
 
@@ -590,10 +591,11 @@ export default function PurchaseChoice() {
                     <div id='bxWallet' className=''>         
                       <div className="form-group mb-6 justify-left text-left">
                           <label>1) Email: </label>
-                          <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
+                          <input id='inputEmail' name="email" type="text" onChange={e => this.setState({ text: e.target.value })} placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
                           <div className="invalid-feedback">{errors.email?.message}</div>
-                      </div>                                
-                    
+                          {emailDupe === 1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
+										  </div>
+
                       <div>
                           <div className="form-group mt-6 justify-left text-left">
                               <label>2) Do you have a Crypto Wallet? </label>
@@ -606,7 +608,7 @@ export default function PurchaseChoice() {
                           </div>
                       </div>
                       
-                      { walletState === false ? 
+                      {walletState === false ? 
                         <div>
                             <div className="form-group mt-6 justify-left text-left">
                                 <label>3) Password: </label>
@@ -633,7 +635,8 @@ export default function PurchaseChoice() {
                           <div className="form-group mt-6 justify-left text-left">
                               <label>3b) Wallet Address</label>
                               <input name="wallet" type="text" placeholder="wallet address" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                              <div className="invalid-feedback">{errors.account?.message}</div>                               
+                              <div className="invalid-feedback">{errors.account?.message}</div>  
+                              {walletDupe === 1 &&<div id='errEmail' className='errEmail' >Account already in use</div>}                             
                           </div> 
                       </div>
                       }

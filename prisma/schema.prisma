@@ -12,7 +12,7 @@ datasource db {
 
 model carrots {
  id Int @id @default(autoincrement())
- userid Int
+ userid String
  word String
  append Int
  available Boolean

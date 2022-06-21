@@ -61,11 +61,11 @@ export default function Header({ className }) {
             </div>
           </div>  
         :
-          <Link to='/registration'>
+          
             <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={SignIn}>
                 My Caret
             </Button>          
-        </Link>
+        
         }
 
         <MobileDrawer />             

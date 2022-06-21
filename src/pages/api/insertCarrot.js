@@ -18,7 +18,7 @@ export default async(req, res) => {
     
     const response = await prisma.carrots.create({
         data: {
-            userid: 0,
+            userid: useridIn,
             word: wordIn, 
             append: appendIn, 
             available: false, 

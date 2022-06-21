@@ -4,7 +4,8 @@ export default async(req, res) => {
     
     const inData = req.body
     //console.log('hola ' + inData)
-    var dataArr = inData.split(',');           
+    var dataArr = inData.split(','); 
+        let useridIn = dataArr[0]           
         let wordIn = dataArr[1]            
         let appendIn = parseInt(dataArr[2])                       
         let priceIn = parseInt(dataArr[3])                               
@@ -20,6 +21,7 @@ export default async(req, res) => {
             word: wordIn,
            },        
         data: {
+            userid: useridIn,
             append: appendIn, 
             available: false, 
             sold: true,
