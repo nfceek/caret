@@ -1,12 +1,10 @@
 
 import React, { useState } from "react"
-import Link from 'next/link';
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { userService, alertService } from '../services';
 import PurchaseFeature from 'components/purchase-feature';
 
 const bcrypt = require('bcryptjs');
@@ -58,9 +56,10 @@ export default function PurchaseChoice() {
       try {
         setItemData(router.query.data.toUpperCase())
         caretCheck(router.query.data.toUpperCase())
-        if(typeof window !== "undefined" || localStorage.caret !== null){
-          setUserIn(1)
-        }
+        var item = localStorage.getItem('caret')
+        //var item = uStatus
+        console.log('uStatus in ' + item)
+        chStatus(item)
       } catch (error) {
         console.log('purchase routing error: ', error)
         //router.push('/')
@@ -68,6 +67,16 @@ export default function PurchaseChoice() {
     }
   }, [router.isReady]);
   
+  function chStatus(data){
+    //console.log('log status ' + data)
+    if(data === null){
+      setUserIn(0)
+    }else{
+      setUserIn(1)
+    }
+    //console.log('user status ' + userIn)
+  }
+
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
     console.log('caretCheck 1 ' + data)

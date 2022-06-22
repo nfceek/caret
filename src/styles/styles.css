@@ -17,6 +17,10 @@
     min-height: 325px;
   }
 
+  #imgAcct, #imgInnerAcct {
+    cursor: pointer; 
+  }
+
   .BnrHeader {
     background-color: 'white';
     }

@@ -1,7 +1,6 @@
 
 
 import { Container, Box, Heading, Text, Image, Button } from 'theme-ui';
-import Theme from '../theme';
 
   const ShapeLeft = '../assets/shape-left.png'
   const ShapeRight = '../assets/shape-right.png'

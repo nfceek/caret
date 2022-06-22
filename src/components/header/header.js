@@ -1,5 +1,5 @@
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from 'next/router'
 
 import { Container, Box, Flex, Button } from 'theme-ui';
@@ -10,27 +10,45 @@ import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
 
 
-export default function Header({ className }) {
+export default function Header({ className, uStatus}) {
   const cLogo = '/assets/caret-logo01.png'
   const uLogo = '/assets/user_sm.png'
-  const [userIn, setUserIn] = useState(0)               // is user logged in
+  const [userIn, setUserIn] = useState()               
   const router = useRouter()
   
-  React.useEffect(() => {
-    if(typeof window !== "undefined" || localStorage.caret !== null || localStorage.caret !== ''){
-      setUserIn(1)
-      console.log('caret ' + localStorage.caret)
-    }
+  var item = uStatus
+  console.log('uStatus in ' + item)
+
+  useEffect(() => {
+    var item = localStorage.getItem('caret')
+    //var item = uStatus
+    console.log('uStatus in ' + item)
+    chStatus(item)
   }, [])
 
-  async function SignIn(){
+  function chStatus(data){
+    //console.log('log status ' + data)
+    if(data === null){
+      setUserIn(0)
+    }else{
+      setUserIn(1)
+    }
+    //console.log('user status ' + userIn)
+  }
+
+  async function uAcct(){
+    router.push('/dashboard')
+  }
+
+  async function signIn(){
+
     router.push('/login')
   }
   
   function logout() {
     localStorage.removeItem('caret');
+    setUserIn(0)  
     //localStorage.removeItem('wallet');
-
     router.push('/');
   }
 
@@ -56,19 +74,17 @@ export default function Header({ className }) {
 
         {userIn === 1 ?
           <div className='flex display-inline'>
-            <div className='button' onClick={SignIn}>
-              <Link to='/dashboard'>
-                <img src={uLogo} alt='acct' />
-              </Link>
-            </div>
+            <img id='imgAcct' src={uLogo} alt='acct' onClick={uAcct} />
             <div className='ml-4'>
               <a onClick={logout} className="btn btn-link">Logout</a>
             </div>
           </div>  
-        :          
-          <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={SignIn}>
-            My Caret
-          </Button>                 
+        : 
+          <div>       
+            <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={signIn}>
+              My Caret
+            </Button>
+          </div>                     
         }
 
         <MobileDrawer />             

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from 'next/router'
 
 import { Container, Box, Flex, Button } from 'theme-ui';
@@ -10,17 +10,28 @@ import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
 
 
-export default function Header({ className }) {
+export default function Header({ className, uStatus }) {
   const cLogo = '/assets/caret-logo01.png'
   const uLogo = '/assets/user_sm.png'
-  const [userIn, setUserIn] = useState(0)               // is user logged in
+  const [userIn, setUserIn] = useState()               // is user logged in
   const router = useRouter()
   
-  React.useEffect(() => {
-    if(typeof window !== "undefined" || localStorage.caret !== null){
+  useEffect(() => {
+    var item = localStorage.getItem('caret')
+    
+    console.log('header item ' + item)
+    chStatus(item)
+  }, [])
+
+  async function chStatus(data){
+    //console.log('log status ' + data)
+    if(data === null){
+      setUserIn(0)
+    }else{
       setUserIn(1)
     }
-  }, [])
+    //console.log('user status ' + userIn)
+  }
 
   async function SignIn(){
     router.push('/login')
@@ -28,6 +39,8 @@ export default function Header({ className }) {
   
   function logout() {
     localStorage.removeItem('caret');
+    setUserIn(0)  
+    //localStorage.removeItem('wallet');
     router.push('/');
   }
 
@@ -44,7 +57,7 @@ export default function Header({ className }) {
           <div className='flex display-inline'>
             <div className=''>
               <Link href='/dashboard'>
-                <img src={uLogo} alt='acct' />
+                <img id='imgInnerAcct' src={uLogo} alt='acct' />
               </Link>
             </div>
             <div className='ml-4 '>

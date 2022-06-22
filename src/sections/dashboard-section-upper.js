@@ -1,12 +1,10 @@
 
-import React, { useState } from 'react';
-
-import TeamCard from '../components/team-card';
+import React, { useState, useEffect } from "react"
 import { useRouter } from 'next/router'
 
+import TeamCard from '../components/team-card';
 
 const Member1 = '../assets/user.png';
-
 const data = [
   {
     id: 1,
@@ -38,27 +36,31 @@ export default function SectionUpper() {
   //chain & acct 3
   const [chain3,setChain3] = useState()
   const [wallet3, setWallet3] = useState()
+  const [userIn, setUserIn] = useState(0) 
 
   const router = useRouter()
   
-  React.useEffect(() => {
-    console.log(localStorage === window.localStorage);
+  useEffect(() => {
+    var item = localStorage.getItem('caret')
+    console.log('item ' + item)
+    chStatus(item)
   }, [])
 
-
-  if(typeof window !== "undefined" || localStorage.caret !== null){
-    console.log('caret set ' + localStorage.caret)
-    const cEmail = localStorage.caret
-    caretInfo(cEmail)
-
-  }else{
-    //kick them back to login page
-    //router.push('/login')
+  async function chStatus(data){
+    console.log('log status ' + data)
+    if(data === null){
+      setUserIn(0)
+      router.push('/login');      
+    }else{
+      setUserIn(1)
+      const cEmail = localStorage.caret
+      caretInfo(cEmail)
+    }   
   }
 
   async function caretInfo(data) { 
     var formData = data
-    console.log('caretCheck 1 ' + data)
+    //console.log('caretCheck 1 ' + data)
     const response = await fetch('/../api/acctGetUser', {
       method: 'POST',
       body: formData, 
@@ -68,7 +70,7 @@ export default function SectionUpper() {
     })
 
     const stepOne = await response.json() 
-    console.log(' return caret ' + JSON.stringify(stepOne))
+    //console.log(' return caret ' + JSON.stringify(stepOne))
     
     setFname(stepOne.firstname)
     setLname(stepOne.lastname)
@@ -99,9 +101,6 @@ export default function SectionUpper() {
 
   }
  
-
-
-
   return (
     <div id='bxDash' className='block  align-center'>
         <div className='block'>

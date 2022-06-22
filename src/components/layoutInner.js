@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react"
 import Sticky from 'react-stickynode';
 import Header from './inner/header';
 import Footer from './footer/footer';
@@ -15,9 +15,29 @@ export default function Layout({ children }) {
     }
   };
   
+  useEffect(() => {
+    var item = localStorage.getItem('caret')
+    //console.log(item)
+    chStatus(item)
+  }, [])
+
+  var userIn = ''
+  function chStatus(data){
+    /*
+    console.log('log status ' + data)
+
+    if(data !== 0){
+      userIn = 'logged in'
+    }else{
+      userIn = 'not logged'
+      //router.push('/');
+    }
+    */
+  }
+
   return (
     <React.Fragment>
-        <Header/>
+        <Header className='userIn' />
         <main id="content" sx={{ variant: 'layout.main', }} >
           {children}
         </main>
