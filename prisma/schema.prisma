@@ -23,6 +23,7 @@ model carrots {
  sold Boolean
  price Int
  cid String
+ ipfs String
  sitepublickey String
  siteprivatekey String
  publickey String

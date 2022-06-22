@@ -13,7 +13,8 @@ export default async(req, res) => {
         let sprvkeyIn = dataArr[5]
         let pubkeyIn = dataArr[6]           
         let prvkeyIn = dataArr[7] 
-        let dateIn = dataArr[8]                     
+        let dateIn = dataArr[8]  
+        let cidIn = dataArr[9]                   
     const curDate = new Date().toISOString()
 
     const response = await prisma.carrots.updateMany({
@@ -26,6 +27,8 @@ export default async(req, res) => {
             available: false, 
             sold: true,
             price: priceIn,
+            cid: cidIn,
+            ipfs: '0',
             sitepublickey: spubkeyIn,
             siteprivatekey: sprvkeyIn,
             publickey: pubkeyIn,
