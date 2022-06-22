@@ -13,8 +13,9 @@
     min-width: 260px;
   }
 
-  #bxloggedIn {
+  #bxloggedIn, #bxDashNone {
     min-height: 325px;
+    padding-top: 175px;
   }
 
   #imgAcct, #imgInnerAcct {

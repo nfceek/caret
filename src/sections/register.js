@@ -84,6 +84,7 @@ import RegisterFeature from 'components/register-feature';
     function Register() {
         const router = useRouter();
 
+        const [isAdmin, setIsAdmin] = useState(false)
         const [agreeState, setAgreeState] = useState('false')
         const [chainValue, setChainValue] = useState('');
         const [walletState, setwalletState] = useState('false')   // does user have wallet
@@ -167,93 +168,104 @@ import RegisterFeature from 'components/register-feature';
 
 
     return (
- 
-        <Box >                                                  
-            <Box sx={{ variant : 'section.feature' }}>                 
-                <Container sx={styles.containerBox} >                  
-                    <Box sx={styles.halfLBox} >
-                        <RegisterFeature title={data.title} />  
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="form-group">
-                                <label>First Name: </label>
-                                <input name="firstName" type="text" placeholder=" First Name *optional" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.firstName?.message}</div>
-                            </div>
-                            <div className="form-group">
-                                <label>Last Name: </label>
-                                <input name="lastName" type="text" placeholder=" Last Name *optional" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.lastName?.message}</div>
-                            </div>
-                            <div className="form-group">
-                                <label>Username: </label>
-                                <input name="username" type="text" placeholder="User Name *optional" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
-                                <div id='errUname' className="invalid-feedback">{errors.username?.message}</div>
-                            </div>
-                            
-                            <div className="form-group">
-                                <label>Email: </label>
-                                <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
-                                <div className='flex display-inline'>
-												<div id='errEmail' className="invalid-feedback">{errors.email?.message}</div>
-												{emailState===1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
-										  </div>
-                            </div>                                
-                            <div>
-                                <div className="form-group">
-                                    <label>Password: </label>
-                                    <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
-                                    <div className="invalid-feedback">{errors.password?.message}</div>
-                                </div>
-                            </div>
-                            <div>
-                                <div className='flex display-inline'>
-                                    <div className='noted'>
+     <div>  
+        {isAdmin === false ?
+            <div>
+                <div id='bxDashNone'>
+                    <div className='text-3xl text-center'>This Page Not Avail</div>
+                </div>
+            </div>
+        :
+            <div>
+                <Box >                                                  
+                    <Box sx={{ variant : 'section.feature' }}>                 
+                        <Container sx={styles.containerBox} >                  
+                            <Box sx={styles.halfLBox} >
+                                <RegisterFeature title={data.title} />  
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="form-group">
+                                        <label>First Name: </label>
+                                        <input name="firstName" type="text" placeholder=" First Name *optional" {...register('firstName')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                                        <div className="invalid-feedback">{errors.firstName?.message}</div>
                                     </div>
-                                    <div className='ml-4'>
-                                        <input type="checkbox" id="agree" onClick={() => agreeHandler()} />
-                                        <label htmlFor="agree" className='ml-6 mb-2'> I agree to site terms and conditions</label>
-                                        <div className='text-sm pl-10'>
-                                            <Link href='/terms' > * Full Site Agreement and Terms</Link>
-                                        </div>    
-                                    </div>   
-                                </div>
-                            </div>
-                            <div>
-                                <div className='flex display-inline text-center justify-between mt-4'>
-                                    <div className='btn-lft'>
-                                        { agreeState === 'false' ?
-                                                <button disabled className="btn btn-primary mr-12 mt-2 ml-8">Register</button>                   
-                                        :
-                                            <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
-                                                {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                                Register
-                                            </button>
-                                        }
+                                    <div className="form-group">
+                                        <label>Last Name: </label>
+                                        <input name="lastName" type="text" placeholder=" Last Name *optional" {...register('lastName')} className={`form-control ${errors.lastName ? 'is-invalid' : ''}`} />
+                                        <div className="invalid-feedback">{errors.lastName?.message}</div>
                                     </div>
-                                    <div className='btns-right flex display-inline text-center justify-between mb-4' >              
-                                        <a onClick={logout} className="btn btn-link">Cancel</a>
-                                    </div> 
-                                </div> 
-                            </div>
-                        </form>
-                    </Box>
-                    <Box sx={styles.halfRBox}>
-                        <RegisterFeature subTitle={data.subTitle} />
-                        <Grid sx={styles.grid}>
-                            {data.features.map((feature, i) =>(
-                            <Box sx={styles.card} key={feature.id}>
-                                <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
-                                <Box sx={styles.wrapper}>
-                                <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
-                                <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>
-                                </Box>
+                                    <div className="form-group">
+                                        <label>Username: </label>
+                                        <input name="username" type="text" placeholder="User Name *optional" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
+                                        <div id='errUname' className="invalid-feedback">{errors.username?.message}</div>
+                                    </div>
+                                    
+                                    <div className="form-group">
+                                        <label>Email: </label>
+                                        <input name="email" type="text" placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
+                                        <div className='flex display-inline'>
+                                                        <div id='errEmail' className="invalid-feedback">{errors.email?.message}</div>
+                                                        {emailState===1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
+                                                </div>
+                                    </div>                                
+                                    <div>
+                                        <div className="form-group">
+                                            <label>Password: </label>
+                                            <input name="password" type="password" placeholder='Password' {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                            <div className="invalid-feedback">{errors.password?.message}</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className='flex display-inline'>
+                                            <div className='noted'>
+                                            </div>
+                                            <div className='ml-4'>
+                                                <input type="checkbox" id="agree" onClick={() => agreeHandler()} />
+                                                <label htmlFor="agree" className='ml-6 mb-2'> I agree to site terms and conditions</label>
+                                                <div className='text-sm pl-10'>
+                                                    <Link href='/terms' > * Full Site Agreement and Terms</Link>
+                                                </div>    
+                                            </div>   
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className='flex display-inline text-center justify-between mt-4'>
+                                            <div className='btn-lft'>
+                                                { agreeState === 'false' ?
+                                                        <button disabled className="btn btn-primary mr-12 mt-2 ml-8">Register</button>                   
+                                                :
+                                                    <button disabled={formState.isSubmitting} className="btn btn-primary mr-12  mt-2 ml-8">
+                                                        {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                                        Register
+                                                    </button>
+                                                }
+                                            </div>
+                                            <div className='btns-right flex display-inline text-center justify-between mb-4' >              
+                                                <a onClick={logout} className="btn btn-link">Cancel</a>
+                                            </div> 
+                                        </div> 
+                                    </div>
+                                </form>
                             </Box>
-                            ))}
-                        </Grid>
-                    </Box>                       
-                </Container>
-            </Box>
-        </Box>
+                            <Box sx={styles.halfRBox}>
+                                <RegisterFeature subTitle={data.subTitle} />
+                                <Grid sx={styles.grid}>
+                                    {data.features.map((feature, i) =>(
+                                    <Box sx={styles.card} key={feature.id}>
+                                        <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
+                                        <Box sx={styles.wrapper}>
+                                        <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
+                                        <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>
+                                        </Box>
+                                    </Box>
+                                    ))}
+                                </Grid>
+                            </Box>                       
+                        </Container>
+                    </Box>
+                </Box>
+            </div>
+        }
+    </div> 
     );
 }  
 
