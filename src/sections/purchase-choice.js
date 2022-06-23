@@ -4,18 +4,16 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form';
 import axios from 'axios'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
-import { projectId } from "../../projectId";
-import { projectSecret } from "../../projectSecret";
+import { pinataPublicKey } from "../../projectId";
+import { pinataPrivateKey } from "../../projectSecret";
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import PurchaseFeature from 'components/purchase-feature';
+var FormData = require('form-data');
 
-//pinataPublicKey(NEXT_PUBLIC_PINATA_PUBLIC_KEY)
-//pinataPrivateKey(NEXT_PUBLIC_PINATA_PRIVATE_KEY)
+/*
 const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64')
-
-
 const client = ipfsHttpClient({
   protocol: 'https',
   host: 'ipfs.infura.io',
@@ -25,16 +23,11 @@ const client = ipfsHttpClient({
     authorization: auth
   }
 })
-
-
-const bcrypt = require('bcryptjs');
-const pinataSDK = require('@pinata/sdk');
-//const pinata = pinataSDK(process.env.NEXT_PUBLIC_PINATA_PUBLICE_KEY, process.env.NEXT_PUBLIC_PINATA_PRIVATE_KEY);
-const pinata = pinataSDK('95e746aca5e5bb9755a5', '08dd9abee5aa3c4e6d086d59d0029fcdaf12987f4a85d51315ae6b70a605ca54');
-
-
-export default function PurchaseChoice() {  
-  const router = useRouter();
+*/
+export default function PurchaseChoice() {
+  const bcrypt = require('bcryptjs');
+  const pinataSDK = require('@pinata/sdk');
+  const pinata = pinataSDK(pinataPublicKey, pinataPrivateKey);
 
   const [carrotAvail, setCarrotAvail] = useState()
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
@@ -62,11 +55,13 @@ export default function PurchaseChoice() {
   const [userIn, setUserIn] = useState(0)               // is user logged in
   const [cidDbWallet, setCidDbWallet] = useState(true)
   const [authResult, setAuthresult] = useState()
-  const [fileImg, setFileImg] = useState(null);
+  const [fileCid, setFileCid] = useState(null);
 
   var secureKeys=['']
   var maxUserNum=['']
   
+  const router = useRouter();
+
   const data = {
     subTitle: '4 Simple steps',
     title: 'Caret Tag Word: ' + itemData,
@@ -351,37 +346,41 @@ export default function PurchaseChoice() {
     // word string   
     console.log(' update array ->' + pymtChoice)
     if(carrotInDb === true){
-      // get word ID -- update
       console.log('UpdateDB')
-      updatePremCarrot(cUpdateWord)
-      
-      console.log('call insertIPFs')
-      insertIPFs(cUpdateWord)
+      await updatePremCarrot(cUpdateWord)
 
     }else {
-      console.log('InsertDB')
-      
-      insertCarrot(cUpdateWord)
-      console.log('call insertIPFs')
-      insertIPFs(cUpdateWord)
+      console.log('InsertDB')     
+      await insertCarrot(cUpdateWord)
 
     }
-    //preInsertIPFS()   //authentication passed
+
     //create CID
     // update IPFS Only if user has wallet
     //if(cidDbWallet === true){
+    //console.log('1 auth Pinata key')
+    //await preInsertIPFS()   //authentication passed
+      
+    console.log('call insertIPFS')
+    await insertIPFS(cUpdateWord)
+    
+    console.log('update db with cid')
 
-    //}   
+    // update sales table
 
-    // redirect user to dashboard/ty page
-
+   
     //if we get past 5 kick user to main page
     //console.log('form abuse ct check: ' + userCountCheck)
     //{userCountCheck === 5 && router.push('/')}
+
+    //flush()
   }
 
   function flush(data){
+    console.log('sayonara baby')
+   // redirect user to dashboard/ty page
 
+    return
   }
 
   async function prePymt(user) {
@@ -479,70 +478,64 @@ export default function PurchaseChoice() {
         //handle error here
         console.log(err);
     });
-
+    
   }
 
-  async function insertIPFs(data){
-    var dataArr = data.split(','); 
-    //var cInsertWord = ''
-    var cUpdateWord = []
-    cUpdateWord.push(dataArr[0])
-    cUpdateWord.push(dataArr[1])
+  async function insertIPFS(user){
 
-    const prefix = 'caret:'
-    var fileUrl = prefix + data
+    var dataIn = user.toString()
+    var dataArr = dataIn.split(',');
+    let userIn = dataArr[0]          
+    let wordIn = dataArr[1]
+    let messageIn = dataArr[9] 
 
-    const metaData = JSON.stringify({fileUrl}) 
-
-    try {
-      const added = await client.add(metaData)     
-      //const url = `https://ipfs.infura.io/ipfs/${added.path}`
-      //console.log(url)
-      cUpdateWord.push('urlData')
-    } catch (error) {
-      console.log("Error sending File to IPFS: ")
-      console.log(error)
-    }
-    console.log('get ready for cidCarrot: ' +cUpdateWord)
-    cidCarrot(cUpdateWord)
-
-  }
-
-    {/*
-    setFileImg(data)
-    //const sendFileToIPFS = async (e) => {
-      //if (data) {
-        console.log('file ' + fileImg)
-      try {
-          const formData = new FormData();
-          formData.append("file", fileImg);
-          const resFile = await axios({
-              method: "post",
-              url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
-              //url: "https://apogolypse.mypinata.cloud/ipfs/test/",
-              data: formData,
-              headers: {
-                  'pinata_api_key': `${'95e746aca5e5bb9755a5'}`,
-                  'pinata_secret_api_key': `${'08dd9abee5aa3c4e6d086d59d0029fcdaf12987f4a85d51315ae6b70a605ca54'}`,
-                  "Content-Type": "multipart/form-data"
-              },
-          });
-
-          const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-        console.log('pinata out ' + ImgHash); 
-        //Take a look at your Pinata Pinned section, you will see a new file added to you list.   
-      } catch (error) {
-          console.log("Error sending File to IPFS: ")
-          console.log(error)
+    const body = {
+      caret: messageIn
+    };
+    const options = {
+      pinataMetadata: {
+        name: '^'+wordIn,
+        keyvalue: 'caret.cloud',
+        pinataOptions: {
+          cidVersion: 0
+        }
       }
-      //}
-  }
-  //}
-*/}
+    }
 
-  async function cidCarrot(data){
+    pinata.pinJSONToIPFS(body, options).then((result) => {
+        //handle results here
+        setFileCid(result.IpfsHash)
+        console.log('result cid ' + fileCid)
+        updateCidCarrot(userIn,result.IpfsHash )
+    }).catch((err) => {
+        //handle error here
+        console.log(err);
+    });
+    
+    }
+
+  async function updateCidCarrot(user, cid){
+    var cInsertWord = ''
+    var cUpdateWord = []
+    cUpdateWord.push(user)
+    cUpdateWord.push(cid)
 
     const response = await fetch('/../api/cidCarrot', {
+      method: 'POST',
+      body:  cUpdateWord,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+    })
+    const dbInsert = await response.json() 
+      console.log('dbCid ' + JSON.stringify(dbInsert))
+      return dbInsert
+
+  }
+
+  async function salesCarrot(data){
+
+    const response = await fetch('/../api/salesCarrot', {
       method: 'POST',
       body:  data,
       headers: {

@@ -24,6 +24,7 @@ model carrots {
  price Int
  cid String
  ipfs String
+ cidw String
  sitepublickey String
  siteprivatekey String
  publickey String
@@ -72,6 +73,8 @@ model user {
 model wallet {
  id Int @id @default(autoincrement())
  userid Int
+ primarywallet Int
+ provider String
  chain String
  wallet String
 }
@@ -81,4 +84,25 @@ model banned {
  ip Int
  count Int
  ban Int
+}
+
+model promo {
+ id Int @id @default(autoincrement())
+ code String
+ discount String
+ expire String
+ }
+
+model sales {
+ id Int @id @default(autoincrement())
+ new Int
+ addon Int
+ email String
+ word String
+ price Int
+ plan Int
+ referral String
+ region String
+ promo String
+ salesdate String
 }

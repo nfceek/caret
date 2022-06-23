@@ -31,6 +31,7 @@ export default async(req, res) => {
             price: priceIn,
             cid: cidIn, 
             ipfs: '0',
+            cidw: '',
             sitepublickey: spubkeyIn,
             siteprivatekey: sprvkeyIn,
             publickey: pubkeyIn,
