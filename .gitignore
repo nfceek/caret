@@ -13,6 +13,8 @@ hardhat.config.js
 
 projectId.js
 projectSecret.js
+stripeId.js
+stripeSecret.js
 
 /out
 /prisma

@@ -139,7 +139,7 @@ const packages = {
         {
           id: 3,
           icon: <IoIosCheckmarkCircle />,
-          text: "5 Cypto Wallet Addresses",
+          text: "3 Cypto Wallet Addresses",
           isAvailable: true,
         },
         {

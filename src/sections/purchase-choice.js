@@ -3,31 +3,22 @@ import React, { useState } from "react"
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form';
 import axios from 'axios'
-import { create as ipfsHttpClient } from 'ipfs-http-client'
+import { loadStripe } from '@stripe/stripe-js';
+
 import { pinataPublicKey } from "../../projectId";
 import { pinataPrivateKey } from "../../projectSecret";
-
+import { stripePublishableKey } from "../../stripeId"
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import PurchaseFeature from 'components/purchase-feature';
 var FormData = require('form-data');
 
-/*
-const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64')
-const client = ipfsHttpClient({
-  protocol: 'https',
-  host: 'ipfs.infura.io',
-  port: 5001,
-  apiPath: '/api/v0',
-  headers: {
-    authorization: auth
-  }
-})
-*/
+
 export default function PurchaseChoice() {
   const bcrypt = require('bcryptjs');
   const pinataSDK = require('@pinata/sdk');
   const pinata = pinataSDK(pinataPublicKey, pinataPrivateKey);
+  const stripePromise = loadStripe(stripePublishableKey);
 
   const [carrotAvail, setCarrotAvail] = useState()
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
@@ -55,12 +46,15 @@ export default function PurchaseChoice() {
   const [userIn, setUserIn] = useState(0)               // is user logged in
   const [cidDbWallet, setCidDbWallet] = useState(true)
   const [authResult, setAuthresult] = useState()
-  const [fileCid, setFileCid] = useState(null);
+  const [fileCid, setFileCid] = useState(null)
+  const [stripeData, setStripeData] = useState()
+  const [loading, setLoading] = useState(false);
 
   var secureKeys=['']
   var maxUserNum=['']
   
   const router = useRouter();
+  const { status } = router.query;
 
   const data = {
     subTitle: '4 Simple steps',
@@ -321,8 +315,60 @@ export default function PurchaseChoice() {
     //console.log(' pymt choice ^' + pymtChoice + ' cid -> ' + cWord + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
     var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
     console.log('cid ' + cCid)
-    //process pymt before updating !!
 
+    //process pymt before updating !!
+    // check for promo code
+    console.log('pymt choice ' + pymtChoice)
+    if(pymtChoice === 'Pro'){
+      setLoading(true);
+      setStripeData({
+        name: 'Caret PRO Plan',
+        description: 'Crypto Address Naming Service for Single Wallet Address. Get Caret Tag vanity name for 1 Crypto wallet address.',
+        image: 'https://caret.cloud/images/cnas-pro-sm.png',
+        quantity: 1,
+        price: 5,
+      });
+      //const createCheckOutSession = async () => {
+        const stripe = await stripePromise;
+        const checkoutSession = await axios.post('/../api/create-stripe-session', {
+          item: stripeData,
+        });
+        const result = await stripe.redirectToCheckout({
+          sessionId: checkoutSession.data.id,
+        });
+        if (result.error) {
+          alert(result.error.message);
+        }
+      //};
+    }else{
+      setLoading(true);
+      setStripeData({
+        name: 'Caret PREM Plan',
+        description: 'Crypto Address Naming Service for Multi Wallet Address. Get Caret Tag vanity name for 3 Crypto wallet address.',
+        image: 'https://caret.cloud/images/cnas-prem-sm.png',
+        quantity: 1,
+        price: 20,
+      });
+      const createCheckOutSession = async () => {
+        const stripe = await stripePromise;
+        const checkoutSession = await axios.post('/../api/create-stripe-session', {
+          item: stripeData,
+        });
+        const result = await stripe.redirectToCheckout({
+          sessionId: checkoutSession.data.id,
+        });
+        if (result.error) {
+          alert(result.error.message);
+        }
+        setLoading(false)
+      };
+    }
+
+
+
+
+
+    /*
     //update db - user and word
     // user
     preAddUser(data)
@@ -374,6 +420,7 @@ export default function PurchaseChoice() {
     //{userCountCheck === 5 && router.push('/')}
 
     //flush()
+    */
   }
 
   function flush(data){
@@ -520,7 +567,7 @@ export default function PurchaseChoice() {
     cUpdateWord.push(user)
     cUpdateWord.push(cid)
 
-    const response = await fetch('/../api/cidCarrot', {
+    const response = await fetch('/../api/carrotCid', {
       method: 'POST',
       body:  cUpdateWord,
       headers: {
@@ -784,9 +831,18 @@ export default function PurchaseChoice() {
                             }
                           </div>  
                             <div className="form-group mt-6 justify-left text-left">
-                                <label>4) Choose a Plan</label>                            
-                            </div>                               
-                      
+                                <label>4) Choose a Plan</label> 
+                                {status && status === 'success' && (
+                                  <div className='bg-green-100 text-green-700 p-2 rounded border mb-2 border-green-700'>
+                                    Payment Successful
+                                  </div>
+                                )}
+                                {status && status === 'cancel' && (
+                                  <div className='bg-red-100 text-red-700 p-2 rounded border mb-2 border-red-700'>
+                                    Payment Unsuccessful
+                                  </div>
+                                )}                           
+                            </div>                                                  
                       </div>
                       <div className=''></div> 
                       </div>
@@ -851,7 +907,7 @@ export default function PurchaseChoice() {
                               </div>
                             :
                               <div>
-                                <button id='btnFree' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => regClick()}>FREE</button>  
+                                <button id='btnFree' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => regClick()}>{loading ? 'Processing...' : 'FREE'}</button>  
                               </div>
                             }
                           </div>                  
@@ -895,7 +951,7 @@ export default function PurchaseChoice() {
                           <div className='flex inline-block justify-center text-center mt-4 mb-6'>                      
                             {carrotAvail === true ? 
                               <div>                     
-                                <button id='btnPro' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}> $ 5.00 USD </button>
+                                <button id='btnPro' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}>{loading ? 'Processing...' : '$ 5.00 USD'}</button>
                               </div>
                             :
                               <div>                         
@@ -947,7 +1003,7 @@ export default function PurchaseChoice() {
                         <div className='flex inline-block justify-center text-center mt-4 mb-6'>
                           {carrotAvail === true ?
                               <div>                     
-                                <button id='btnPrem' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}> $ 20.00 USD</button>  
+                                <button id='btnPrem' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}>{loading ? 'Processing...' : '$ 20.00 USD'}</button>  
                               </div>
                             :
                               <div>                         
