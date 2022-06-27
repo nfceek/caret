@@ -26,6 +26,7 @@ export default async(req, res) => {
             firstname: '',
             lastname: '',
             username: uname,
+            active: 0,
             password: pwd,           
             plan: parseInt(plan),
             admin: false,

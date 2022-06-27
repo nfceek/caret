@@ -13,13 +13,15 @@ import * as Yup from 'yup';
 import PurchaseFeature from 'components/purchase-feature';
 var FormData = require('form-data');
 
+const publishableKey = stripePublishableKey
+const stripePromise = loadStripe(publishableKey); 
 
 export default function PurchaseChoice() {
   const bcrypt = require('bcryptjs');
   const pinataSDK = require('@pinata/sdk');
   const pinata = pinataSDK(pinataPublicKey, pinataPrivateKey);
-  const stripePromise = loadStripe(stripePublishableKey);
 
+  
   const [carrotAvail, setCarrotAvail] = useState()
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
   const [carrotInDb, setCarrotInDb ] = useState('')
@@ -47,14 +49,31 @@ export default function PurchaseChoice() {
   const [cidDbWallet, setCidDbWallet] = useState(true)
   const [authResult, setAuthresult] = useState()
   const [fileCid, setFileCid] = useState(null)
-  const [stripeData, setStripeData] = useState()
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)  
+  const [stripeReturn, setStripeReturn] = useState(false)
+
+  const [stripe5Data, setStripe5Data] = useState({
+    name: 'Caret PRO Plan',
+    description: 'Crypto Address Naming Service for Single Wallet Address. Get Caret Tag vanity name for 1 Crypto wallet address.',
+    image: 'https://caret.cloud/images/cnas-pro-sm.png',
+    quantity: 1,
+    price: 5,
+  });
+
+  const [stripe20Data, setStripe20Data] = useState({
+    name: 'Caret PREM Plan',
+    description: 'Crypto Address Naming Service for Multi Wallet Address. Get Caret Tag vanity name for 3 Crypto wallet address.',
+    image: 'https://caret.cloud/images/cnas-prem-sm.png',
+    quantity: 1,
+    price: 20,
+  });
+
 
   var secureKeys=['']
   var maxUserNum=['']
   
   const router = useRouter();
-  const { status } = router.query;
+  const status = router.query;
 
   const data = {
     subTitle: '4 Simple steps',
@@ -68,8 +87,10 @@ export default function PurchaseChoice() {
   React.useEffect(() => {
     if (router.isReady) {
       try {
-        setItemData(router.query.data.toUpperCase())
-        caretCheck(router.query.data.toUpperCase())
+        setItemData(router.query.data)
+        caretCheck(router.query.data)
+        //setItemData(router.query.data.toUpperCase())
+        //caretCheck(router.query.data.toUpperCase())
         var item = localStorage.getItem('caret')
         //var item = uStatus
         console.log('uStatus in ' + item)
@@ -82,13 +103,11 @@ export default function PurchaseChoice() {
   }, [router.isReady]);
   
   function chStatus(data){
-    //console.log('log status ' + data)
     if(data === null){
       setUserIn(0)
     }else{
       setUserIn(1)
     }
-    //console.log('user status ' + userIn)
   }
 
   async function caretCheck(data) { 
@@ -124,8 +143,6 @@ export default function PurchaseChoice() {
     // is person logged in
     if(localStorage === window.localStorage){
       if(typeof window !== "undefined" && localStorage.caret !== null || localStorage.caret !== "undefined"){
-        console.log('status ' + localStorage.caret)
-
       }
     } 
 
@@ -249,7 +266,6 @@ export default function PurchaseChoice() {
   async function pre(data) {
     // add acounter to prevent wholesale slamming of words
     //setUserCountCheck(userCountCheck + 1) 
-    //console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
     
     // is it in db
     //console.log('in db ' + carrotInDb + ' wallet State ' + walletState )
@@ -289,17 +305,21 @@ export default function PurchaseChoice() {
     }
     var cAvailable = 1
     var cPrice = ''
+    var planChoice = ''
     if(pymtChoice === 'Prem'){
       cWord = itemData.toLowerCase()
       cWord2 = itemData.toLowerCase() + '01'
       cWord3 = itemData.toLowerCase() + '02'
-      cPrice = 20;
+      cPrice = 20
+      planChoice = 3
     } else if (pymtChoice === 'Pro') {
       cWord = itemData.toLowerCase() + numberCount
       cPrice = 5;
+      planChoice = 2
     } else {
       cWord = itemData.toLowerCase() + numberCount
       cPrice = 0;
+      planChoice = 1
     }
     
     var cSitepublickey = secureKeys[0]
@@ -310,69 +330,11 @@ export default function PurchaseChoice() {
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     var setTime = date + '-' + time;
-
+    var promo = ''
     //assemble caret string for CID
     //console.log(' pymt choice ^' + pymtChoice + ' cid -> ' + cWord + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
     var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
-    console.log('cid ' + cCid)
-
-    //process pymt before updating !!
-    // check for promo code
-    console.log('pymt choice ' + pymtChoice)
-    if(pymtChoice === 'Pro'){
-      setLoading(true);
-      setStripeData({
-        name: 'Caret PRO Plan',
-        description: 'Crypto Address Naming Service for Single Wallet Address. Get Caret Tag vanity name for 1 Crypto wallet address.',
-        image: 'https://caret.cloud/images/cnas-pro-sm.png',
-        quantity: 1,
-        price: 5,
-      });
-      //const createCheckOutSession = async () => {
-        const stripe = await stripePromise;
-        const checkoutSession = await axios.post('/../api/create-stripe-session', {
-          item: stripeData,
-        });
-        const result = await stripe.redirectToCheckout({
-          sessionId: checkoutSession.data.id,
-        });
-        if (result.error) {
-          alert(result.error.message);
-        }
-      //};
-    }else{
-      setLoading(true);
-      setStripeData({
-        name: 'Caret PREM Plan',
-        description: 'Crypto Address Naming Service for Multi Wallet Address. Get Caret Tag vanity name for 3 Crypto wallet address.',
-        image: 'https://caret.cloud/images/cnas-prem-sm.png',
-        quantity: 1,
-        price: 20,
-      });
-      const createCheckOutSession = async () => {
-        const stripe = await stripePromise;
-        const checkoutSession = await axios.post('/../api/create-stripe-session', {
-          item: stripeData,
-        });
-        const result = await stripe.redirectToCheckout({
-          sessionId: checkoutSession.data.id,
-        });
-        if (result.error) {
-          alert(result.error.message);
-        }
-        setLoading(false)
-      };
-    }
-
-
-
-
-
-    /*
-    //update db - user and word
-    // user
-    preAddUser(data)
-
+    
     // get new user ID
     var cUserEmail = data.email
     const curDate = new Date().toISOString()
@@ -388,39 +350,64 @@ export default function PurchaseChoice() {
     cUpdateWord.push(cPrivkey)
     cUpdateWord.push(curDate)
     cUpdateWord.push(cCid)
+    cUpdateWord.push(planChoice)
+    cUpdateWord.push(promo)
 
-    // word string   
+    //console.log('cUpdateDB word ' + cUpdateWord)
+    // user
+    preAddUser(data)
+
+    //update db - user and word
     console.log(' update array ->' + pymtChoice)
     if(carrotInDb === true){
       console.log('UpdateDB')
       await updatePremCarrot(cUpdateWord)
-
     }else {
       console.log('InsertDB')     
       await insertCarrot(cUpdateWord)
+    }
+
+    preSalesData(cUpdateWord)
+
+    // check for promo code
+    console.log('pymt choice ' + pymtChoice)
+    if(pymtChoice === 'Pro'){
+      setLoading(true);
+      //console.log( 'user passed down data ' + JSON.stringify(data))
+      createCheckOutSession(stripe5Data, cUserEmail, cCid)
+      setLoading(false)
+
+    }else{
+      setLoading(true);
+      createCheckOutSession(stripe20Data, cUserEmail,cCid)
+        setLoading(false)
 
     }
 
-    //create CID
-    // update IPFS Only if user has wallet
-    //if(cidDbWallet === true){
-    //console.log('1 auth Pinata key')
-    //await preInsertIPFS()   //authentication passed
-      
-    console.log('call insertIPFS')
-    await insertIPFS(cUpdateWord)
-    
-    console.log('update db with cid')
-
-    // update sales table
-
-   
+    async function createCheckOutSession(data, uEmail, cCid){ 
+      var dataIn = [{"caret": itemData, "email": uEmail,"cid":cCid}]
+      var toItem = Object.assign({}, data, dataIn)
+      console.log('nu nu data' + JSON.stringify(toItem) )
+      /*
+        const stripe = await stripePromise;
+        const checkoutSession = await axios.post('/../api/create-stripe-session', {
+          item: toItem,
+        });  
+        const result = await stripe.redirectToCheckout({         
+          sessionId: checkoutSession.data.id,
+        });
+        if (result.error) {
+          alert(result.error.message);
+        } 
+      */            
+      }
+     
     //if we get past 5 kick user to main page
     //console.log('form abuse ct check: ' + userCountCheck)
     //{userCountCheck === 5 && router.push('/')}
 
     //flush()
-    */
+    
   }
 
   function flush(data){
@@ -428,6 +415,22 @@ export default function PurchaseChoice() {
    // redirect user to dashboard/ty page
 
     return
+  }
+
+  async function preSalesData(data){
+    console.log(' user data ' + JSON.stringify( data))
+    var formData = JSON.stringify(data)
+    /*
+    const response = await fetch('/../api/carrotSold', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepSales= await response.json() 
+  */   
+
   }
 
   async function prePymt(user) {
@@ -691,7 +694,7 @@ export default function PurchaseChoice() {
 
 
   return (
-    <div id='purForm'>
+    <div id='purForm' >
       <div className='' >
         <div className='purRowOne' >
           <div className=''>
@@ -725,7 +728,7 @@ export default function PurchaseChoice() {
               </div>
             </div>
             :
-            <div>
+            <div className=''>
               <div className='purRow2'>
                 <div className ="flex inline-block justify-center text-center mb-6">
                   <div>
@@ -746,7 +749,7 @@ export default function PurchaseChoice() {
                   </div>               
                   }
                   {carrotAvail === false &&         
-                    <div className='purRow3'>
+                    <div className=' container purRow3'>
                       <div className ="flex inline-block justify-center text-center"> 
                           <form onSubmit={handleSubmit(availClick)}>               
                               <div className ="flex inline-block justify-center text-center">                                    
@@ -831,17 +834,7 @@ export default function PurchaseChoice() {
                             }
                           </div>  
                             <div className="form-group mt-6 justify-left text-left">
-                                <label>4) Choose a Plan</label> 
-                                {status && status === 'success' && (
-                                  <div className='bg-green-100 text-green-700 p-2 rounded border mb-2 border-green-700'>
-                                    Payment Successful
-                                  </div>
-                                )}
-                                {status && status === 'cancel' && (
-                                  <div className='bg-red-100 text-red-700 p-2 rounded border mb-2 border-red-700'>
-                                    Payment Unsuccessful
-                                  </div>
-                                )}                           
+                                <label>4) Choose a Plan</label>                           
                             </div>                                                  
                       </div>
                       <div className=''></div> 
@@ -849,7 +842,7 @@ export default function PurchaseChoice() {
                     </div>
                   </div>
                 }
-              <div></div>
+              <div className=''></div>
               <div className='purRow8'>        
                 <div className='grid grid-cols-5 gap-4'>
                   <div className='' ></div>
@@ -950,8 +943,9 @@ export default function PurchaseChoice() {
                           </div>
                           <div className='flex inline-block justify-center text-center mt-4 mb-6'>                      
                             {carrotAvail === true ? 
-                              <div>                     
-                                <button id='btnPro' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}>{loading ? 'Processing...' : '$ 5.00 USD'}</button>
+                              <div>
+                                 <button id='btnPro'  className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}>$ 5.00 USD</button>                     
+                                {/*<button id='btnPro' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}>{loading ? 'Processing...' : '$ 5.00 USD'}</button>*/}
                               </div>
                             :
                               <div>                         
@@ -1017,9 +1011,10 @@ export default function PurchaseChoice() {
                   <div className=''></div> 
                 </div>
               </div>
+              
               </form>
-        </div> 
-      }     
+            </div> 
+          }     
       </div>
     </div>
   )

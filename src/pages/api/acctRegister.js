@@ -24,6 +24,7 @@ export default async(req, res) => {
             firstname: fName,
             lastname: lName,
             username: username,
+            active: 1,
             password: pwd,           
             plan: 1,
             admin: false,

@@ -15,7 +15,7 @@ export default async(req, res) => {
         let prvkeyIn = dataArr[7]
         let dateIn = dataArr[8]  
         let cidIn = dataArr[9]                     
-    const curDate = new Date().toISOString()
+        const curDate = new Date().toISOString()
     
     const response = await prisma.carrots.create({
         data: {
@@ -27,6 +27,7 @@ export default async(req, res) => {
             pro: false, 
             premium: false, 
             banned: false, 
+            pending: true,
             sold: true,
             price: priceIn,
             cid: cidIn, 

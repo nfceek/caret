@@ -1,18 +1,35 @@
-
+import { m } from 'framer-motion';
 import { prisma } from '../../db'
 
-//const prisma = new PrismaClient();
-
 export default async(req, res) => {
-    const data = JSON.parse(req.body)
-    const createdNft = await prisma.nftmaster.update({            
-        where: {
-           id: data,
-          },
-          data: {
-            sold: 'true',
-          },
-        })
- 
-    res.json(createdNft)
+    
+    var inData = req.body
+    inData = inData.replace(/\[\]/g, '')
+    console.log('hola ' + inData)
+    var dataArr = inData.split(',');
+      let emailIn = dataArr[0] 
+      let wordIn = dataArr[1]                              
+      let priceIn = parseInt(dataArr[3])                               
+      let salesdate = dataArr[8]  
+      let planIn = parseInt(dataArr[10])
+      let promoIn = dataArr[11]                    
+      const curDate = new Date().toISOString()
+    
+    const response = await prisma.sales.create({
+        data: {
+          new: 1,
+          pending: 1,
+          sold: 1, 
+          addon: 0,
+          email: emailIn,
+          word: wordIn, 
+          price: priceIn,
+          plan: planIn,
+          salesdate: salesdate,
+          referral: '',
+          region: '',
+          promo: '',
+        },  
+    });
+    res.json(response)
 }

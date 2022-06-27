@@ -12,16 +12,14 @@ module.exports = {
       return config;
     },
     eslint: {
-      // Warning: This allows production builds to successfully complete even if
-      // your project has ESLint errors.
       ignoreDuringBuilds: true,
     },
     publicRuntimeConfig: {
       apiUrl: process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000/api'
-      : 'http://localhost:3000/api'
+      && 'http://localhost:3000/api'
+     
     },
     images: {
-      domains: ['apogolypse.mypinata.cloud', 'stripe-camo.global.ssl.fastly.net'],
+      domains: ['images.unsplash.com','caret.cloud', 'apogolypse.mypinata.cloud', 'stripe-camo.global.ssl.fastly.net'],
 	},
   };

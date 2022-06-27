@@ -5,6 +5,11 @@
     text-align: center;
   }
 
+  #purFormComplete{
+    padding-top: 100px;
+    text-align: center;
+  }
+
   #bxUserInfo {
     padding: 25px 5px 5px 5px;
   }

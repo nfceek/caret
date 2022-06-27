@@ -1,0 +1,32 @@
+.container {
+    min-height: 100vh;
+    padding: 2rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cardHeader {
+    background-color: grey;
+  }
+  .cardContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .cardPricing {
+    display: flex;
+    justify-content: row;
+    align-items: "center";
+    margin-bottom: "16px";
+  }
+  .subheader {
+    padding-bottom: 30px;
+  }
+  
+  @media (max-width: 600px) {
+    .grid {
+      width: 100%;
+      flex-direction: column;
+    }
+  }

@@ -20,6 +20,7 @@ model carrots {
  pro Boolean
  premium Boolean
  banned Boolean
+ pending Boolean
  sold Boolean
  price Int
  cid String
@@ -49,6 +50,7 @@ model user {
  firstname String
  lastname String
  username String
+ active Int
  caret String
  avatar String
  password String
@@ -96,6 +98,8 @@ model promo {
 model sales {
  id Int @id @default(autoincrement())
  new Int
+ pending Int
+ sold Int
  addon Int
  email String
  word String

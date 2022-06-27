@@ -25,6 +25,7 @@ export default async(req, res) => {
             userid: useridIn,
             append: appendIn, 
             available: false, 
+            pending: true,
             sold: true,
             price: priceIn,
             cid: cidIn,

@@ -74,13 +74,16 @@ export default function Signup() {
     }
     
     async function onSubmit(user) {
-      const item = user.request
+      var rUpper = user.request.toUpperCase()
+
+      const item = rUpper
       console.log(item)
       router.push(
         {
           pathname: '/purchase',
           query: {data: item}   
-        }, '/purchase')        
+        //}, '/purchase')
+        },)        
     }
  
     return (
