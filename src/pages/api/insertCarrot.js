@@ -3,7 +3,7 @@ import { prisma } from '../../db'
 export default async(req, res) => {
     
     const inData = req.body
-    console.log('hola ' + inData)
+    //console.log('carrot tbl: ' + inData)
     var dataArr = inData.split(',');
         let useridIn = dataArr[0]          
         let wordIn = dataArr[1]            
@@ -14,7 +14,10 @@ export default async(req, res) => {
         let pubkeyIn = dataArr[6]           
         let prvkeyIn = dataArr[7]
         let dateIn = dataArr[8]  
-        let cidIn = dataArr[9]                     
+        let cidIn = dataArr[9] 
+        let availIn = dataArr[12]
+        let pendIn = dataArr[13]
+        let soldIn = dataArr[14]
         const curDate = new Date().toISOString()
     
     const response = await prisma.carrots.create({
@@ -22,13 +25,13 @@ export default async(req, res) => {
             userid: useridIn,
             word: wordIn, 
             append: appendIn, 
-            available: false, 
+            available: availIn, 
             business: false, 
             pro: false, 
             premium: false, 
             banned: false, 
-            pending: true,
-            sold: true,
+            pending: pendIn,
+            sold: soldIn,
             price: priceIn,
             cid: cidIn, 
             ipfs: '0',

@@ -27,6 +27,15 @@
     cursor: pointer; 
   }
 
+  #itemPos, #itemNeg {
+    min-width: 320px
+  
+  }
+
+  #resultArea {
+    min-height: 250px;
+
+  }
   .BnrHeader {
     background-color: 'white';
     }

@@ -334,7 +334,9 @@ export default function PurchaseChoice() {
     //assemble caret string for CID
     //console.log(' pymt choice ^' + pymtChoice + ' cid -> ' + cWord + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
     var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
-    
+    var cAvail = 0
+    var cPend = 1
+    var cSold = 0
     // get new user ID
     var cUserEmail = data.email
     const curDate = new Date().toISOString()
@@ -352,16 +354,19 @@ export default function PurchaseChoice() {
     cUpdateWord.push(cCid)
     cUpdateWord.push(planChoice)
     cUpdateWord.push(promo)
+    cUpdateWord.push(cAvail)
+    cUpdateWord.push(cPend)
+    cUpdateWord.push(cSold)
 
     //console.log('cUpdateDB word ' + cUpdateWord)
     // user
     preAddUser(data)
 
-    //update db - user and word
+    //update db word
     console.log(' update array ->' + pymtChoice)
     if(carrotInDb === true){
       console.log('UpdateDB')
-      await updatePremCarrot(cUpdateWord)
+      await updateCarrot(cUpdateWord)
     }else {
       console.log('InsertDB')     
       await insertCarrot(cUpdateWord)
@@ -418,9 +423,9 @@ export default function PurchaseChoice() {
   }
 
   async function preSalesData(data){
-    console.log(' user data ' + JSON.stringify( data))
-    var formData = JSON.stringify(data)
-    /*
+    //console.log(' user data ' + JSON.stringify( data))
+    var formData = data
+   
     const response = await fetch('/../api/carrotSold', {
       method: 'POST',
       body: formData, 
@@ -429,7 +434,7 @@ export default function PurchaseChoice() {
       },
     })
     const stepSales= await response.json() 
-  */   
+   
 
   }
 
@@ -518,70 +523,6 @@ export default function PurchaseChoice() {
 
   }
 
-  async function preInsertIPFS(){
-
-    pinata.testAuthentication().then((result) => {
-      //handle successful authentication here
-      console.log('Pinata test: ', result);
-      setAuthresult(result)
-    }).catch((err) => {
-        //handle error here
-        console.log(err);
-    });
-    
-  }
-
-  async function insertIPFS(user){
-
-    var dataIn = user.toString()
-    var dataArr = dataIn.split(',');
-    let userIn = dataArr[0]          
-    let wordIn = dataArr[1]
-    let messageIn = dataArr[9] 
-
-    const body = {
-      caret: messageIn
-    };
-    const options = {
-      pinataMetadata: {
-        name: '^'+wordIn,
-        keyvalue: 'caret.cloud',
-        pinataOptions: {
-          cidVersion: 0
-        }
-      }
-    }
-
-    pinata.pinJSONToIPFS(body, options).then((result) => {
-        //handle results here
-        setFileCid(result.IpfsHash)
-        console.log('result cid ' + fileCid)
-        updateCidCarrot(userIn,result.IpfsHash )
-    }).catch((err) => {
-        //handle error here
-        console.log(err);
-    });
-    
-    }
-
-  async function updateCidCarrot(user, cid){
-    var cInsertWord = ''
-    var cUpdateWord = []
-    cUpdateWord.push(user)
-    cUpdateWord.push(cid)
-
-    const response = await fetch('/../api/carrotCid', {
-      method: 'POST',
-      body:  cUpdateWord,
-      headers: {
-      'Content-Type':'applications/json'
-      },
-    })
-    const dbInsert = await response.json() 
-      console.log('dbCid ' + JSON.stringify(dbInsert))
-      return dbInsert
-
-  }
 
   async function salesCarrot(data){
 
@@ -613,20 +554,8 @@ export default function PurchaseChoice() {
   }
 
   async function updateCarrot(data){
-    console.log('word data in ' + data)
-    const response = await fetch('/../api/updateCarrot', {
-      method: 'POST',
-      body:  data,
-      headers: {
-      'Content-Type':'applications/json'
-      },
-    })
-    const dbUpdate = await response.json() 
-      console.log('dbUpdate ' + dbUpdate)
-      return dbUpdate
-  }
 
-  async function updatePremCarrot(data){
+
     const response = await fetch('/../api/updateCarrot', {
       method: 'POST',
       body:  data,
