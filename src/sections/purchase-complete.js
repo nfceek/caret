@@ -16,104 +16,130 @@ var FormData = require('form-data');
 
 export default function PurchaseComplete() {
 
-  const { query } = useRouter();
+  //const { query } = useRouter();
   const[saleStatus, setSaleStatus] = useState()
-  const router = useRouter();
-  var rStatus = router.query;
-  var rCaret = ''
-  var rEmail = ''
-  var rCid = ''
-  console.log('status ' + JSON.stringify(rStatus) + ' caret ' + rCaret + ' email ' + rEmail + ' cid' + rCid)
+  const[inCaret, setInCaret] = useState()
+  //const router = useRouter();
 
+  //var rStatus = router.query.status
+  //var rCaret = router.query.caret
+  var rStatus = 'fail'
+  var rCaret = 'jumanji'
+  var fullCaret = '^' + rCaret
 
-  var rAvail = 0
-  var rPend = 1
-  var rSold = 0
+  if(rStatus === 'success' || rStatus === 'promo' ){
+    var rAvail = 0
+    var rPend = 0
+    var rSold = 1
+    var rBan = 0
+    var rActive = 1
+  }else{
+    var rAvail = 1
+    var rPend = 0
+    var rSold = 0
+    var rBan = 1
+    var rActive = 0
+  }
 
-
-  var rPromo = ''
-  var today = new Date();
-  var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-  var setTime = date + '-' + time;
-
-  // get new user ID
-  var cUserEmail = ''
-  const curDate = new Date().toISOString()
-  var cInsertWord = ''
   var cUpdateWord = []
-  cUpdateWord.push(rEmail)
   cUpdateWord.push(rCaret)
-  cUpdateWord.push(rCid)
-  cUpdateWord.push(rPromo)
   cUpdateWord.push(rAvail)
   cUpdateWord.push(rPend)
   cUpdateWord.push(rSold)
-  cUpdateWord.push(curDate)
+  cUpdateWord.push(rBan)
+  cUpdateWord.push(rActive)
+
+  console.log('prepper data ' + cUpdateWord)
 
     console.log('1 - baseline queries')
       // -- await preInsertIPFS() 
       // -- insert IFPS
-    console.log('2 - api queries')
-      // -- postUser(data)
-      // -- postCarot(data)
-      // -- postUser(data)
-      //
-    console.log('3 - purchase insert queries')
-      // --update IPFS Only if user has wallet
-      // update carrot -- pending 0 and sold 1
-      // update user -- activate = 1
-      // update sales table  -- pending 0 and sold 1
-      //
-    console.log('4 - decline update queries')
+    console.log('rStatus ' + rStatus)
       // --update IPFS Only if user has wallet
       // update carrot -- avail 0 if prem sold 0 -- rm row if pro or free plan
       // no action on user
       // update sales table -- rm sale row
       //
 
-      async function postUser(user) { 
-        //console.log(' user data ' + JSON.stringify( data))
-        var formData = data
-       
-        const response = await fetch('/../api/finalUser', {
-          method: 'POST',
-          body: formData, 
-          headers: {
-            'Content-Type':'applications/json'
-          },
-        })
-        const stepUser = await response.json()        
-      } 
+    if(rStatus === 'success' || rStatus === 'promo' ){
+      postUser(cUpdateWord)
+      postSales(cUpdateWord)
+      postCarrots(cUpdateWord)
+    }else{
+      postUser(cUpdateWord)
+      rmSales(cUpdateWord)
+      rmCarrots(cUpdateWord)
+    }
 
-      async function postSales(data){
-        //console.log(' user data ' + JSON.stringify( data))
-        var formData = data
-       
-        const response = await fetch('/../api/finalSales', {
-          method: 'POST',
-          body: formData, 
-          headers: {
-            'Content-Type':'applications/json'
-          },
-        })
-        const stepSales = await response.json()        
-      }
-
-      async function postCarrots(data){
-        //console.log(' user data ' + JSON.stringify( data))
-        var formData = data
-       
-        const response = await fetch('/../api/finalCarrot', {
-          method: 'POST',
-          body: formData, 
-          headers: {
-            'Content-Type':'applications/json'
-          },
-        })
-        const stepCarrots = await response.json()        
-      } 
+    async function postUser(data) { 
+      console.log(' user data ' + JSON.stringify( data))
+      var formData = data
     
+      const response = await fetch('/../api/finalUser', {
+        method: 'POST',
+        body: formData, 
+        headers: {
+          'Content-Type':'applications/json'
+        },
+      })
+      const stepUser = await response.json()        
+    } 
+
+    async function postSales(data){
+      //console.log(' user data ' + JSON.stringify( data))
+      var formData = data
+    
+      const response = await fetch('/../api/finalSales', {
+        method: 'POST',
+        body: formData, 
+        headers: {
+          'Content-Type':'applications/json'
+        },
+      })
+      const stepSales = await response.json()        
+    }
+
+    async function postCarrots(data){
+      console.log(' user data ' + JSON.stringify( data))
+      var formData = data
+    
+      const response = await fetch('/../api/finalCarrot', {
+        method: 'POST',
+        body: formData, 
+        headers: {
+          'Content-Type':'applications/json'
+        },
+      })
+      const stepCarrots = await response.json()        
+    }  
+
+    async function rmSales(data){
+      //console.log(' user data ' + JSON.stringify( data))
+      var formData = data
+    
+      const response = await fetch('/../api/removeSales', {
+        method: 'POST',
+        body: formData, 
+        headers: {
+          'Content-Type':'applications/json'
+        },
+      })
+      const stepSales = await response.json()        
+    }
+
+    async function rmCarrots(data){
+      //console.log(' user data ' + JSON.stringify( data))
+      var formData = data
+    
+      const response = await fetch('/../api/removeCarrot', {
+        method: 'POST',
+        body: formData, 
+        headers: {
+          'Content-Type':'applications/json'
+        },
+      })
+      const stepCarrots = await response.json()        
+    }
    
     async function preInsertIPFS(){
        /*
@@ -128,7 +154,6 @@ export default function PurchaseComplete() {
        */ 
     }
   
-    //if(cidDbWallet === true){
     async function insertIPFS(user){
 
       var dataIn = user.toString()
@@ -179,59 +204,97 @@ export default function PurchaseComplete() {
         return dbInsert
   
     }
-    
 
+    async function lgClick(){
+      router.push('/account')
+    }
+    
+    async function cClick(){
+      router.push('/')
+    }
 
   return (
     <div id='purFormComplete' >
       <div className='' >
         <div className='purRowOne' >
-          <div className='justify-center text-center text-6xl pl-4 mt-4 mb-6'>
-            Purchase Status Page
-          </div>
-
-            <div id='resultArea' className='' >
-                {/*{status && status === 'success' && (*/}
-                  <div>  
-
-                    <div className='flex inline-block justify-center text-center mb-6'>
-                      <div className='justify-center text-center'>  
-                        <div className='justify-center text-center text-2xl pl-4 mt-4'>
+          {rStatus ==='success' &&
+              <div>
+                <div className='justify-center text-center text-5xl pl-4 mt-4 mb-6'>
+                  {fullCaret} Purchase Status
+                </div>
+              </div>
+          }
+          {rStatus === 'promo' &&
+              <div>
+                <div className='justify-center text-center text-5xl pl-4 mt-4 mb-6'>
+                  {fullCaret} Creation Status
+                </div>
+              </div>
+          }
+          <div id='resultArea' className='' >
+                        
+            {rStatus === 'fail' ?
+              <div>  
+                <div className='flex inline-block justify-center text-center mb-6'>
+                  <div className='justify-center text-center'>  
+                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                      <div id='itemNeg' className='bg-red-100 text-red-700 p-2 rounded border mb-2 border-red-700'>
+                        Creation Unsuccessful
+                      </div>
+                      </div>
+                    </div >
+                  </div >                                                                                     
+                  <div className='flex inline-block justify-center text-center mb-6'>
+                    <div className=''>  
+                      <div className='justify-left text-left text-2xl pl-4 mt-4'>
+                        Oops, something went wrong...Please try again.
+                      </div> 
+                      <div className='justify-left text-left text-2xl pl-4 mt-4 pb-5'></div> 
+                      <div className='justify-right text-right pl-4 mt-4'></div>
+                  </div>
+                </div>
+              </div>
+            :
+              <div>
+                <div className='flex inline-block justify-center text-center mb-6'>
+                  <div className=''>  
+                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                      {rStatus ==='success' &&
+                        <div>
                           <div id='itemPos' className='bg-green-100 text-green-700 p-2 rounded border mb-2 border-green-700'>
                             Payment Successful
                           </div>
-                        </div> 
-                        <div className='justify-left text-left text-2xl pl-4 mt-4'>
-                          You now have an account and your Caret can be viewed HERE
-                      </div>              
-                    </div>
-                  </div >
-
-                </div>                
-
-                 {/*)}
-                {status && status === 'cancel' && (*/}
-
-                  <div>  
-
-                    <div className='flex inline-block justify-center text-center mb-6'>
-                      <div className='justify-center text-center'>  
-                        <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                          <div id='itemNeg' className='bg-red-100 text-red-700 p-2 rounded border mb-2 border-red-700'>
-                            Payment Unsuccessful
+                        </div>
+                      }
+                      {rStatus === 'promo' &&                            
+                        <div>
+                          <div id='itemPos' className='bg-green-100 text-green-700 p-2 rounded border mb-2 border-green-700'>
+                            Caret Creation Successful
                           </div>
-                        </div> 
+                        </div>
+                      }
+                    </div>                 
+                    <div className='flex inline-block justify-center text-center mb-6'>
+                      <div className=''>  
                         <div className='justify-left text-left text-2xl pl-4 mt-4'>
-                      </div>              
+                          You now have an Account and your Caret is active.
+                        </div> 
+                        <div className='justify-left text-left text-2xl pl-4 mt-4 pb-5'>
+                          Login to the user dashboard to update information or add services. 
+                        </div> 
+                        <div className='justify-right text-right pl-4 mt-4'>
+                          <button id='btnLogin' className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => lgClick()}>Login</button>
+                        </div>
+                      </div>
                     </div>
                   </div >
-
                 </div>
-                 {/*)} */} 
-            </div>
-        </div>
-      </div>  
-    </div>
-  )
+              </div>                
+            }
+              </div>
+          </div>
+        </div>  
+      </div>
+    )
 }
 

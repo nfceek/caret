@@ -82,8 +82,8 @@ export default function Signup() {
         {
           pathname: '/purchase',
           query: {data: item}   
-        //}, '/purchase')
-        },)        
+        }, '/purchase')
+        //},)        
     }
  
     return (

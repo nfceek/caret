@@ -332,14 +332,13 @@ export default function PurchaseChoice() {
     var setTime = date + '-' + time;
     var promo = ''
     //assemble caret string for CID
-    //console.log(' pymt choice ^' + pymtChoice + ' cid -> ' + cWord + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
     var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
     var cAvail = 0
     var cPend = 1
     var cSold = 0
     // get new user ID
     var cUserEmail = data.email
-    const curDate = new Date().toISOString()
+    var curDate = new Date().toISOString()
     var cInsertWord = ''
     var cUpdateWord = []
     cUpdateWord.push(cUserEmail)
@@ -377,23 +376,40 @@ export default function PurchaseChoice() {
     // check for promo code
     console.log('pymt choice ' + pymtChoice)
     if(pymtChoice === 'Pro'){
-      setLoading(true);
+      setLoading(true)
       //console.log( 'user passed down data ' + JSON.stringify(data))
-      createCheckOutSession(stripe5Data, cUserEmail, cCid)
+      createCheckOutSession(stripe5Data, cUserEmail, cCid, cWord )
       setLoading(false)
 
-    }else{
-      setLoading(true);
-      createCheckOutSession(stripe20Data, cUserEmail,cCid)
+    }else if(pymtChoice === 'Prem'){
+      setLoading(true)
+      createCheckOutSession(stripe20Data, cUserEmail, cCid, cWord )
         setLoading(false)
+
+    }else{
+      setLoading(true)     
+      createFreeCheckOutSession(data, cUserEmail, cCid, cWord )
+      setLoading(false)
 
     }
 
-    async function createCheckOutSession(data, uEmail, cCid){ 
-      var dataIn = [{"caret": itemData, "email": uEmail,"cid":cCid}]
-      var toItem = Object.assign({}, data, dataIn)
+    async function createFreeCheckOutSession(data, uEmail, cCid, cWord){
+      console.log('free data' + JSON.stringify(data) )
+    }
+
+    async function createCheckOutSession(data, uEmail, cCid, cWord){
+      var wordIn = cWord.toUpperCase()
+      var toItem = []
+      var toItem = {
+        'name':data.name  + ' for: ^' + wordIn,
+        'description': data.description,
+        'image': data.image,
+        'quantity': data.quantity,
+        'price': data.price,
+        'caret': wordIn, 
+       }
       console.log('nu nu data' + JSON.stringify(toItem) )
-      /*
+      
         const stripe = await stripePromise;
         const checkoutSession = await axios.post('/../api/create-stripe-session', {
           item: toItem,
@@ -404,7 +420,7 @@ export default function PurchaseChoice() {
         if (result.error) {
           alert(result.error.message);
         } 
-      */            
+                  
       }
      
     //if we get past 5 kick user to main page

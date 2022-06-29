@@ -27,7 +27,7 @@ const packages = {
         {
           id: 2,
           icon: <IoIosCheckmarkCircle />,
-          text: "You Pay Gas Fees",
+          text: "Does Not Expire",
           isAvailable: true,
         },
         {
@@ -80,7 +80,7 @@ const packages = {
         {
           id: 2,
           icon: <IoIosCheckmarkCircle />,
-          text: "We Pay Gas Fees up to $2.50",
+          text: "Does Not Expire",
           isAvailable: true,
         },
         {
@@ -133,7 +133,7 @@ const packages = {
         {
           id: 2,
           icon: <IoIosCheckmarkCircle />,
-          text: "We Pay Gas Fees up to $12.50*",
+          text: "Does Not Expire",
           isAvailable: true,
         },
         {
@@ -156,8 +156,8 @@ const packages = {
         },
         {
           id: 6,
-          icon: <IoIosCloseCircle />,
-          text: 'Coming Soon - Caret Tag shares multi chain',
+          icon: <IoIosCheckmarkCircle />,
+          text: 'Caret Tag shares multi chain',
           isAvailable: true,
         },        
         {
