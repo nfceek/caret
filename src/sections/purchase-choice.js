@@ -789,8 +789,7 @@ export default function PurchaseChoice() {
                 }
               <div className=''></div>
               <div className='purRow8'>        
-                <div className='grid grid-cols-5 gap-4'>
-                  <div className='' ></div>
+                <div id='bxPrice' className='gap-4'>
                   <div className='bg-slate-200 text-3xl pt-4 mt-4 mb-6 rounded-xl'> FREE Option
                       <div className=''>
                         <div className=''>
@@ -953,7 +952,6 @@ export default function PurchaseChoice() {
                       </div>
                     </div>
                   </div> 
-                  <div className=''></div> 
                 </div>
               </div>
               

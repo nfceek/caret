@@ -36,6 +36,23 @@
     min-height: 450px;
 
   }
+
+  #bxPrice {
+    /* Flexbox Stuff */
+    display: flex;
+    align-items: center;
+
+    /* Text styles */
+    text-align: left;
+    width: 960px;
+     @media only screen and (max-width: 880px) {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 80vw;
+    }
+  }
+
   .BnrHeader {
     background-color: 'white';
     }

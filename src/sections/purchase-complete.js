@@ -50,16 +50,7 @@ export default function PurchaseComplete() {
   cUpdateWord.push(rActive)
 
   console.log('prepper data ' + cUpdateWord)
-
-    console.log('1 - baseline queries')
-      // -- await preInsertIPFS() 
-      // -- insert IFPS
-    console.log('rStatus ' + rStatus)
       // --update IPFS Only if user has wallet
-      // update carrot -- avail 0 if prem sold 0 -- rm row if pro or free plan
-      // no action on user
-      // update sales table -- rm sale row
-      //
 
     if(rStatus === 'success' || rStatus === 'promo' ){
       postUser(cUpdateWord)
