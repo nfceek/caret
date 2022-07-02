@@ -1,28 +1,34 @@
 
-
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form';
-import axios from 'axios'
-import { loadStripe } from '@stripe/stripe-js';
+
 
 import { pinataPublicKey } from "../../projectId";
 import { pinataPrivateKey } from "../../projectSecret";
-import { stripePublishableKey } from "../../stripeId"
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
+
+
 import PurchaseFeature from 'components/purchase-feature';
 var FormData = require('form-data');
 
 export default function PurchaseComplete() {
 
-  //const { query } = useRouter();
+  const { query } = useRouter();
   const[saleStatus, setSaleStatus] = useState()
   const[inCaret, setInCaret] = useState()
   //const router = useRouter();
 
-  //var rStatus = router.query.status
-  //var rCaret = router.query.caret
+  useEffect(() => {
+    if (router.isReady) {
+      try {
+          //var rStatus = router.query.status
+          //var rCaret = router.query.caret
+        } catch (error) {
+          console.log('purchase routing error: ', error)
+        }
+      }
+    }, [router.isReady]);
+
   var rStatus = 'fail'
   var rCaret = 'jumanji'
   var fullCaret = '^' + rCaret
@@ -51,22 +57,19 @@ export default function PurchaseComplete() {
 
   console.log('prepper data ' + cUpdateWord)
       // --update IPFS Only if user has wallet
+  postUser(cUpdateWord)
 
-    if(rStatus === 'success' || rStatus === 'promo' ){
-      postUser(cUpdateWord)
-      postSales(cUpdateWord)
-      postCarrots(cUpdateWord)
-    }else{
-      postUser(cUpdateWord)
-      rmSales(cUpdateWord)
-      rmCarrots(cUpdateWord)
-    }
+  if(rStatus === 'success' || rStatus === 'promo' ){
+    postSales(cUpdateWord)   
+  }else{
+    rmSales(cUpdateWord)
+  }
 
     async function postUser(data) { 
       console.log(' user data ' + JSON.stringify( data))
       var formData = data
     
-      const response = await fetch('/../api/finalUser', {
+      const response = await fetch('../api/finalUser', {
         method: 'POST',
         body: formData, 
         headers: {
@@ -80,21 +83,23 @@ export default function PurchaseComplete() {
       //console.log(' user data ' + JSON.stringify( data))
       var formData = data
     
-      const response = await fetch('/../api/finalSales', {
+      const response = await fetch('../api/finalSales', {
         method: 'POST',
         body: formData, 
         headers: {
           'Content-Type':'applications/json'
         },
       })
-      const stepSales = await response.json()        
+      const stepSales = await response.json() 
+      
+      postCarrots(cUpdateWord)
     }
 
     async function postCarrots(data){
       console.log(' user data ' + JSON.stringify( data))
       var formData = data
     
-      const response = await fetch('/../api/finalCarrot', {
+      const response = await fetch('../api/finalCarrot', {
         method: 'POST',
         body: formData, 
         headers: {
@@ -108,21 +113,24 @@ export default function PurchaseComplete() {
       //console.log(' user data ' + JSON.stringify( data))
       var formData = data
     
-      const response = await fetch('/../api/removeSales', {
+      const response = await fetch('../api/removeSales', {
         method: 'POST',
         body: formData, 
         headers: {
           'Content-Type':'applications/json'
         },
       })
-      const stepSales = await response.json()        
+      const stepSales = await response.json()
+      
+      rmCarrots(cUpdateWord)
+
     }
 
     async function rmCarrots(data){
       //console.log(' user data ' + JSON.stringify( data))
       var formData = data
     
-      const response = await fetch('/../api/removeCarrot', {
+      const response = await fetch('../api/removeCarrot', {
         method: 'POST',
         body: formData, 
         headers: {
@@ -183,7 +191,7 @@ export default function PurchaseComplete() {
       cUpdateWord.push(user)
       cUpdateWord.push(cid)
   
-      const response = await fetch('/../api/carrotCid', {
+      const response = await fetch('../api/carrotCid', {
         method: 'POST',
         body:  cUpdateWord,
         headers: {

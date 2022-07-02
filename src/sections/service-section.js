@@ -42,8 +42,7 @@ export default function ServiceSection() {
   const [videoOpen, setVideoOpen] = useState(false);
   
   const handleClick = (e) => {
-    e.preventDefault();
-    setVideoOpen(true);
+    window.open('https://youtu.be/XNyfD6TWioI', '_blank');
   }
 
   return (
@@ -79,14 +78,6 @@ export default function ServiceSection() {
           </Grid>
         </Box>
       </Container>
-{/*
-      <ModalVideo 
-        channel='youtube'
-        isOpen={videoOpen}
-        videoId='RaAkhXNILAA'
-        onClose={() => videoOpen(false)}
-        />
-            */}
     </Box>
   );
 }

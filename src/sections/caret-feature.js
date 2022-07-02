@@ -70,7 +70,7 @@ export default function CaretFeature() {
    <Box sx={{ variant: 'section.feature'}}>
      <Container>
        <SectionHeader  
-          title='^ + Your_Word + ###'
+          title='^ + YourWord + ###'
           slogan='Break Down of the Caret Tag'
         />
         <Grid sx={styles.grid} >

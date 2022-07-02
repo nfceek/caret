@@ -66,116 +66,7 @@ const data = [
         icon: <FaInstagram />,
       },
     ],
-  },
-/*  {
-    id: 3,
-    imgSrc: Member3,
-    alttext: 'Aaron Nunez',
-    title: 'Aaron Nunez',
-    designation: 'Web Designer',
-    socialProfile: [
-      {
-        id: 1,
-        name: 'facebook',
-        path: '#',
-        icon: <FaFacebookF />,
-      },
-      {
-        id: 2,
-        name: 'twitter',
-        path: '#',
-        icon: <FaTwitter />,
-      },
-      {
-        id: 3,
-        name: 'instagram',
-        path: '#',
-        icon: <FaInstagram />,
-      },
-    ],
-  },
-  {
-    id: 4,
-    imgSrc: Member4,
-    alttext: 'Lina Jutila',
-    title: 'Lina Jutila',
-    designation: 'Web Developer',
-    socialProfile: [
-      {
-        id: 1,
-        name: 'facebook',
-        path: '#',
-        icon: <FaFacebookF />,
-      },
-      {
-        id: 2,
-        name: 'twitter',
-        path: '#',
-        icon: <FaTwitter />,
-      },
-      {
-        id: 3,
-        name: 'instagram',
-        path: '#',
-        icon: <FaInstagram />,
-      },
-    ],
-  },
-  {
-    id: 5,
-    imgSrc: Member5,
-    alttext: 'Saimon Harmer',
-    title: 'Saimon Harmer',
-    designation: 'CEO and Founder',
-    socialProfile: [
-      {
-        id: 1,
-        name: 'facebook',
-        path: '#',
-        icon: <FaFacebookF />,
-      },
-      {
-        id: 2,
-        name: 'twitter',
-        path: '#',
-        icon: <FaTwitter />,
-      },
-      {
-        id: 3,
-        name: 'instagram',
-        path: '#',
-        icon: <FaInstagram />,
-      },
-    ],
-  },
-  {
-    id: 6,
-    imgSrc: Member6,
-    alttext: 'Aaron Nunez',
-    title: 'Aaron Nunez',
-    designation: 'Web Designer',
-    socialProfile: [
-      {
-        id: 1,
-        name: 'facebook',
-        path: '#',
-        icon: <FaFacebookF />,
-      },
-      {
-        id: 2,
-        name: 'twitter',
-        path: '#',
-        icon: <FaTwitter />,
-      },
-      {
-        id: 3,
-        name: 'instagram',
-        path: '#',
-        icon: <FaInstagram />,
-      },
-    ],
-  },
-*/
+  }
 ];
 
 export default function TeamSection() {
@@ -183,7 +74,7 @@ export default function TeamSection() {
     <Box>
       <Container>
         <SectionHeader
-          slogan='The Team'
+          slogan='MOre'
           title='Coming Soon'
         />
         {/*}

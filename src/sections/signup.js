@@ -61,7 +61,7 @@ export default function Signup() {
 
     const validationRequest = Yup.object().shape({
     request: Yup.string()
-        .matches(/^[aA-zZ-_\s]+$/, "Only Alpha characters, dash ( - ) and underscore ( _ ) are allowed.")
+        .matches(/^[a-zA-Z-_\s]*$/, "Only Alpha characters, dash ( - ) and underscore ( _ ) are allowed.")
         .min(4, 'Password must be at least 5 characters'),         
     });
 

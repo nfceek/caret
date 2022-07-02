@@ -89,8 +89,6 @@ export default function PurchaseChoice() {
       try {
         setItemData(router.query.data)
         caretCheck(router.query.data)
-        //setItemData(router.query.data.toUpperCase())
-        //caretCheck(router.query.data.toUpperCase())
         var item = localStorage.getItem('caret')
         //var item = uStatus
         console.log('uStatus in ' + item)
@@ -113,7 +111,7 @@ export default function PurchaseChoice() {
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
     console.log('caretCheck 1 ' + data)
-    const response = await fetch('/../api/validate/returnCarrot', {
+    const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -127,7 +125,7 @@ export default function PurchaseChoice() {
   async function caretNumCheck(data) { 
     var formData = JSON.stringify(data)
     console.log('caretCheck 2 ' + formData)
-    const response = await fetch('/../api/validate/returnCarrot', {
+    const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -138,7 +136,6 @@ export default function PurchaseChoice() {
     caretNumInformation(stepTwo)
   }
 
-  
   function caretInformation(data) { 
     // is person logged in
     if(localStorage === window.localStorage){
@@ -187,7 +184,6 @@ export default function PurchaseChoice() {
     }
   }
 
-  //console.log('ch Avail: ' + carrotAvail + ' ch Info ' )
   //console.log('In Avail: ' + carrotAvail + ' in Info ' + JSON.stringify(carrotInDb))
   var validationProcess = ''
   if(carrotAvail === false){
@@ -204,7 +200,8 @@ export default function PurchaseChoice() {
         email: Yup.string()
           .required('Email is required')
           .min(6, 'Email to short')
-          .max(50, 'Email to long'),
+          .max(50, 'Email to long')
+          .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/, "Email must be in standard format"),
         chain: Yup.string()
           .min(2, 'Chain Name Required'),
         account: Yup.string()
@@ -217,7 +214,8 @@ export default function PurchaseChoice() {
        email: Yup.string()
           .required('Email is required')
           .min(6, 'Email to short')
-          .max(50, 'Email to long'),
+          .max(50, 'Email to long')
+          .matches(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/, "Email must be in standard format"),
         password: Yup.string()
           .required('Passord is Required')
           .min(6, 'Password must be at least 6 characters')
@@ -308,6 +306,7 @@ export default function PurchaseChoice() {
     var planChoice = ''
     if(pymtChoice === 'Prem'){
       cWord = itemData.toLowerCase()
+      setNumberCount(0)
       cWord2 = itemData.toLowerCase() + '01'
       cWord3 = itemData.toLowerCase() + '02'
       cPrice = 20
@@ -411,7 +410,7 @@ export default function PurchaseChoice() {
       console.log('nu nu data' + JSON.stringify(toItem) )
       
         const stripe = await stripePromise;
-        const checkoutSession = await axios.post('/../api/create-stripe-session', {
+        const checkoutSession = await axios.post('../api/create-stripe-session', {
           item: toItem,
         });  
         const result = await stripe.redirectToCheckout({         
@@ -442,7 +441,7 @@ export default function PurchaseChoice() {
     //console.log(' user data ' + JSON.stringify( data))
     var formData = data
    
-    const response = await fetch('/../api/carrotSold', {
+    const response = await fetch('../api/carrotSold', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -458,7 +457,7 @@ export default function PurchaseChoice() {
     //console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
     var formData = JSON.stringify(data)
 
-    const response = await fetch('/../api/validate/returnCarrot', {
+    const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -512,7 +511,7 @@ export default function PurchaseChoice() {
       uname = itemData + numberCount
     }
 
-    const response = await fetch('/../api/carrotRegister', {
+    const response = await fetch('../api/carrotRegister', {
         method: 'POST',
         body:  [JSON.stringify(user.email),uname,pwd,JSON.stringify(user.chain), JSON.stringify(user.account), planChoice],
         headers: {
@@ -526,7 +525,7 @@ export default function PurchaseChoice() {
   }
 
   async function preMaxUserId(user){
-    const response = await fetch('/../api/validate/preCarrotUserId', {
+    const response = await fetch('../api/validate/preCarrotUserId', {
       method: 'POST',
       body:  [JSON.stringify(user.email)],
       headers: {
@@ -542,7 +541,7 @@ export default function PurchaseChoice() {
 
   async function salesCarrot(data){
 
-    const response = await fetch('/../api/salesCarrot', {
+    const response = await fetch('../api/salesCarrot', {
       method: 'POST',
       body:  data,
       headers: {
@@ -557,7 +556,7 @@ export default function PurchaseChoice() {
 
   async function insertCarrot(data){
 
-    const response = await fetch('/../api/insertCarrot', {
+    const response = await fetch('../api/insertCarrot', {
       method: 'POST',
       body:  data,
       headers: {
@@ -572,7 +571,7 @@ export default function PurchaseChoice() {
   async function updateCarrot(data){
 
 
-    const response = await fetch('/../api/updateCarrot', {
+    const response = await fetch('../api/updateCarrot', {
       method: 'POST',
       body:  data,
       headers: {
@@ -587,7 +586,7 @@ export default function PurchaseChoice() {
   async function emailCheck(data) {
     var formData = JSON.stringify(data)
     //console.log('formData out Email: ' + formData)
-    const response = await fetch('/../api/validate/preEmail', {
+    const response = await fetch('../api/validate/preEmail', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -602,7 +601,7 @@ export default function PurchaseChoice() {
   async function accountCheck(data) {
     var formData = JSON.stringify(data)
     //console.log('formData out Acct: ' + formData)
-    const response = await fetch('/../api/validate/preAccount', {
+    const response = await fetch('../api/validate/preAccount', {
       method: 'POST',
       body: formData, 
       headers: {
