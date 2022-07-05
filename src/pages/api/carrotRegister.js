@@ -22,7 +22,7 @@ export default async(req, res) => {
         data: {
             fkword: 0,
             fkwallet: 0,
-            fkbanned: 0,
+            burned: 0,
             firstname: '',
             lastname: '',
             username: uname,

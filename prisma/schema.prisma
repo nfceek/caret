@@ -23,6 +23,7 @@ model carrots {
  pending Int
  sold Int
  price Int
+ promo String
  cid String
  ipfs String
  cidw String
@@ -47,6 +48,7 @@ model user {
  fkword Int
  fkwallet Int
  burned Int
+ email String
  firstname String
  lastname String
  username String
@@ -57,7 +59,6 @@ model user {
  plan Int
  admin Boolean
  level Int
- email String
  chain String
  account String
  fkword2 Int
@@ -91,7 +92,9 @@ model banned {
 model promo {
  id Int @id @default(autoincrement())
  code String
- discount String
+ counter Int
+ prodisc Int
+ premdisc Int
  expire String
  }
 

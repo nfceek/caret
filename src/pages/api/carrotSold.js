@@ -11,7 +11,7 @@ export default async(req, res) => {
     let priceIn = parseInt(dataArr[3])                               
     let salesdate = dataArr[8]  
     let planIn = parseInt(dataArr[10])
-    let promoIn = dataArr[11]                    
+    let promoIn = dataArr[15]                
     const curDate = new Date().toISOString()
   
   const response = await prisma.sales.create({
@@ -27,7 +27,7 @@ export default async(req, res) => {
         salesdate: salesdate,
         referral: '',
         region: '',
-        promo: '',
+        promo: promoIn,
       },  
   });
   res.json(response)

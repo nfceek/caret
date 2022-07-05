@@ -17,7 +17,8 @@ export default async(req, res) => {
         let cidIn = dataArr[9] 
         let availIn = parseInt(dataArr[12])
         let pendIn = parseInt(dataArr[13])
-        let soldIn = parseInt(dataArr[14])                 
+        let soldIn = parseInt(dataArr[14])
+        let promoIn = dataArr[15]                 
     const curDate = new Date().toISOString()
 
     const response = await prisma.carrots.updateMany({
@@ -31,6 +32,7 @@ export default async(req, res) => {
             pending: pendIn,
             sold: soldIn,
             price: priceIn,
+            promo: promoIn,
             cid: cidIn,
             ipfs: '0',
             cidw: '',

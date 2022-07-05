@@ -1,216 +1,211 @@
 
 import React, { useState, useEffect } from "react"
 import { useRouter } from 'next/router'
-import { useForm } from 'react-hook-form';
-
 
 import { pinataPublicKey } from "../../projectId";
 import { pinataPrivateKey } from "../../projectSecret";
 
 
-import PurchaseFeature from 'components/purchase-feature';
-var FormData = require('form-data');
+  async function postUp(word, stat){
 
-export default function PurchaseComplete() {
+    var rStatus = stat
+    var rCaret = word
 
-  const { query } = useRouter();
-  const[saleStatus, setSaleStatus] = useState()
-  const[inCaret, setInCaret] = useState()
-  //const router = useRouter();
-
-  useEffect(() => {
-    if (router.isReady) {
-      try {
-          //var rStatus = router.query.status
-          //var rCaret = router.query.caret
-        } catch (error) {
-          console.log('purchase routing error: ', error)
-        }
-      }
-    }, [router.isReady]);
-
-  var rStatus = 'fail'
-  var rCaret = 'jumanji'
-  var fullCaret = '^' + rCaret
-
-  if(rStatus === 'success' || rStatus === 'promo' ){
-    var rAvail = 0
-    var rPend = 0
-    var rSold = 1
-    var rBan = 0
-    var rActive = 1
-  }else{
-    var rAvail = 1
-    var rPend = 0
-    var rSold = 0
-    var rBan = 1
-    var rActive = 0
+    if(rStatus === 'success' || rStatus === 'promo' || rStatus === 'free' ){
+      var rAvail = 0
+      var rPend = 0
+      var rSold = 1
+      var rBan = 0
+      var rActive = 1
+    }else{
+      var rAvail = 1
+      var rPend = 0
+      var rSold = 0
+      var rBan = 1
+      var rActive = 0
+    }
+  
+    var cUpdateWord = []
+    cUpdateWord.push(rCaret)
+    cUpdateWord.push(rAvail)
+    cUpdateWord.push(rPend)
+    cUpdateWord.push(rSold)
+    cUpdateWord.push(rBan)
+    cUpdateWord.push(rActive)
+  
+    console.log('prepper data ' + cUpdateWord)
+        // --update IPFS Only if user has wallet
+    postUser(cUpdateWord)
+  
+    if(rStatus === 'success' || rStatus === 'promo' || rStatus === 'free' ){
+      postSales(cUpdateWord)   
+    }else{
+      rmSales(cUpdateWord)
+    }
   }
 
-  var cUpdateWord = []
-  cUpdateWord.push(rCaret)
-  cUpdateWord.push(rAvail)
-  cUpdateWord.push(rPend)
-  cUpdateWord.push(rSold)
-  cUpdateWord.push(rBan)
-  cUpdateWord.push(rActive)
-
-  console.log('prepper data ' + cUpdateWord)
-      // --update IPFS Only if user has wallet
-  postUser(cUpdateWord)
-
-  if(rStatus === 'success' || rStatus === 'promo' ){
-    postSales(cUpdateWord)   
-  }else{
-    rmSales(cUpdateWord)
-  }
-
-    async function postUser(data) { 
-      console.log(' user data ' + JSON.stringify( data))
-      var formData = data
-    
-      const response = await fetch('../api/finalUser', {
-        method: 'POST',
-        body: formData, 
-        headers: {
-          'Content-Type':'applications/json'
-        },
-      })
-      const stepUser = await response.json()        
-    } 
-
-    async function postSales(data){
-      //console.log(' user data ' + JSON.stringify( data))
-      var formData = data
-    
-      const response = await fetch('../api/finalSales', {
-        method: 'POST',
-        body: formData, 
-        headers: {
-          'Content-Type':'applications/json'
-        },
-      })
-      const stepSales = await response.json() 
-      
-      postCarrots(cUpdateWord)
-    }
-
-    async function postCarrots(data){
-      console.log(' user data ' + JSON.stringify( data))
-      var formData = data
-    
-      const response = await fetch('../api/finalCarrot', {
-        method: 'POST',
-        body: formData, 
-        headers: {
-          'Content-Type':'applications/json'
-        },
-      })
-      const stepCarrots = await response.json()        
-    }  
-
-    async function rmSales(data){
-      //console.log(' user data ' + JSON.stringify( data))
-      var formData = data
-    
-      const response = await fetch('../api/removeSales', {
-        method: 'POST',
-        body: formData, 
-        headers: {
-          'Content-Type':'applications/json'
-        },
-      })
-      const stepSales = await response.json()
-      
-      rmCarrots(cUpdateWord)
-
-    }
-
-    async function rmCarrots(data){
-      //console.log(' user data ' + JSON.stringify( data))
-      var formData = data
-    
-      const response = await fetch('../api/removeCarrot', {
-        method: 'POST',
-        body: formData, 
-        headers: {
-          'Content-Type':'applications/json'
-        },
-      })
-      const stepCarrots = await response.json()        
-    }
-   
-    async function preInsertIPFS(){
-       /*
-      pinata.testAuthentication().then((result) => {
-        //handle successful authentication here
-        console.log('Pinata test: ', result);
-        setAuthresult(result)
-      }).catch((err) => {
-          //handle error here
-          console.log(err);
-      });
-       */ 
-    }
+  async function postUser(data) { 
+    console.log(' user data ' + JSON.stringify( data))
+    var formData = data
   
-    async function insertIPFS(user){
-
-      var dataIn = user.toString()
-      var dataArr = dataIn.split(',');
-      let userIn = dataArr[0]          
-      let wordIn = dataArr[1]
-      let messageIn = dataArr[9] 
-  
-      const body = {
-        caret: messageIn
-      };
-      const options = {
-        pinataMetadata: {
-          name: '^'+wordIn,
-          keyvalue: 'caret.cloud',
-          pinataOptions: {
-            cidVersion: 0
-          }
-        }
-      }
-  
-      pinata.pinJSONToIPFS(body, options).then((result) => {
-          //handle results here
-          setFileCid(result.IpfsHash)
-          console.log('result cid ' + fileCid)
-          updateCidCarrot(userIn,result.IpfsHash )
-      }).catch((err) => {
-          //handle error here
-          console.log(err);
-      });      
-    }
-        
-    async function updateCidCarrot(user, cid){
-      var cInsertWord = ''
-      var cUpdateWord = []
-      cUpdateWord.push(user)
-      cUpdateWord.push(cid)
-  
-      const response = await fetch('../api/carrotCid', {
-        method: 'POST',
-        body:  cUpdateWord,
-        headers: {
+    const response = await fetch('../api/finalUser', {
+      method: 'POST',
+      body: formData, 
+      headers: {
         'Content-Type':'applications/json'
-        },
-      })
-      const dbInsert = await response.json() 
-        console.log('dbCid ' + JSON.stringify(dbInsert))
-        return dbInsert
+      },
+    })
+    const stepUser = await response.json()        
+  } 
+
+  async function postSales(data){
+    //console.log(' user data ' + JSON.stringify( data))
+    var formData = data
   
+    const response = await fetch('../api/finalSales', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepSales = await response.json() 
+    
+    postCarrots(data)
+  }
+
+  async function postCarrots(data){
+    console.log(' user data ' + JSON.stringify( data))
+    var formData = data
+  
+    const response = await fetch('../api/finalCarrot', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepCarrots = await response.json()        
+  }  
+
+  async function rmSales(data){
+    //console.log(' user data ' + JSON.stringify( data))
+    var formData = data
+  
+    const response = await fetch('../api/removeSales', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepSales = await response.json()
+    
+    rmCarrots(data)
+
+  }
+
+  async function rmCarrots(data){
+    //console.log(' user data ' + JSON.stringify( data))
+    var formData = data
+  
+    const response = await fetch('../api/removeCarrot', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepCarrots = await response.json()        
+  }
+  
+  async function preInsertIPFS(){
+      /*
+    pinata.testAuthentication().then((result) => {
+      //handle successful authentication here
+      console.log('Pinata test: ', result);
+      setAuthresult(result)
+    }).catch((err) => {
+        //handle error here
+        console.log(err);
+    });
+      */ 
+  }
+
+  async function insertIPFS(user){
+
+    var dataIn = user.toString()
+    var dataArr = dataIn.split(',');
+    let userIn = dataArr[0]          
+    let wordIn = dataArr[1]
+    let messageIn = dataArr[9] 
+
+    const body = {
+      caret: messageIn
+    };
+    const options = {
+      pinataMetadata: {
+        name: '^'+wordIn,
+        keyvalue: 'caret.cloud',
+        pinataOptions: {
+          cidVersion: 0
+        }
+      }
     }
 
-    async function lgClick(){
-      router.push('/account')
-    }
+    pinata.pinJSONToIPFS(body, options).then((result) => {
+        //handle results here
+        setFileCid(result.IpfsHash)
+        console.log('result cid ' + fileCid)
+        updateCidCarrot(userIn,result.IpfsHash )
+    }).catch((err) => {
+        //handle error here
+        console.log(err);
+    });      
+  }
+      
+  async function updateCidCarrot(user, cid){
+    var cInsertWord = ''
+    var cUpdateWord = []
+    cUpdateWord.push(user)
+    cUpdateWord.push(cid)
+
+    const response = await fetch('../api/carrotCid', {
+      method: 'POST',
+      body:  cUpdateWord,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+    })
+    const dbInsert = await response.json() 
+      console.log('dbCid ' + JSON.stringify(dbInsert))
+      return dbInsert
+
+  }
+
+
+  export default function PurchaseComplete() {
+    const[saleStatus, setSaleStatus] = useState()
+    const[inCaret, setInCaret] = useState()
+    //const[rStatus, setRStatus] = useState()
+    const[runOnce, setRunOnce] = useState(0)
+  
+    const router = useRouter()
+    const {status} = router.query
+    const rStatus = status
+    const {caret} = router.query 
+    const fullCaret = '^' + caret
     
-    async function cClick(){
-      router.push('/')
-    }
+    console.log('status ' + JSON.stringify(status) + ' or is it '  + JSON.stringify(caret) + ' full caret ' + fullCaret)
+    postUp(caret, status) 
+  
+  async function lgClick(){
+    router.push('/account')
+  }
+  
+  async function cClick(){
+    router.push('/')
+  }
 
   return (
     <div id='purFormComplete' >
@@ -223,7 +218,7 @@ export default function PurchaseComplete() {
                 </div>
               </div>
           }
-          {rStatus === 'promo' &&
+          {rStatus === 'promo' || rStatus === 'free' &&
               <div>
                 <div className='justify-center text-center text-5xl pl-4 mt-4 mb-6'>
                   {fullCaret} Creation Status
@@ -265,7 +260,7 @@ export default function PurchaseComplete() {
                           </div>
                         </div>
                       }
-                      {rStatus === 'promo' &&                            
+                      {rStatus === 'promo' || rStatus === 'free' &&                            
                         <div>
                           <div id='itemPos' className='bg-green-100 text-green-700 p-2 rounded border mb-2 border-green-700'>
                             Caret Creation Successful

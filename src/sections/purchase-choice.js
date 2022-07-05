@@ -5,26 +5,27 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios'
 import { loadStripe } from '@stripe/stripe-js';
 
-import { pinataPublicKey } from "../../projectId";
-import { pinataPrivateKey } from "../../projectSecret";
+//import { pinataPublicKey } from "../../projectId";
+//import { pinataPrivateKey } from "../../projectSecret";
 import { stripePublishableKey } from "../../stripeId"
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import PurchaseFeature from 'components/purchase-feature';
-var FormData = require('form-data');
+//var FormData = require('form-data');
 
 const publishableKey = stripePublishableKey
 const stripePromise = loadStripe(publishableKey); 
 
 export default function PurchaseChoice() {
   const bcrypt = require('bcryptjs');
-  const pinataSDK = require('@pinata/sdk');
-  const pinata = pinataSDK(pinataPublicKey, pinataPrivateKey);
+  //const pinataSDK = require('@pinata/sdk');
+  //const pinata = pinataSDK(pinataPublicKey, pinataPrivateKey);
 
   
   const [carrotAvail, setCarrotAvail] = useState()
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
   const [carrotInDb, setCarrotInDb ] = useState('')
+  const [carrotNumInDb, setCarrotNumInDb ] = useState('')
   const [userCountCheck, setUserCountCheck] = useState(0) 
   const [itemData, setItemData] = useState('') 
   const [numberCount, setNumberCount] = useState(Math.floor(Math.random() * (999 - 100 + 1)) + 0)
@@ -37,7 +38,7 @@ export default function PurchaseChoice() {
   const [busWord, setBusWord] = useState(false)             // is this a bus word               
   const [banWord, setBanWord] = useState(false)             // is this a banned word
   const [wordPrice, setWordPrice] = useState(0)             // word cost how much
-  const [pymtChoice, setPymtChoice] = useState('')
+  const [pymtChoice, setPymtChoice] = useState('none')
   const [contractData, setContractData] = useState()
   const [pubKey, setPubKey] = useState()
   const [privKey, setPrivKey] = useState()
@@ -51,6 +52,12 @@ export default function PurchaseChoice() {
   const [fileCid, setFileCid] = useState(null)
   const [loading, setLoading] = useState(false)  
   const [stripeReturn, setStripeReturn] = useState(false)
+  const [proCost, setProCost] = useState('$ 5.00 USD')
+  const [premCost, setPremCost] = useState('$ 20.00 USD')
+  const [promoError, setPromoError] = useState('hidden')
+  const [promoApplied, setPromoApplied] = useState('hidden')
+  const [promoAgain, setPromoAgain] = useState(false)
+  const [promoWord, setPromoWord] = useState('none')
 
   const [stripe5Data, setStripe5Data] = useState({
     name: 'Caret PRO Plan',
@@ -73,7 +80,7 @@ export default function PurchaseChoice() {
   var maxUserNum=['']
   
   const router = useRouter();
-  const status = router.query;
+  const statusIn = router.query;
 
   const data = {
     subTitle: '4 Simple steps',
@@ -118,7 +125,8 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-    const stepOne= await response.json() 
+    const stepOne = await response.json() 
+    //console.log('caretCheck 1 result ' + JSON.stringify(stepOne))
     caretInformation(stepOne)
   }
 
@@ -132,7 +140,8 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-    const stepTwo= await response.json() 
+    const stepTwo = await response.json() 
+    console.log('caretCheck 2 result ' + JSON.stringify(stepTwo))
     caretNumInformation(stepTwo)
   }
 
@@ -148,17 +157,18 @@ export default function PurchaseChoice() {
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
       setCarrotInDb(false)
-    } else {
-      //console.log(' caretInfo ' + JSON.stringify(data) )     
+    } else {  
       const dbAvail = JSON.stringify(data.available)
-        if(dbAvail === 'false'){
+      
+        if(dbAvail === '0'){
           setCarrotIsAvail(' is NOT available ')
           setCarrotAvail(false)
-          //console.log(' dbAvail-1 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
-        }else{         
+        }else{ 
+          setCarrotIsAvail(' is available')
+          setCarrotAvail(true)
+          setCarrotInDb(true)
           var data = (data.word.toUpperCase() + numberCount.toString())
           caretNumCheck(data)
-          //console.log(' dbAvail-2 ' + dbAvail + ' carrotIsAvail-1 ' + carrotIsAvail + ' carrotAvail-1 ' + carrotAvail)
         }
     }
   }
@@ -168,7 +178,7 @@ export default function PurchaseChoice() {
       console.log('Im null')
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
-      setCarrotInDb(false)
+      setCarrotNumInDb(false)
     }else{
       const dbAvailNum = JSON.stringify(data.available)
         console.log(' dbAvailNum ' + dbAvailNum )
@@ -178,7 +188,7 @@ export default function PurchaseChoice() {
         }else{
           setCarrotIsAvail(' is available ')
           setCarrotAvail(true)
-          setCarrotInDb(true)
+          setCarrotNumInDb(true)
           setWordPrice(data.price) 
         }
     }
@@ -190,7 +200,7 @@ export default function PurchaseChoice() {
     validationProcess = Yup.object().shape({
       request: Yup.string()
         .min(5, 'Caret choice must be at least 5 characters') 
-        .max(12, 'Caret choice must be less than 12 characters')
+        .max(15, 'Caret choice must be less than 15 characters')
         .matches(/^[aA-zZ0-9-_\s]+$/, "Only Alpha characters are allowed for Caret choice")
     });
     
@@ -231,8 +241,6 @@ export default function PurchaseChoice() {
     const chEmail = user.email
     const checkEmail = await emailCheck(chEmail)
       if(checkEmail === 0) {                      // 0 means not is system now check address
-        // if using wallet -- check in db
-        //console.log('wState ' + walletState)
         if(walletState === true){
           const chWallet = user.account          
           //console.log('validate data: ' + JSON.stringify(user) + ' chWallet ' + chWallet)
@@ -270,53 +278,59 @@ export default function PurchaseChoice() {
     //console.log('pre validate data: ' + JSON.stringify(data))
     // get keys
     preKeys()
-    
-    //caret string in db parts
-    if(carrotInDb === true){
-      var dbWord = carrotInDb.word
-      var dbAppend = carrotInDb.append
-      var dbPrice = carrotInDb.price
-    }
+
     var cWord = ''
-    var cWord2 = ''
-    var cWord3 = ''
     var append = numberCount
     var cWallet = ''
     var cChain = ''
     var cPwd = ''
-    var cidWallet
+    var cidWallet = ''
     // set wallet state
     if(walletState === true){
       cChain = data.chain
       cWallet = data.account
-      if(pymtChoice === 'free'){
-        cidWallet = '_NONE:TBD'
-        setCidDbWallet(false)
-      }else{
-        cidWallet = '_' + cChain +  ':' + cWallet
-        setCidDbWallet(true)
-      }
+      cidWallet = '_' + cChain +  ':' + cWallet
+      setCidDbWallet(true)
     }else{
       cPwd = data.password
       cidWallet = '_NONE:TBD'
       setCidDbWallet(false)
     }
-    var cAvailable = 1
+
     var cPrice = ''
     var planChoice = ''
+    var numChoice = ''
     if(pymtChoice === 'Prem'){
       cWord = itemData.toLowerCase()
+      numChoice = '0'
       setNumberCount(0)
-      cWord2 = itemData.toLowerCase() + '01'
-      cWord3 = itemData.toLowerCase() + '02'
       cPrice = 20
       planChoice = 3
-    } else if (pymtChoice === 'Pro') {
+    } else if (pymtChoice === 'Pro') {      
       cWord = itemData.toLowerCase() + numberCount
+      numChoice = numberCount
       cPrice = 5;
       planChoice = 2
+    } else if (pymtChoice === 'Promo') {
+      cWord = itemData.toLowerCase()
+      numChoice = '0'
+      setNumberCount(0)
+      cPrice = 10
+      planChoice = 4
+    } else if (pymtChoice === 'freePro') {     
+      cWord = itemData.toLowerCase() + numberCount
+      numChoice = numberCount
+      cPrice = 0;
+      planChoice = 5
+    } else if (pymtChoice === 'freePrem') {
+      cWord = itemData.toLowerCase()
+      numChoice = '0'
+      setNumberCount(0)
+      cPrice = 0
+      planChoice = 6
     } else {
       cWord = itemData.toLowerCase() + numberCount
+      numChoice = numberCount
       cPrice = 0;
       planChoice = 1
     }
@@ -332,17 +346,18 @@ export default function PurchaseChoice() {
     var promo = ''
     //assemble caret string for CID
     var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
+    // set carrot pending
     var cAvail = 0
     var cPend = 1
     var cSold = 0
+    var cPromo = promoWord
     // get new user ID
     var cUserEmail = data.email
     var curDate = new Date().toISOString()
-    var cInsertWord = ''
     var cUpdateWord = []
     cUpdateWord.push(cUserEmail)
     cUpdateWord.push(cWord)
-    cUpdateWord.push(numberCount)
+    cUpdateWord.push(numChoice)
     cUpdateWord.push(cPrice)
     cUpdateWord.push(cSitepublickey)
     cUpdateWord.push(cSiteprivatekey)
@@ -355,48 +370,57 @@ export default function PurchaseChoice() {
     cUpdateWord.push(cAvail)
     cUpdateWord.push(cPend)
     cUpdateWord.push(cSold)
+    cUpdateWord.push(cPromo)
 
-    //console.log('cUpdateDB word ' + cUpdateWord)
     // user
     preAddUser(data)
-
     //update db word
-    console.log(' update array ->' + pymtChoice)
+    console.log('master word avail: ' + carrotInDb + ' numWord avail ' + carrotNumInDb)
     if(carrotInDb === true){
-      console.log('UpdateDB')
+      console.log('UpdateDB: ' + carrotInDb)
       await updateCarrot(cUpdateWord)
     }else {
-      console.log('InsertDB')     
+      console.log('InsertDB: ' + carrotInDb)   
       await insertCarrot(cUpdateWord)
     }
-
+    // set sales data
     preSalesData(cUpdateWord)
-
+    console.log('lets close this deal ' + JSON.stringify(pymtChoice))
     // check for promo code
     console.log('pymt choice ' + pymtChoice)
     if(pymtChoice === 'Pro'){
-      setLoading(true)
-      //console.log( 'user passed down data ' + JSON.stringify(data))
+      console.log( 'user passed down data pro' + JSON.stringify(data))
       createCheckOutSession(stripe5Data, cUserEmail, cCid, cWord )
-      setLoading(false)
 
     }else if(pymtChoice === 'Prem'){
-      setLoading(true)
+      console.log( 'user passed down data prem' + JSON.stringify(data))
       createCheckOutSession(stripe20Data, cUserEmail, cCid, cWord )
-        setLoading(false)
 
     }else{
-      setLoading(true)     
+      // is it free - promo pro free - or promo prem free  
+      console.log( 'user passed down data other ' + JSON.stringify(data))  
       createFreeCheckOutSession(data, cUserEmail, cCid, cWord )
-      setLoading(false)
-
     }
 
     async function createFreeCheckOutSession(data, uEmail, cCid, cWord){
       console.log('free data' + JSON.stringify(data) )
+      var cStat = 'success'
+      if(pymtChoice === 'free'){
+        cStat = 'free'
+      }else if(pymtChoice === 'freePro' || pymtChoice === 'freePrem') {
+        cStat = 'promo'
+      }
+
+      router.push(
+        {
+          pathname: '/complete',
+          query: {status: cStat, caret: cWord}   
+        //}, '/complete')
+        },)        
     }
 
     async function createCheckOutSession(data, uEmail, cCid, cWord){
+      console.log('data in: ' + JSON.stringify(data) + ' word ' + cWord)
       var wordIn = cWord.toUpperCase()
       var toItem = []
       var toItem = {
@@ -408,7 +432,7 @@ export default function PurchaseChoice() {
         'caret': wordIn, 
        }
       console.log('nu nu data' + JSON.stringify(toItem) )
-      
+    
         const stripe = await stripePromise;
         const checkoutSession = await axios.post('../api/create-stripe-session', {
           item: toItem,
@@ -438,7 +462,7 @@ export default function PurchaseChoice() {
   }
 
   async function preSalesData(data){
-    //console.log(' user data ' + JSON.stringify( data))
+    //console.log('sales user data ' + JSON.stringify( data))
     var formData = data
    
     const response = await fetch('../api/carrotSold', {
@@ -449,14 +473,10 @@ export default function PurchaseChoice() {
       },
     })
     const stepSales= await response.json() 
-   
-
   }
 
   async function prePymt(user) {
-    //console.log(' pymt choice ' + pymtChoice + ' user data ' +JSON.stringify( user))
     var formData = JSON.stringify(data)
-
     const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
@@ -489,7 +509,7 @@ export default function PurchaseChoice() {
 }
 
   async function preAddUser(user) { 
-    console.log('load ' + JSON.stringify(user) + ' data ' + JSON.stringify(data) + ' plan ' + pymtChoice)
+    console.log('load ' + JSON.stringify(user) + ' data ' + JSON.stringify(data))
     const curDate = new Date().toISOString()
     var pwd = ''
     var uname = ''
@@ -502,10 +522,21 @@ export default function PurchaseChoice() {
 
     if(pymtChoice === 'Prem'){
       planChoice = 3;
+      setNumberCount(0)
       uname = itemData;
     } else if (pymtChoice === 'Pro') {
       planChoice = 2;
       uname = itemData + numberCount
+    } else if (pymtChoice === 'Promo') {
+      planChoice = 4;
+      uname = itemData;
+    } else if (pymtChoice === 'freePro') {
+      planChoice = 5;
+      uname = itemData + numberCount
+    } else if (pymtChoice === 'freePrem') {
+      planChoice = 6;
+      setNumberCount(0)
+      uname = itemData;
     } else {
       planChoice = 1;
       uname = itemData + numberCount
@@ -525,6 +556,7 @@ export default function PurchaseChoice() {
   }
 
   async function preMaxUserId(user){
+
     const response = await fetch('../api/validate/preCarrotUserId', {
       method: 'POST',
       body:  [JSON.stringify(user.email)],
@@ -538,9 +570,22 @@ export default function PurchaseChoice() {
 
   }
 
+  async function prePromoCheck(data){
+    //console.log(' user data ' + JSON.stringify( data))
+    var formData = JSON.stringify(data)
+    const response = await fetch('../api/validate/prePromo', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepPromo = await response.json()
+    return stepPromo
+  }
 
   async function salesCarrot(data){
-
+    //console.log(' user data ' + JSON.stringify( data))
     const response = await fetch('../api/salesCarrot', {
       method: 'POST',
       body:  data,
@@ -549,13 +594,13 @@ export default function PurchaseChoice() {
       },
     })
     const dbInsert = await response.json() 
-      console.log('dbCid ' + JSON.stringify(dbInsert))
+      //console.log('dbCid ' + JSON.stringify(dbInsert))
       return dbInsert
 
   }
 
   async function insertCarrot(data){
-
+    //console.log(' user data ' + JSON.stringify( data))
     const response = await fetch('../api/insertCarrot', {
       method: 'POST',
       body:  data,
@@ -564,13 +609,12 @@ export default function PurchaseChoice() {
       },
     })
     const dbInsert = await response.json() 
-      console.log('dbInsert ' + dbInsert)
+      //console.log('dbInsert ' + dbInsert)
       return dbInsert
   }
 
   async function updateCarrot(data){
-
-
+    //console.log(' user data ' + JSON.stringify( data))
     const response = await fetch('../api/updateCarrot', {
       method: 'POST',
       body:  data,
@@ -579,11 +623,26 @@ export default function PurchaseChoice() {
       },
     })
     const dbUpdatePrem = await response.json() 
-      console.log('dbUpdatePrem ' + dbUpdatePrem)
+      //console.log('dbUpdatePrem ' + dbUpdatePrem)
       return dbUpdatePrem
   }
 
+  async function updatePromo(data){
+    //console.log(' user data ' + JSON.stringify( data))
+    const response = await fetch('../api/updatePromo', {
+      method: 'POST',
+      body:  data,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+    })
+      const updatePromo = await response.json() 
+      return updatePromo
+  }
+
+
   async function emailCheck(data) {
+    //console.log(' user data ' + JSON.stringify( data))
     var formData = JSON.stringify(data)
     //console.log('formData out Email: ' + formData)
     const response = await fetch('../api/validate/preEmail', {
@@ -594,11 +653,12 @@ export default function PurchaseChoice() {
       },
     })
     const dbEmail = await response.json() 
-      console.log('dbEmail ' + dbEmail)
+      //console.log('dbEmail ' + dbEmail)
       return dbEmail
   }
 
   async function accountCheck(data) {
+    //console.log(' user data ' + JSON.stringify( data))
     var formData = JSON.stringify(data)
     //console.log('formData out Acct: ' + formData)
     const response = await fetch('../api/validate/preAccount', {
@@ -620,27 +680,102 @@ export default function PurchaseChoice() {
     caretCheck(availCheck)
   }
 
-  function regClick(data) {
-    console.log('Free click Check: ' + itemData + numberCount  + ' data ' + data)
-    //chFormData()
-    setPymtChoice('free')
+  let txtPromoApply = React.createRef();
+  async function promoApply() {
+    console.log('promoApply value: ' + txtPromoApply.current.value)
+    var data = txtPromoApply.current.value
+    const checkPromo = await prePromoCheck(data) 
+   
+    if(checkPromo === undefined || checkPromo.length === 0){
+      console.log(' im not dead yet ' + checkPromo )
+      setPromoAgain(false)
+      setPromoError('visible pt-4 ml-6 mb-6 text-pink-800')
+      setPromoApplied('hidden pt-4 ml-6 mb-6 text-teal-800')
+    }else{
+      var proDisc = 5 - (5 * ( parseInt(checkPromo[0].prodisc) / 100))
+      var premDisc = 20 - (20 * ( parseInt(checkPromo[0].premdisc) / 100))      
+      var cCode = checkPromo[0].code
+      setPromoWord(cCode)
+      var ctPromo = parseInt(checkPromo[0].counter)
+      if(ctPromo === 0 ){
+        setPromoAgain(false)
+        setPromoError('visible pt-4 ml-6 mb-6 text-pink-800')
+        setPromoApplied('hidden pt-4 ml-6 mb-6 text-teal-800')
+      }else{
+      ctPromo = (ctPromo - 1)    
+      console.log('Gimmie the Promo ' + JSON.stringify(checkPromo) + ' disc pro ' + proDisc + ' disc prem ' + premDisc)
+        if(proDisc === 0){
+          setPymtChoice('Promo')
+          setProCost(' FREE ')
+          setPromoAgain(true)
+          setPromoApplied('visible pt-4 ml-6 mb-6 text-teal-800')
+          setPromoError('hidden pt-4 ml-6 mb-6 text-pink-800')
+        }         
+        if(premDisc === 0){
+          setPymtChoice('Promo')
+          setPremCost(' FREE ')
+          setPromoAgain(true)
+          setPromoApplied('visible pt-4 ml-6 mb-6 text-teal-800')
+          setPromoError('hidden pt-4 ml-6 mb-6 text-pink-800')
+        } else {
+          setPymtChoice('Promo')
+          setPromoAgain(true)
+          setPremCost('$ ' + premDisc + '.00 USD')
+          setPromoApplied('visible pt-4 ml-6 mb-6 text-teal-800')
+          setPromoError('hidden pt-4 ml-6 mb-6 text-pink-800')
+        }      
+      
+      var cCounter = ctPromo
+      var cUpdatePromo = []
+      cUpdatePromo.push(cCode)
+      cUpdatePromo.push(cCounter)
+      updatePromo(cUpdatePromo)
+    }
+
+    }
+    return
   }
 
-  function proClick(data) {
-    console.log('Pro click Check: ' + itemData + numberCount  + ' data ' + data)
-    setPymtChoice('Pro')
+  function regClick(user) {
+    var pymt
+   // console.log('Free click Check: ' + itemData + numberCount  + ' data ' + JSON.stringify(data) + ' pymt Choice ' + pymtChoice)
+    pymt = 'free'
+    createPayment(pymt)
   }
 
-  function premClick(data) {
-    console.log('Prem click Check: ' + itemData + ' data ' + data)
-    setPymtChoice('Prem')
+  function proClick(user) {
+    var pymt
+    //console.log('Pro click Check: ' + itemData + numberCount  + ' data ' +JSON.stringify(data) + ' pymt Choice ' + pymtChoice)
+    if(pymtChoice === 'Promo'){
+      pymt = 'freePro'     
+    } else {
+      pymt = 'Pro'    
+    } 
+    createPayment(pymt)
+  }
+
+  function premClick(user) {
+    var pymt
+    //console.log('Prem click Check: ' + itemData + numberCount  + ' data ' + JSON.stringify(data) + ' pymt Choice ' + pymtChoice)
+    if(pymtChoice === 'Promo'){
+      pymt = 'freePrem'   
+    } else {
+      pymt = 'Prem'    
+    }
+    createPayment(pymt)
+  }
+
+  async function createPayment(data){
+    setPymtChoice('none')
+    setPymtChoice(data)
+    //console.log('create pymt setting2: ' + pymtChoice)
   }
 
 
   return (
     <div id='purForm' >
       <div className='' >
-        <div className='purRowOne' >
+        <div className='purRow1' >
           <div className=''>
             <div>
               <PurchaseFeature title={data.title} /> 
@@ -673,7 +808,7 @@ export default function PurchaseChoice() {
             </div>
             :
             <div className=''>
-              <div className='purRow2'>
+              <div className='purRow3'>
                 <div className ="flex inline-block justify-center text-center mb-6">
                   <div>
                     <div className='text-3xl mb-4'>{itemData}{carrotIsAvail}</div>
@@ -681,7 +816,7 @@ export default function PurchaseChoice() {
                 </div>
                   {banWord === 1 &&
                     <div> 
-                    <div className='purRow2a'>
+                    <div className='purRow4'>
                       <div className='flex inline-block justify-center text-center mb-6'>
                         <div id='purSignUp' className='flex inline-block justify-center text-center'>
                           <div>
@@ -693,7 +828,7 @@ export default function PurchaseChoice() {
                   </div>               
                   }
                   {carrotAvail === false &&         
-                    <div className=' container purRow3'>
+                    <div className=' container purRow5'>
                       <div className ="flex inline-block justify-center text-center"> 
                           <form onSubmit={handleSubmit(availClick)}>               
                               <div className ="flex inline-block justify-center text-center">                                    
@@ -719,7 +854,7 @@ export default function PurchaseChoice() {
                   <div></div>
                 :      
                   <div>              
-                    <div className='purRow4'>
+                    <div className='purRow6'>
                     <div className='flex inline-block justify-center text-center mb-6'>
                       <div className='' ></div>
                       <div id='purSignUp' >              
@@ -779,16 +914,32 @@ export default function PurchaseChoice() {
                           </div>  
                             <div className="form-group mt-6 justify-left text-left">
                                 <label>4) Choose a Plan</label>                           
-                            </div>                                                  
+                            </div> 
+                                                                            
                       </div>
                       <div className=''></div> 
                       </div>
                     </div>
+ 
                   </div>
                 }
+              
+              <div className=''></div>
+              <div className='purRow7'>
+                <div className ="flex inline-block justify-center text-center mt-2 mb-2">
+                  <div className='flex row display-inline justify-center mb-2'>
+                    <input ref={txtPromoApply} disabled={promoAgain} className='promoApply rounded-xl' type="text" placeholder=' promo code' />
+                    <div id='btnPromoA' disabled={promoAgain} className="btn btn-primary pt-2 ml-4 mr-4" onClick={() => promoApply()}>Apply</div>
+                  </div>
+                </div>
+                  <div className='flex row display-inline justify-center mb-2'>
+                    <div id='promoErr' className={promoError}> That Promo Code Is Incorrect</div>
+                    <div id='promoApp' className={promoApplied}> Your Promo Code Was Applied</div>
+                  </div>        
+              </div>
               <div className=''></div>
               <div className='purRow8'>        
-                <div id='bxPrice' className='gap-4'>
+                <div id='boxPrice' className='bxPrice justify-center items-center gap-4'>
                   <div className='bg-slate-200 text-3xl pt-4 mt-4 mb-6 rounded-xl'> FREE Option
                       <div className=''>
                         <div className=''>
@@ -796,45 +947,44 @@ export default function PurchaseChoice() {
                               <div>                         
                                 <div className='flex inline-block justify-center text-center mb-6'>
                                   <div className='flex inline-block justify-left text-left'>  
-                                    { walletState === true ? 
-                                      <div>                         
-                                      <div className='flex inline-block justify-center text-center mb-6'>
-                                        <div className=' inline-block justify-left text-left'>  
-                                          <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                                <p> Caret Tag: ^{itemData}{numberCount} </p>
-                                              </div>                             
+                                  { walletState === true ? 
+                                    <div>                         
+                                    <div className='flex inline-block justify-center text-center mb-6'>
+                                      <div className=' inline-block justify-left text-left'>  
+                                        <div className='justify-center text-center font-bold text-2xl pl-4 mt-4'>
+                                              <p>^{itemData}{numberCount} </p>
+                                            </div>                             
 
-                                              <div className=''></div>
-                                                <div className='text-2xl pl-4 pr-4'>
-                                                  <p> 1 Wallet Address <br />
-                                                      Auto 3 digit extension<br />
-                                                      <br />
-                                                      <br />
-                                                  </p>
-                                                </div>                                                   
-                                            </div>
-                                          </div >
-                                        </div>
-                                      :
-                                        <div>
-                                          <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                            NOT AVAILABLE
+                                            <div className=''></div>
+                                              <div className='text-2xl pl-4 pr-4'>
+                                                <p> 1 Wallet Address <br />
+                                                    Auto 3 digit extension<br />
+                                                    <br />
+                                                    <br />
+                                                </p>
+                                              </div>                                                   
                                           </div>
-                                          {carrotAvail === true ?
-                                              <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                                  Must have Crypto Wallet
-                                              </div>
-                                          :
-                                              <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                              
-                                              </div>
-                                          }
+                                        </div >
+                                      </div>
+                                    :
+                                      <div>
+                                        <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                          NOT AVAILABLE
                                         </div>
+                                        {carrotAvail === true ?
+                                            <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                                Must have Crypto Wallet
+                                            </div>
+                                        :
+                                            <div className='justify-center text-center text-2xl pl-4 mt-4'>
+                                            
+                                            </div>
+                                        }
+                                      </div>
                                     }
                                   </div>
                                 </div >
                               </div>
-
                           </div>
                           <div className='flex inline-block justify-center text-center mt-4 mb-6'>
                             { walletState === false ? 
@@ -846,6 +996,7 @@ export default function PurchaseChoice() {
                                 <button id='btnFree' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => regClick()}>{loading ? 'Processing...' : 'FREE'}</button>  
                               </div>
                             }
+                            {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
                           </div>                  
                       </div>
                     </div>
@@ -858,18 +1009,19 @@ export default function PurchaseChoice() {
                               <div>                         
                                 <div className='flex inline-block justify-center text-center mb-6'>
                                   <div className=' inline-block justify-left text-left'>  
-                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                      <p> Caret Tag: ^{itemData}{numberCount} </p>
+                                    <div className='justify-center text-center font-bold text-2xl pl-4 mt-4'>
+                                      <p>^{itemData}{numberCount} </p>
                                     </div> 
                                     <div className=''></div>
                                       <div className='text-2xl pl-4 pr-4'>
                                         <p> 1 Wallet Address <br />
                                             Auto 3 digit extension<br />
-                                            <br /><br />
+                                            <br />
                                         </p>
-                                      </div>                                                   
+                                      </div>
+                                      <div className='justify-center text-xl text-center pl-4 pr-4'></div>                                                
                                   </div>
-                                </div >
+                                </div>
                               </div>
                             :
                               <div>                         
@@ -877,8 +1029,7 @@ export default function PurchaseChoice() {
                                   <div className='flex inline-block justify-left text-left'>  
                                     <div className='justify-center text-center text-2xl pl-4 mt-4'>
                                       <p>NOT AVAILABLE</p>                        
-                                    </div>
-                          
+                                    </div>                          
                                   </div>
                                 </div >
                               </div>
@@ -887,7 +1038,7 @@ export default function PurchaseChoice() {
                           <div className='flex inline-block justify-center text-center mt-4 mb-6'>                      
                             {carrotAvail === true ? 
                               <div>
-                                 <button id='btnPro'  className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}>$ 5.00 USD</button>                     
+                                 <button id='btnPro' disabled={loading}  className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}>{proCost}</button>                     
                                 {/*<button id='btnPro' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => proClick()}>{loading ? 'Processing...' : '$ 5.00 USD'}</button>*/}
                               </div>
                             :
@@ -907,18 +1058,17 @@ export default function PurchaseChoice() {
                             <div>                         
                                 <div className='flex inline-block justify-center text-center mb-6'>
                                   <div className=' inline-block justify-left text-left'>  
-                                    <div className='justify-center text-center text-2xl pl-4 mt-4'>
-                                      <p>Caret Tag: ^{itemData}</p>
+                                    <div className='justify-center font-bold text-center text-2xl pl-4 mt-4'>
+                                      <p> ^{itemData}</p>
                                     </div> 
                                     <div className=''></div>
                                       <div className='justify-center text-center text-2xl pl-4 pr-4'>
                                         <p> 3 Wallet Addresses <br />
-                                            {/*Add extension digits*<br />
+                                            No Auto Extension on Caret<br />
                                             <br />
-                                            <small>*apply a unique 3 digit ext 
-                                              <br />to caret word. ie: ^{itemData}123 </small>*/}
                                           </p>
-                                      </div>                                                   
+                                      </div>
+                                      <div className='justify-center text-xl text-center pl-4 pr-4'></div>                                                 
                                   </div>
                                 </div >
                               </div>
@@ -939,8 +1089,9 @@ export default function PurchaseChoice() {
                         </div>
                         <div className='flex inline-block justify-center text-center mt-4 mb-6'>
                           {carrotAvail === true ?
-                              <div>                     
-                                <button id='btnPrem' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}>{loading ? 'Processing...' : '$ 20.00 USD'}</button>  
+                              <div>
+                                <button id='btnPrem' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}>{premCost}</button>                     
+                                {/* <button id='btnPrem' disabled={loading} className="btn btn-primary mr-12 mt-2 ml-8" onClick={() => premClick()}>{loading ? 'Processing...' : '$ 20.00 USD'}</button>  */}
                               </div>
                             :
                               <div>                         
@@ -952,11 +1103,12 @@ export default function PurchaseChoice() {
                     </div>
                   </div> 
                 </div>
-              </div>
-              
-              </form>
-            </div> 
-          }     
+              </div>             
+             </form> 
+              <div className=''>
+            </div>
+          </div>            
+        }           
       </div>
     </div>
   )

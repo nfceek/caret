@@ -37,21 +37,42 @@
 
   }
 
-  #bxPrice {
-    /* Flexbox Stuff */
-    display: flex;
-    align-items: center;
+  .promoApply {
+    width: 18ch;
+    border: 1px solid #e6e6e6;
+  }
 
-    /* Text styles */
-    text-align: left;
-    width: 960px;
-     @media only screen and (max-width: 880px) {
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      width: 80vw;
+  input.promoApply {
+    padding-left: 15px;
+  }
+
+  .bxPrice {
+    /* Mobile by default as Roy pointed out */
+    display: flex;
+    flex-direction: column;
+
+  }
+  
+  @media (min-width: 768px) {
+    /* For desktops */
+    .bxPrice {
+      flex-direction: row;
+
     }
   }
+
+  #bxFree {
+    min-width: 250px;
+
+  }
+
+  #bxPro {
+    min-width: 250px;
+  }
+
+  #bxPrem {
+    min-width: 250px;
+  }  
 
   .BnrHeader {
     background-color: 'white';
