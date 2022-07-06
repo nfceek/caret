@@ -117,7 +117,7 @@ export default function PurchaseChoice() {
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
     console.log('caretCheck 1 ' + data + ' ' + server)
-    const response = await fetch(server + '/api/validate/returnCarrot', {
+    const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -132,7 +132,7 @@ export default function PurchaseChoice() {
   async function caretNumCheck(data) { 
     var formData = JSON.stringify(data)
     console.log('caretCheck 2 ' + formData)
-    const response = await fetch(server + '/api/validate/returnCarrot', {
+    const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {

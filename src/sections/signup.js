@@ -57,7 +57,7 @@ const data = {
 
 
 export default function Signup() {
-  const [loading, setLoading] = useState(false) 
+  const [loading, setLoading] = useState(true) 
 
   const router = useRouter()
   const validationRequest = Yup.object().shape({
