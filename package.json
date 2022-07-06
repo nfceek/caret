@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "postbuild": "next-sitemap"
+    "build": "next build & next export",
+    "start": "next start"
   },
   "browser": {
     "child-process": false,

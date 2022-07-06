@@ -12,5 +12,5 @@ export default async(req, res) => {
             word: wordIn,
            },            
     });
-    return res.status(200).json({message:'Student deleted successfully'})
+    return res.status(200).json({})
 }
