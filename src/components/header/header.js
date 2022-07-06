@@ -17,12 +17,12 @@ export default function Header({ className, uStatus}) {
   const router = useRouter()
   
   var item = uStatus
-  console.log('uStatus in ' + item)
+  //console.log('uStatus in ' + item)
 
   useEffect(() => {
     var item = localStorage.getItem('caret')
     //var item = uStatus
-    console.log('uStatus in ' + item)
+    //console.log('uStatus in ' + item)
     chStatus(item)
   }, [])
 

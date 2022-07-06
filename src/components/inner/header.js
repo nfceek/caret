@@ -19,7 +19,7 @@ export default function Header({ className, uStatus }) {
   useEffect(() => {
     var item = localStorage.getItem('caret')
     
-    console.log('header item ' + item)
+    //console.log('header item ' + item)
     chStatus(item)
   }, [])
 

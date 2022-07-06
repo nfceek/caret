@@ -57,7 +57,7 @@ const data = {
 
 
 export default function Signup() {
-  const [loading, setLoading] = useState(true) 
+  const [loading, setLoading] = useState(false) 
 
   const router = useRouter()
   const validationRequest = Yup.object().shape({
@@ -78,7 +78,7 @@ export default function Signup() {
       var rUpper = user.request.toUpperCase()
 
       const item = rUpper
-      console.log(item)
+      //console.log(item)
       router.push(
         {
           pathname: '/purchase',

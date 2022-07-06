@@ -42,12 +42,12 @@ export default function SectionUpper() {
   
   useEffect(() => {
     var item = localStorage.getItem('caret')
-    console.log('item ' + item)
+    //console.log('item ' + item)
     chStatus(item)
   }, [])
 
   async function chStatus(data){
-    console.log('log status ' + data)
+    //console.log('log status ' + data)
     if(data === null){
       setUserIn(0)
       router.push('/login');      

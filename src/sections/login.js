@@ -23,7 +23,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
     var validationSchema = ''
 
     if(loginChoice === 'pwd'){
-		console.log(' lets validate: pwd')
+		//console.log(' lets validate: pwd')
         validationSchema = Yup.object().shape({
             email: Yup.string()
                 .required('Username is required')
@@ -32,7 +32,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
             password: Yup.string().required('Password is required'),
         });
     } else {
-		console.log(' lets validate: acc')
+		//console.log(' lets validate: acc')
         validationSchema = Yup.object().shape({
             email: Yup.string()
                 .required('Username is required')
@@ -48,14 +48,13 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
     const { errors } = formState;
 
     function loginValue(data) {
-        console.log(data)
+        //console.log(data)
         {data === false ? setLoginChoice('wallet') : setLoginChoice('pwd')}
     }
 
     async function onSubmit({ email, password, account }) {
 
-        console.log('incoming ',email, password, account)
-		
+        //console.log('incoming ',email, password, account)		
         if(loginChoice === 'pwd'){
             const response = await fetch('../../api/acctPwdLogin', {
                 method: 'POST',
@@ -67,13 +66,13 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 			var loginSuccess =''			
 			loginSuccess = await response.json() 
 
-			console.log('success ' + JSON.stringify(loginSuccess) ) 
+			//console.log('success ' + JSON.stringify(loginSuccess) ) 
 				if(loginSuccess !== null){ 
 					setPwdError(0)
 					if (!(email && bcrypt.compareSync(password, loginSuccess.password))) {
 						setPwdError(1);
 					}else{
-						console.log('pass')
+						//console.log('pass')
 						localStorage.setItem('caret', JSON.stringify(email));
 						//localStorage.setItem('wallet', JSON.stringify(account));
 						router.push('/dashboard');
@@ -92,13 +91,13 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 			var loginSuccess =''			
 			loginSuccess = await response.json() 
 
-			console.log('success ' + JSON.stringify(loginSuccess) ) 
+			//console.log('success ' + JSON.stringify(loginSuccess) ) 
 				if(loginSuccess !== null){ 
 					setAccError(0)
 					if (!(email && account === loginSuccess.account)) {
 						setAccError(1);
 					}else{
-						console.log('pass')
+						//console.log('pass')
 						localStorage.setItem('caret', JSON.stringify(email));
 						router.push('/dashboard');
 					} 

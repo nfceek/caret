@@ -22,7 +22,7 @@ export default function PurchaseComplete() {
   const {caret} = router.query 
   const fullCaret = '^' + caret
   
-  console.log('status ' + server + ' or is it '  + JSON.stringify(caret) + ' full caret ' + fullCaret)
+  //console.log('status ' + server + ' or is it '  + JSON.stringify(caret) + ' full caret ' + fullCaret)
   postUp(caret, status) 
 
   async function lgClick(){
@@ -59,8 +59,8 @@ export default function PurchaseComplete() {
     cUpdateWord.push(rBan)
     cUpdateWord.push(rActive)
   
-    console.log('prepper data ' + cUpdateWord)
-        // --update IPFS Only if user has wallet
+    //console.log('prepper data ' + cUpdateWord)
+     // --update IPFS Only if user has wallet
     postUser(cUpdateWord)
   
     if(rStatus === 'success' || rStatus === 'promo' || rStatus === 'free' ){
@@ -71,7 +71,7 @@ export default function PurchaseComplete() {
   }
 
   async function postUser(data) { 
-    console.log(' user data ' + JSON.stringify( data))
+    //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
     const response = await fetch(server + '/api/finalUser', {
@@ -101,7 +101,7 @@ export default function PurchaseComplete() {
   }
 
   async function postCarrots(data){
-    console.log(' user data ' + JSON.stringify( data))
+    //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
     const response = await fetch(server + '/api/finalCarrot', {
@@ -171,7 +171,7 @@ export default function PurchaseComplete() {
     pinata.pinJSONToIPFS(body, options).then((result) => {
         //handle results here
         setFileCid(result.IpfsHash)
-        console.log('result cid ' + fileCid)
+        //console.log('result cid ' + fileCid)
         updateCidCarrot(userIn,result.IpfsHash )
     }).catch((err) => {
         //handle error here
@@ -193,13 +193,10 @@ export default function PurchaseComplete() {
       },
     })
     const dbInsert = await response.json() 
-      console.log('dbCid ' + JSON.stringify(dbInsert))
+      //console.log('dbCid ' + JSON.stringify(dbInsert))
       return dbInsert
 
   }
-
-
-
 
   return (
     <div id='purFormComplete' >

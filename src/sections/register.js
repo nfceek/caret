@@ -58,10 +58,8 @@ import RegisterFeature from 'components/register-feature';
       };
 
     async function addUser(user) { 
-        console.log('load ' + JSON.stringify(user))
+        //console.log('load ' + JSON.stringify(user))
         const curDate = new Date().toISOString()
-        console.log(curDate)
-       
         user.password = bcrypt.hashSync(user.password, 10);  
         //console.log(user.password)
         const response = await fetch('../../api/acctRegister', {
@@ -114,7 +112,6 @@ import RegisterFeature from 'components/register-feature';
         
         async function onSubmit(user) {
             const checkEmail = await emailCheck(user)
-            console.log('checkEmail back: ' + checkEmail)
 				setEmailState(checkEmail)
 				if(checkEmail === 0 ){           
 					addUser(user)
@@ -125,7 +122,6 @@ import RegisterFeature from 'components/register-feature';
 
         async function unameCheck(data) {
             var formData = JSON.stringify(data.username)
-            console.log('formData out uname : ' + formData)
             const response = await fetch('/../api/validate/preUsername', {
               method: 'POST',
               body: formData, 
@@ -139,7 +135,6 @@ import RegisterFeature from 'components/register-feature';
 
           async function emailCheck(data) {
             var formData = JSON.stringify(data.email)
-            console.log('formData out email: ' + formData)
             const response = await fetch('/../api/validate/preEmail', {
               method: 'POST',
               body: formData, 
@@ -153,7 +148,6 @@ import RegisterFeature from 'components/register-feature';
 
           async function accountCheck(data) {
             var formData = JSON.stringify(data.account)
-            console.log('formData out : ' + formData)
             const response = await fetch('/../api/validate/preAccount', {
               method: 'POST',
               body: formData, 

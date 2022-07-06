@@ -97,7 +97,7 @@ export default function PurchaseChoice() {
         caretCheck(router.query.data)
         var item = localStorage.getItem('caret')
         //var item = uStatus
-        console.log('uStatus in ' + item)
+        //console.log('uStatus in ' + item)
         chStatus(item)
       } catch (error) {
         console.log('purchase routing error: ', error)
@@ -131,7 +131,7 @@ export default function PurchaseChoice() {
 
   async function caretNumCheck(data) { 
     var formData = JSON.stringify(data)
-    console.log('caretCheck 2 ' + formData)
+    //console.log('caretCheck 2 ' + formData)
     const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
@@ -140,7 +140,6 @@ export default function PurchaseChoice() {
       },
     })
     const stepTwo = await response.json() 
-    console.log('caretCheck 2 result ' + JSON.stringify(stepTwo))
     caretNumInformation(stepTwo)
   }
 
@@ -152,7 +151,7 @@ export default function PurchaseChoice() {
     } 
 
     if(data === null){ 
-      console.log('Im null')
+      //console.log('Im null')
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
       setCarrotInDb(false)
@@ -174,13 +173,13 @@ export default function PurchaseChoice() {
 
   function caretNumInformation(data){
     if(data === null){ 
-      console.log('Im null')
+      //console.log('Im null')
       setCarrotIsAvail(' is available')
       setCarrotAvail(true)
       setCarrotNumInDb(false)
     }else{
       const dbAvailNum = JSON.stringify(data.available)
-        console.log(' dbAvailNum ' + dbAvailNum )
+        //console.log(' dbAvailNum ' + dbAvailNum )
         if(dbAvailNum === 'false'){
           setCarrotIsAvail(' is NOT available ')
           setCarrotAvail(false)
@@ -374,35 +373,30 @@ export default function PurchaseChoice() {
     // user
     preAddUser(data)
     //update db word
-    console.log('master word avail: ' + carrotInDb + ' numWord avail ' + carrotNumInDb)
+    //console.log('master word avail: ' + carrotInDb + ' numWord avail ' + carrotNumInDb)
     if(carrotInDb === true){
-      console.log('UpdateDB: ' + carrotInDb)
+      //console.log('UpdateDB: ' + carrotInDb)
       await updateCarrot(cUpdateWord)
     }else {
-      console.log('InsertDB: ' + carrotInDb)   
+      //console.log('InsertDB: ' + carrotInDb)   
       await insertCarrot(cUpdateWord)
     }
     // set sales data
     preSalesData(cUpdateWord)
-    console.log('lets close this deal ' + JSON.stringify(pymtChoice))
+
     // check for promo code
-    console.log('pymt choice ' + pymtChoice)
+    //console.log('pymt choice ' + pymtChoice)
     if(pymtChoice === 'Pro'){
-      console.log( 'user passed down data pro' + JSON.stringify(data))
       createCheckOutSession(stripe5Data, cUserEmail, cCid, cWord )
-
     }else if(pymtChoice === 'Prem'){
-      console.log( 'user passed down data prem' + JSON.stringify(data))
       createCheckOutSession(stripe20Data, cUserEmail, cCid, cWord )
-
     }else{
       // is it free - promo pro free - or promo prem free  
-      console.log( 'user passed down data other ' + JSON.stringify(data))  
       createFreeCheckOutSession(data, cUserEmail, cCid, cWord )
     }
 
     async function createFreeCheckOutSession(data, uEmail, cCid, cWord){
-      console.log('free data' + JSON.stringify(data) )
+      //console.log('free data' + JSON.stringify(data) )
       var cStat = 'success'
       if(pymtChoice === 'free'){
         cStat = 'free'
@@ -419,7 +413,7 @@ export default function PurchaseChoice() {
     }
 
     async function createCheckOutSession(data, uEmail, cCid, cWord){
-      console.log('data in: ' + JSON.stringify(data) + ' word ' + cWord)
+      //console.log('data in: ' + JSON.stringify(data) + ' word ' + cWord)
       var wordIn = cWord.toUpperCase()
       var toItem = []
       var toItem = {
@@ -430,7 +424,6 @@ export default function PurchaseChoice() {
         'price': data.price,
         'caret': wordIn, 
        }
-      console.log('nu nu data' + JSON.stringify(toItem) )
     
         const stripe = await stripePromise;
         const checkoutSession = await axios.post('../api/create-stripe-session', {
@@ -454,7 +447,7 @@ export default function PurchaseChoice() {
   }
 
   function flush(data){
-    console.log('sayonara baby')
+    //console.log('sayonara baby')
    // redirect user to dashboard/ty page
 
     return
@@ -508,12 +501,11 @@ export default function PurchaseChoice() {
 }
 
   async function preAddUser(user) { 
-    console.log('load ' + JSON.stringify(user) + ' data ' + JSON.stringify(data))
+    //console.log('load ' + JSON.stringify(user) + ' data ' + JSON.stringify(data))
     const curDate = new Date().toISOString()
     var pwd = ''
     var uname = ''
     var planChoice = 1
-    console.log(curDate)
 
     if(walletState === false){
         pwd = bcrypt.hashSync(user.password, 10) 
@@ -673,7 +665,7 @@ export default function PurchaseChoice() {
   }
   
   function availClick(user) {
-    console.log('req ' + user.request + ' user ' + JSON.stringify(user) )
+    //console.log('req ' + user.request + ' user ' + JSON.stringify(user) )
     const availCheck = user.request.toUpperCase()
     setItemData(availCheck)
     caretCheck(availCheck)
@@ -681,12 +673,12 @@ export default function PurchaseChoice() {
 
   let txtPromoApply = React.createRef();
   async function promoApply() {
-    console.log('promoApply value: ' + txtPromoApply.current.value)
+    //console.log('promoApply value: ' + txtPromoApply.current.value)
     var data = txtPromoApply.current.value
     const checkPromo = await prePromoCheck(data) 
    
     if(checkPromo === undefined || checkPromo.length === 0){
-      console.log(' im not dead yet ' + checkPromo )
+      //console.log(' im not dead yet ' + checkPromo )
       setPromoAgain(false)
       setPromoError('visible pt-4 ml-6 mb-6 text-pink-800')
       setPromoApplied('hidden pt-4 ml-6 mb-6 text-teal-800')
@@ -702,7 +694,7 @@ export default function PurchaseChoice() {
         setPromoApplied('hidden pt-4 ml-6 mb-6 text-teal-800')
       }else{
       ctPromo = (ctPromo - 1)    
-      console.log('Gimmie the Promo ' + JSON.stringify(checkPromo) + ' disc pro ' + proDisc + ' disc prem ' + premDisc)
+      //console.log('Gimmie the Promo ' + JSON.stringify(checkPromo) + ' disc pro ' + proDisc + ' disc prem ' + premDisc)
         if(proDisc === 0){
           setPymtChoice('Promo')
           setProCost(' FREE ')
