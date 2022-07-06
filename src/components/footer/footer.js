@@ -11,15 +11,15 @@ const social = [
     icon: <FaInstagram />,
   },
   {
-    path: '/',
+    path: 'https://twitter.com/caret_cloud',
     icon: <FaTwitter />,
   },
   {
-    path: '/',
+    path: 'https://www.tiktok.com/@caretcloud.tag',
     icon: <FaTiktok />,
   },
   {
-    path: '/',
+    path: 'https://discord.com/channels/993907594747990056/993907595351953521',
     icon: <FaDiscord />,
   },
 ];

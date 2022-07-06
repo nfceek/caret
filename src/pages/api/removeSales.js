@@ -7,11 +7,10 @@ export default async(req, res) => {
         var dataArr = inData.split(',')
         let wordIn = dataArr[0] 
 
-
     const response = await prisma.sales.deleteMany({
         where: {
             word: wordIn,
            },           
     });
-    res.json(response)
+    return res.status(200).json({message:'sale deleted successfully'})
 }

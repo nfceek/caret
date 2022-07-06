@@ -37,7 +37,7 @@ export default function SectionUpper() {
   const [chain3,setChain3] = useState()
   const [wallet3, setWallet3] = useState()
   const [userIn, setUserIn] = useState(0) 
-
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
   
   useEffect(() => {
@@ -60,7 +60,6 @@ export default function SectionUpper() {
 
   async function caretInfo(data) { 
     var formData = data
-    //console.log('caretCheck 1 ' + data)
     const response = await fetch('/../api/acctGetUser', {
       method: 'POST',
       body: formData, 
@@ -78,9 +77,11 @@ export default function SectionUpper() {
     //setAvatar(stepOne.avatar)
     setCaret(stepOne.caret)
     setPlan(stepOne.plan)
-      if(setPlan === 3) {
+      if(setPlan === 3 || setPlan === 6) {
         setDataPlan('Premium')
-      }else if(setPlan === 2) {
+      }else if(setPlan === 4) {
+        setDataPlan('Promo')
+      }else if(setPlan === 2 || setPlan === 5) {
         setDataPlan('Pro')
       }else {
         setDataPlan('Free')
@@ -105,13 +106,13 @@ export default function SectionUpper() {
     <div id='bxDash' className='block  align-center'>
         <div className='block'>
           <div className='text-center text-6xl font-bold'>
-              {uname} Dashboard
+              ^{uname} Dashboard
           </div>
         </div>
         <div className='block'>
           <div className='flex display-inline justify-center'>
 
-            <div id='bxUserLeft' className='block'>
+            <div id='bxUserLeft' className='block' key='member'>
               {data.map((item) => (
                 <TeamCard 
                 src = {Member1}
@@ -124,35 +125,55 @@ export default function SectionUpper() {
 
             <div className='block'>
 
-              <div id='bxUserInfo' className='block'>
-                <div className='flex display-inline justify-left'>
-                  <div className='mt-2'>Caret Tag: </div>
-                  <div className='ml-4 mt-2'>{caret}</div>
-                  {/* <div>* set for if no wallet*</div>*/}
-                </div>
-                <div className='flex display-inline justify-left'>
-                  <div className='mt-2'>Chain: </div>
-                  <div className='ml-4 mt-2'>{chain}</div>
-                </div>
-                <div className='flex display-inline justify-left'>
-                <div className='mt-2'>Wallet: </div>
-                <div className='ml-4 mt-2'>{wallet}</div>
-                </div>
-                <div className='flex display-inline justify-left'>                 
-                  <div className='mt-2'>User Plan: </div>
-                  <div className='ml-4 mt-2'>{dataPlan}</div>
-                </div>
-                <div className='flex display-inline justify-left'>
-                  <div className='mt-2'>First Name: </div>
-                  <div className='ml-4 mt-2'>{fname}</div>
+              <div id='bxUserInfo' className='block '>
+              <div className='flex display-inline justify-left'>                 
+                  <div className='text-right  w-48 mt-2'>User Plan: </div>
+                  <div className='border border-gray-200 w-64 ml-4 mt-2 pl-2'>{dataPlan}</div>
+                  <div>
+                    <button class="bg-indigo-300 hover:bg-indigo-700 text-white font-bold py-2 px-4  pl-2  ml-2 rounded-full">
+                      Upgrade
+                    </button>
                   </div>
-                <div className='flex display-inline justify-left'>
-                  <div className='mt-2'>Last Name: </div>
-                  <div className='ml-4 mt-2'>{lname}</div>
                 </div>
+
+                {/*
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Caret Tag: </div>
+                    <div className='border border-gray-200 w-64 ml-4 mt-2 pl-2'>^{caret}</div>
+                    <div>* set for if no wallet*</div>
+                  </div>
+                */}
+
                 <div className='flex display-inline justify-left'>
-                  <div className='mt-2'>User Name: </div>
-                  <div className='ml-4 mt-2'>{uname}</div>
+                  <div className='text-right w-48 mt-2'>Chain: </div>
+                  <div className='border border-gray-200 w-64 ml-4 mt-2 pl-2'>{chain}</div>
+                </div>
+
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>Wallet: </div>
+                  <div className='border border-gray-200 w-64 ml-4 mt-2 pl-2'>{wallet}</div>
+                </div>
+
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>First Name: </div>
+                  <div className='border border-gray-200 w-64 ml-4 mt-2 pl-2'>{fname}</div>
+                </div>
+
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>Last Name: </div>
+                  <div className='border border-gray-200 w-64 ml-4 mt-2'>{lname}</div>
+                </div>
+
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>IPFS Published: </div>
+                  <div className='border border-gray-200 w-64 ml-4 mt-2 pl-2'>FALSE</div>
+                </div>
+
+                <div className='flex display-inline justify-right mt-6 '>
+                  <div className='text-right w-48 mt-2'></div>
+                  <div className='text-right w-64 ml-4 mt-2 pl-2'>
+                    <button id='btnProfile' disabled={loading} className='btn btn-primary align-right mr-2 mt-4'>Update Info</button>
+                  </div>          
                 </div>
               </div>
             </div>

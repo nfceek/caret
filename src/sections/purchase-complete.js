@@ -5,7 +5,33 @@ import { useRouter } from 'next/router'
 import { pinataPublicKey } from "../../projectId";
 import { pinataPrivateKey } from "../../projectSecret";
 
+import { server } from '../config';
 
+
+//const redirectURL = process.env.NODE_ENV === 'development' && 'http://localhost:3000';
+//export const server = dev ? 'http://localhost:3000' : 'https://caret.cloud';
+export default function PurchaseComplete() {
+  const[saleStatus, setSaleStatus] = useState()
+  const[inCaret, setInCaret] = useState()
+  //const[rStatus, setRStatus] = useState()
+  const[runOnce, setRunOnce] = useState(0)
+
+  const router = useRouter()
+  const {status} = router.query
+  const rStatus = status
+  const {caret} = router.query 
+  const fullCaret = '^' + caret
+  
+  console.log('status ' + server + ' or is it '  + JSON.stringify(caret) + ' full caret ' + fullCaret)
+  postUp(caret, status) 
+
+  async function lgClick(){
+    router.push('/account')
+  }
+
+  async function cClick(){
+    router.push('/')
+  }
   async function postUp(word, stat){
 
     var rStatus = stat
@@ -48,7 +74,7 @@ import { pinataPrivateKey } from "../../projectSecret";
     console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch('../api/finalUser', {
+    const response = await fetch(server + '/api/finalUser', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -62,7 +88,7 @@ import { pinataPrivateKey } from "../../projectSecret";
     //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch('../api/finalSales', {
+    const response = await fetch(server + '/api/finalSales', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -78,7 +104,7 @@ import { pinataPrivateKey } from "../../projectSecret";
     console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch('../api/finalCarrot', {
+    const response = await fetch(server + '/api/finalCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -92,7 +118,7 @@ import { pinataPrivateKey } from "../../projectSecret";
     //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch('../api/removeSales', {
+    const response = await fetch(server + '/api/removeSales', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -104,12 +130,13 @@ import { pinataPrivateKey } from "../../projectSecret";
     rmCarrots(data)
 
   }
+  
 
   async function rmCarrots(data){
     //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch('../api/removeCarrot', {
+    const response = await fetch(server + '/api/removeCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -119,18 +146,6 @@ import { pinataPrivateKey } from "../../projectSecret";
     const stepCarrots = await response.json()        
   }
   
-  async function preInsertIPFS(){
-      /*
-    pinata.testAuthentication().then((result) => {
-      //handle successful authentication here
-      console.log('Pinata test: ', result);
-      setAuthresult(result)
-    }).catch((err) => {
-        //handle error here
-        console.log(err);
-    });
-      */ 
-  }
 
   async function insertIPFS(user){
 
@@ -170,7 +185,7 @@ import { pinataPrivateKey } from "../../projectSecret";
     cUpdateWord.push(user)
     cUpdateWord.push(cid)
 
-    const response = await fetch('../api/carrotCid', {
+    const response = await fetch(server + '/api/carrotCid', {
       method: 'POST',
       body:  cUpdateWord,
       headers: {
@@ -184,28 +199,7 @@ import { pinataPrivateKey } from "../../projectSecret";
   }
 
 
-  export default function PurchaseComplete() {
-    const[saleStatus, setSaleStatus] = useState()
-    const[inCaret, setInCaret] = useState()
-    //const[rStatus, setRStatus] = useState()
-    const[runOnce, setRunOnce] = useState(0)
-  
-    const router = useRouter()
-    const {status} = router.query
-    const rStatus = status
-    const {caret} = router.query 
-    const fullCaret = '^' + caret
-    
-    console.log('status ' + JSON.stringify(status) + ' or is it '  + JSON.stringify(caret) + ' full caret ' + fullCaret)
-    postUp(caret, status) 
-  
-  async function lgClick(){
-    router.push('/account')
-  }
-  
-  async function cClick(){
-    router.push('/')
-  }
+
 
   return (
     <div id='purFormComplete' >

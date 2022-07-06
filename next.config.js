@@ -15,8 +15,7 @@ module.exports = {
       ignoreDuringBuilds: true,
     },
     publicRuntimeConfig: {
-      apiUrl: process.env.NODE_ENV === 'development'
-      && 'http://localhost:3000/api'
+      apiUrl: process.env.NODE_ENV === 'development' && 'http://localhost:3000/api'
      
     },
     images: {

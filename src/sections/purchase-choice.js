@@ -11,7 +11,7 @@ import { stripePublishableKey } from "../../stripeId"
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import PurchaseFeature from 'components/purchase-feature';
-//var FormData = require('form-data');
+import { server } from '../config';
 
 const publishableKey = stripePublishableKey
 const stripePromise = loadStripe(publishableKey); 
@@ -20,7 +20,6 @@ export default function PurchaseChoice() {
   const bcrypt = require('bcryptjs');
   //const pinataSDK = require('@pinata/sdk');
   //const pinata = pinataSDK(pinataPublicKey, pinataPrivateKey);
-
   
   const [carrotAvail, setCarrotAvail] = useState()
   const [carrotIsAvail, setCarrotIsAvail] = useState(false) 
@@ -117,8 +116,8 @@ export default function PurchaseChoice() {
 
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
-    console.log('caretCheck 1 ' + data)
-    const response = await fetch('../api/validate/returnCarrot', {
+    console.log('caretCheck 1 ' + data + ' ' + server)
+    const response = await fetch(server + '/api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -133,7 +132,7 @@ export default function PurchaseChoice() {
   async function caretNumCheck(data) { 
     var formData = JSON.stringify(data)
     console.log('caretCheck 2 ' + formData)
-    const response = await fetch('../api/validate/returnCarrot', {
+    const response = await fetch(server + '/api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -334,7 +333,7 @@ export default function PurchaseChoice() {
       cPrice = 0;
       planChoice = 1
     }
-    
+
     var cSitepublickey = secureKeys[0]
     var cSiteprivatekey = secureKeys[1]
     var cPublickey = secureKeys[2]
@@ -434,7 +433,7 @@ export default function PurchaseChoice() {
       console.log('nu nu data' + JSON.stringify(toItem) )
     
         const stripe = await stripePromise;
-        const checkoutSession = await axios.post('../api/create-stripe-session', {
+        const checkoutSession = await axios.post(server + '/api/create-stripe-session', {
           item: toItem,
         });  
         const result = await stripe.redirectToCheckout({         
@@ -465,7 +464,7 @@ export default function PurchaseChoice() {
     //console.log('sales user data ' + JSON.stringify( data))
     var formData = data
    
-    const response = await fetch('../api/carrotSold', {
+    const response = await fetch(server + '/api/carrotSold', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -477,7 +476,7 @@ export default function PurchaseChoice() {
 
   async function prePymt(user) {
     var formData = JSON.stringify(data)
-    const response = await fetch('../api/validate/returnCarrot', {
+    const response = await fetch(server + '/api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -542,7 +541,7 @@ export default function PurchaseChoice() {
       uname = itemData + numberCount
     }
 
-    const response = await fetch('../api/carrotRegister', {
+    const response = await fetch(server + '/api/carrotRegister', {
         method: 'POST',
         body:  [JSON.stringify(user.email),uname,pwd,JSON.stringify(user.chain), JSON.stringify(user.account), planChoice],
         headers: {
@@ -557,7 +556,7 @@ export default function PurchaseChoice() {
 
   async function preMaxUserId(user){
 
-    const response = await fetch('../api/validate/preCarrotUserId', {
+    const response = await fetch(server + '/api/validate/preCarrotUserId', {
       method: 'POST',
       body:  [JSON.stringify(user.email)],
       headers: {
@@ -573,7 +572,7 @@ export default function PurchaseChoice() {
   async function prePromoCheck(data){
     //console.log(' user data ' + JSON.stringify( data))
     var formData = JSON.stringify(data)
-    const response = await fetch('../api/validate/prePromo', {
+    const response = await fetch(server + '/api/validate/prePromo', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -586,7 +585,7 @@ export default function PurchaseChoice() {
 
   async function salesCarrot(data){
     //console.log(' user data ' + JSON.stringify( data))
-    const response = await fetch('../api/salesCarrot', {
+    const response = await fetch(server + '/api/salesCarrot', {
       method: 'POST',
       body:  data,
       headers: {
@@ -601,7 +600,7 @@ export default function PurchaseChoice() {
 
   async function insertCarrot(data){
     //console.log(' user data ' + JSON.stringify( data))
-    const response = await fetch('../api/insertCarrot', {
+    const response = await fetch(server + '/api/insertCarrot', {
       method: 'POST',
       body:  data,
       headers: {
@@ -615,7 +614,7 @@ export default function PurchaseChoice() {
 
   async function updateCarrot(data){
     //console.log(' user data ' + JSON.stringify( data))
-    const response = await fetch('../api/updateCarrot', {
+    const response = await fetch(server + '/api/updateCarrot', {
       method: 'POST',
       body:  data,
       headers: {
@@ -629,7 +628,7 @@ export default function PurchaseChoice() {
 
   async function updatePromo(data){
     //console.log(' user data ' + JSON.stringify( data))
-    const response = await fetch('../api/updatePromo', {
+    const response = await fetch(server + '/api/updatePromo', {
       method: 'POST',
       body:  data,
       headers: {
@@ -645,7 +644,7 @@ export default function PurchaseChoice() {
     //console.log(' user data ' + JSON.stringify( data))
     var formData = JSON.stringify(data)
     //console.log('formData out Email: ' + formData)
-    const response = await fetch('../api/validate/preEmail', {
+    const response = await fetch(server + '/api/validate/preEmail', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -661,7 +660,7 @@ export default function PurchaseChoice() {
     //console.log(' user data ' + JSON.stringify( data))
     var formData = JSON.stringify(data)
     //console.log('formData out Acct: ' + formData)
-    const response = await fetch('../api/validate/preAccount', {
+    const response = await fetch(server + '/api/validate/preAccount', {
       method: 'POST',
       body: formData, 
       headers: {
