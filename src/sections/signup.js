@@ -1,7 +1,7 @@
 
-
+import React, { useState } from "react"
 import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
-import { keyframes } from '@emotion/react';
+
 import SectionHeader from 'components/section-header';
 import SignupFeature from 'components/signup-feature';
 import Theme from '../theme';
@@ -57,17 +57,18 @@ const data = {
 
 
 export default function Signup() {
-    const router = useRouter()
+  const [loading, setLoading] = useState(false) 
 
-    const validationRequest = Yup.object().shape({
+  const router = useRouter()
+  const validationRequest = Yup.object().shape({
     request: Yup.string()
         .matches(/^[a-zA-Z-_\s]*$/, "Only Alpha characters, dash ( - ) and underscore ( _ ) are allowed.")
         .min(4, 'Password must be at least 5 characters'),         
     });
 
-    const formOptions = { resolver: yupResolver(validationRequest) };
-    const { register, handleSubmit, formState } = useForm(formOptions);
-    const { errors } = formState;
+  const formOptions = { resolver: yupResolver(validationRequest) };
+  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { errors } = formState;
 
     async function caretCheck(){
 
@@ -106,15 +107,25 @@ export default function Signup() {
             <Box sx={styles.halfRBox}>
             <SignupFeature title={data.title} />
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className ="card-body">                   
+                    <div className ="card-body"> 
+                    {loading === true ? 
+                      <div>                
                         <div className="form-group">
                             <label>Step 1: </label>
                             <input name="request" type="text" placeholder="Choose Your Caret Word" {...register('request')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
                             <div className="invalid-feedback">{errors.request?.message}</div>
-                        </div>                   
+                        </div>
                         <div>                                 
                         <button type="submit" className ="btn btn-primary" id="caretCheck" >Check Availability</button>  
-                        </div>                                 
+                        </div>
+                      </div>
+
+                    :
+                      <div>
+                        <div className='text-6xl '>Coming 7/7 @ 7 </div>
+                      </div>                    
+                    } 
+                                
                     </div>
                 </form>
             </Box>                       
