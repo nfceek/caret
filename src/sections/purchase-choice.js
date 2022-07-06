@@ -116,7 +116,7 @@ export default function PurchaseChoice() {
 
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
-    console.log('caretCheck 1 ' + data + ' ' + server)
+    //console.log('caretCheck 1 ' + data + ' ' + server)
     const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
@@ -433,7 +433,7 @@ export default function PurchaseChoice() {
       console.log('nu nu data' + JSON.stringify(toItem) )
     
         const stripe = await stripePromise;
-        const checkoutSession = await axios.post(server + '/api/create-stripe-session', {
+        const checkoutSession = await axios.post('../api/create-stripe-session', {
           item: toItem,
         });  
         const result = await stripe.redirectToCheckout({         

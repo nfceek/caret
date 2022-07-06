@@ -4,8 +4,8 @@ async function CreateStripeSession(req, res) {
   const { item } = req.body;
   console.log('create session ' + JSON.stringify(item))
   const redirectURL =
-    process.env.NODE_ENV === 'development' && 'http://localhost:3000';
-
+    //process.env.NODE_ENV === 'development' && 'http://localhost:3000';
+    process.env.NODE_ENV === 'production' && 'https://caret.cloud';
   const transformedItem = {
     price_data: {
       currency: 'usd',
