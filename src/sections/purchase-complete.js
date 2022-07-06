@@ -22,7 +22,7 @@ export default function PurchaseComplete() {
   const {caret} = router.query 
   const fullCaret = '^' + caret
   
-  console.log('status ' + server + ' or is it '  + JSON.stringify(caret) + ' full caret ' + fullCaret)
+  console.log('status ' + '.. or is it '  + JSON.stringify(caret) + ' full caret ' + fullCaret)
   postUp(caret, status) 
 
   async function lgClick(){
@@ -74,7 +74,7 @@ export default function PurchaseComplete() {
     console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch(server + '/api/finalUser', {
+    const response = await fetch('../api/finalUser', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -88,7 +88,7 @@ export default function PurchaseComplete() {
     //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch(server + '/api/finalSales', {
+    const response = await fetch('../api/finalSales', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -104,7 +104,7 @@ export default function PurchaseComplete() {
     console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch(server + '/api/finalCarrot', {
+    const response = await fetch('../api/finalCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -118,7 +118,7 @@ export default function PurchaseComplete() {
     //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch(server + '/api/removeSales', {
+    const response = await fetch('../api/removeSales', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -136,7 +136,7 @@ export default function PurchaseComplete() {
     //console.log(' user data ' + JSON.stringify( data))
     var formData = data
   
-    const response = await fetch(server + '/api/removeCarrot', {
+    const response = await fetch('../api/removeCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -185,7 +185,7 @@ export default function PurchaseComplete() {
     cUpdateWord.push(user)
     cUpdateWord.push(cid)
 
-    const response = await fetch(server + '/api/carrotCid', {
+    const response = await fetch('../api/carrotCid', {
       method: 'POST',
       body:  cUpdateWord,
       headers: {
