@@ -1,3 +1,4 @@
+/*
 import { Box, Card, Text, Heading, Button } from 'theme-ui';
 import React from 'react';
 import List from './list';
@@ -24,10 +25,10 @@ const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('b
       authorization: auth
     }
   })
-
+*/
 
 export default function CaretCard() {
-
+/*
 //const Signup = () => {
   var web3 = ''
   var account = ''
@@ -74,7 +75,7 @@ const getWeb3 = async (isFirstLoad = boolean) => {
     };
 };
 
-*/
+
   //window.$ = window.jQuery = jQuery;
   // When we compile + deploy the User contract, truffle stores the abi and deployed address in a json
   // file in /build. We use it here to setup a User class.
@@ -285,16 +286,16 @@ const getWeb3 = async (isFirstLoad = boolean) => {
 /*
   //window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-  if (typeof web3 !== 'undefined') {
-    console.warn("Using web3 detected from external source.");
-    // Use Mist/MetaMask's provider
-    window.web3 = new Web3(web3.currentProvider);
-  } else {
-    console.warn("No web3 detected. Please use MetaMask or Mist browser.");
-  }
+  //if (typeof web3 !== 'undefined') {
+  //  console.warn("Using web3 detected from external source.");
+  // Use Mist/MetaMask's provider
+  //  window.web3 = new Web3(web3.currentProvider);
+  //} else {
+  //  console.warn("No web3 detected. Please use MetaMask or Mist browser.");
+  //}
   //});
 
-*/
+
   async function getDetails() {
     const { web3 } = this;
    
@@ -331,7 +332,7 @@ const getWeb3 = async (isFirstLoad = boolean) => {
     } catch (error) {
       console.error("Could not connect to contract or chain.");
     }
-*/
+
 
   }
 /*
@@ -377,11 +378,13 @@ const getWeb3 = async (isFirstLoad = boolean) => {
        new Web3.providers.HttpProvider("http:127.0.0.1:8545"),
      );
    }
-*/
+
  //});
 
-
+*/
   return (
+    <div></div>
+    /*
     <Card >
 
         <Box>
@@ -390,9 +393,11 @@ const getWeb3 = async (isFirstLoad = boolean) => {
           </Box>
         </Box>
       </Card>
+    */
   );
 }
 
+/*
 const styles = {
   caretCard: {
     borderRadius: 20,
@@ -499,3 +504,4 @@ const styles = {
     },
   },
 };
+*/
