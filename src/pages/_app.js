@@ -35,7 +35,7 @@ function CustomApp({ Component, pageProps }) {
       {/* Global Site Tag (gtag.js) - Google Analytics */}
       <Script
         strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=G-9SCR547G1J`}
       />
       <Script
         strategy="afterInteractive"
@@ -44,7 +44,7 @@ function CustomApp({ Component, pageProps }) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${gtag.GA_TRACKING_ID}', {
+            gtag('config', 'G-9SCR547G1J', {
               page_path: window.location.pathname,
             });
           `,
