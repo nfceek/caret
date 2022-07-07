@@ -19,7 +19,7 @@ export default function Privacy() {
             <br />
             <br />
             As a result, Caret.Cloud is volunteering the following statements about collecting information, targeting capabilities, and use of cookies. If you have any questions pertaining to this privacy policy and its contents,
-            please{' '} <a href=""> contact us on Discord (coming soon) </a> . 
+            please <a href="https://discord.com/channels/993907594747990056/993907595351953521"> contact us on Discord </a> . 
             <br />
             <br />
             <span className="style4 text-decoration:underline">

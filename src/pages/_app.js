@@ -19,37 +19,27 @@ export default function CustomApp({ Component, pageProps }) {
 }
 */
 function CustomApp({ Component, pageProps }) {
-  const router = useRouter();
-  useEffect(() => {
-    const handleRouteChange = (url) => {
-      gtag.pageview(url);
-    };
-    router.events.on("routeChangeComplete", handleRouteChange);
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, [router.events]);
 
+  
   return (
     <>
-      {/* Global Site Tag (gtag.js) - Google Analytics */}
+<div className="container">
+      
       <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-9SCR547G1J"
         strategy="afterInteractive"
-        src={`https://www.googletagmanager.com/gtag/js?id=G-9SCR547G1J`}
       />
-      <Script
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-9SCR547G1J', {
-              page_path: window.location.pathname,
-            });
-          `,
-        }}
-      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-9SCR547G1J');
+        `}
+      </Script>
+    </div>
+      
       <Component {...pageProps} />
     </>
   );

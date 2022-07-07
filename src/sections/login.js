@@ -164,7 +164,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                                 </button>
                             </div>
                             <div className='ml-6 pt-3'>
-                                <Link href="/registration" className="btn btn-link">Register</Link>  
+                                {/*<Link href="/registration" className="btn btn-link">Register</Link>  */}
                             </div>               
                         </div>
                     </form>
