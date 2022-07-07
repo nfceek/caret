@@ -16,8 +16,7 @@ const packages = {
       name: 'Free Plan',
       description: 'For Personal Use',
       buttonText: 'Get my Caret',
-      //priceWithUnit: 'FREE',
-      priceWithUnit: '',
+      priceWithUnit: 'FREE',
       points: [
         {
           id: 1,
@@ -68,8 +67,7 @@ const packages = {
       header: 'Suggested',
       name: 'Personal Pro',
       description: 'For Most Users',
-      //priceWithUnit: '$ 5.00 / One Time Fee',
-      priceWithUnit: '',
+      priceWithUnit: '$ 5.00 / One Time Fee',
       buttonText: 'Order Now',
       anotherOption: '',
       points: [
@@ -122,8 +120,7 @@ const packages = {
       headerIcon: <IoIosCheckmarkCircle />,
       name: 'Personal Premium',
       description: 'For the Crypto Pro',
-      //priceWithUnit: '$ 20.00 / One Time Fee',
-      priceWithUnit: '',
+      priceWithUnit: '$ 20.00 / One Time Fee',
       buttonText: 'Order Now',
       anotherOption: '',
       points: [

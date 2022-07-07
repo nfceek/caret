@@ -23,8 +23,8 @@ function CustomApp({ Component, pageProps }) {
   
   return (
     <>
-<div className="container">
-      
+
+    <div className="container">      
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-9SCR547G1J"
         strategy="afterInteractive"

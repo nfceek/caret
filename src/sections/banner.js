@@ -6,7 +6,7 @@ import { Container, Box, Heading, Text, Image, Button } from 'theme-ui';
   const ShapeRight = '../assets/shape-right.png'
 
 export default function Banner() {
-  const BannerImg = '../assets/caret-launch-banner.png'
+  const BannerImg = '../assets/caret-banner-open.png'
 
   
   return (
