@@ -25,7 +25,7 @@ const data = {
       alttext: 'Setup',
       title: 'Easy to Setup',
       text:
-        'See how quick and easy it is to get your Caret tag.',
+        'See how quick and easy it is to get your Caret Tag.',
     },
     {
       id: 2,
@@ -33,7 +33,7 @@ const data = {
       alttext: 'Remember',
       title: 'Easy to Remember',
       text:
-        'Never fumble for your crypto wallet address again. Use a memorable caret tag',
+        'Never fumble for your crypto wallet address again. Use a memorable Caret Tag',
     },
   ],
 };

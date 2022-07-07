@@ -43,7 +43,7 @@ const data = [
     alttext: 'addl costs',
     title: 'Reserved, Premium & Banned words',
     text:
-      'Some words are special. Premium words are more money because of they are rare. Reserved words are held for the copyright or domain name holder. And, Profanity is BANNED',
+      'Some words are special. Premium words are more money because of they are rare. Reserved words are held for the copyright or domain name holder. Profanity is BANNED',
   },
   {
     id: 5,

@@ -17,7 +17,7 @@ const data = [
     alttext: 'Fast and Easy',
     title: 'Fast Performance',
     text: 
-      'Setup your caret tag in minutes. Share with everyone.',
+      'Setup your Caret Tag in minutes. Share with everyone.',
   },
   {
     id: 2,
@@ -33,7 +33,7 @@ const data = [
     alttext: 'Pro Subscription',
     title: 'Pro & Premium Subscriptions',
     text:
-      'Get customized names or reserve a custom Caret tag word even if you don`t have a crypto wallet.',
+      'Get customized names or reserve a custom Caret Tag word even if you don`t have a crypto wallet.',
   },
   {
     id: 4,

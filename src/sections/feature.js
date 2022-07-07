@@ -17,7 +17,7 @@ const data = [
     alttext: 'Fast Setup',
     title: 'Super Fast Setup',
     text:
-      'Get your Caret tag in 5 minutes or less',
+      'Get your Caret Tag in 5 minutes or less',
   },
   {
     id: 2,
