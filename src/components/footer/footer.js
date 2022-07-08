@@ -6,12 +6,10 @@ import data from './footer.data';
 import { FaInstagram, FaTwitter, FaTiktok, FaTelegram } from 'react-icons/fa';
 
 const social = [
-  /*
   {
-    path: '/',
+    path: 'https://instagram.com/caret.cloud',
     icon: <FaInstagram />,
   },
-  */
   {
     path: 'https://twitter.com/caret_cloud',
     icon: <FaTwitter />,

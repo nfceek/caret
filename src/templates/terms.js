@@ -739,7 +739,7 @@ export default function Terms() {
             <br />
             <b>Contact:</b>
             <br />
-            Please use our Discord channel for correspondence
+            Please use our <a href='https://t.me/caret_cloud'>Telegram Channel</a> for correspondence
             <br />
           </p>
         </Container>
