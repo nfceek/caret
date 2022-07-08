@@ -4,25 +4,25 @@ import { Scrollbars } from 'react-custom-scrollbars-2';
 import Drawer from 'components/drawer';
 import { IoMdClose, IoMdMenu } from 'react-icons/io';
 import { Link } from 'react-scroll';
-import { FaFacebookF, FaTwitter, FaGithubAlt, FaDribbble } from 'react-icons/fa';
 import menuItems from './header.data';
+import { FaInstagram, FaTwitter, FaTiktok, FaTelegram } from 'react-icons/fa';
 
 const social = [
   {
-    path: '/',
-    icon: <FaFacebookF />,
+    path: 'https://instagram.com/caret.cloud',
+    icon: <FaInstagram />,
   },
   {
-    path: '/',
+    path: 'https://twitter.com/caret_cloud',
     icon: <FaTwitter />,
   },
   {
-    path: '/',
-    icon: <FaGithubAlt />,
+    path: 'https://www.tiktok.com/@caretcloud.tag',
+    icon: <FaTiktok />,
   },
   {
-    path: '/',
-    icon: <FaDribbble />,
+    path: 'https://t.me/caret_cloud',
+    icon: <FaTelegram />,
   },
 ];
 
@@ -156,7 +156,7 @@ const styles = {
       alignItems: 'center',
       justifyContent: 'center',
       color: 'text',
-      fontSize: 14,
+      fontSize: 32,
       mr: '15px',
       transition: 'all 0.25s',
       cursor: 'pointer',

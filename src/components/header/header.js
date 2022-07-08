@@ -9,6 +9,24 @@ import Logo from 'components/logo';
 import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
 
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  PinterestShareButton,
+  PinterestIcon,
+  TwitterShareButton,
+  TwitterIcon,
+  TelegramShareButton,
+  TelegramIcon,
+} from 'next-share';
+
+
+import { Fragment } from 'react'
+import { Menu, Transition } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/solid'
+
+
+const sLogo = '/assets/share-30.png';
 
 export default function Header({ className, uStatus}) {
   const cLogo = '/assets/caret-logo01.png'
@@ -52,6 +70,10 @@ export default function Header({ className, uStatus}) {
     router.push('/');
   }
 
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+  }
+
   return (
     <Box id='id' className='bnrHeader' sx={styles.header} >
       <Container sx={styles.container}>
@@ -80,11 +102,109 @@ export default function Header({ className, uStatus}) {
             </div>
           </div>  
         : 
-          <div>       
-            <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={signIn}>
-              My Caret
-            </Button>
-          </div>                     
+          <div className='flex display-inline ml-6'>
+            <div>       
+              <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={signIn}>
+                My Caret
+              </Button>
+            </div> 
+            <div className='flex display-inline ml-6'>
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                    <img id='imgShare' src={sLogo} alt='acct'/>                   
+                  </Menu.Button>
+                </div>
+
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1 pl-2">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                          href="https://pinterest.com"
+                          target="_blank"
+                          className={classNames(
+                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                            'block px-4 py-2 text-sm'
+                          )}
+                        >
+                          <div className='flex display-inline'>
+                            <div> <PinterestIcon size={32} round /> </div>
+                            <div className='pl-4 pt-4'> Pinterest</div> 
+                          </div>
+                        </a>
+                        )} 
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="https://facebook.com"
+                            target="_blank"
+                            className={classNames(
+                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                              'block px-4 py-2 text-sm'
+                            )}
+                          >
+                            <div className='flex display-inline'>
+                              <div> <FacebookIcon size={32} round /> </div>
+                              <div className='pl-4 pt-4'> Facebook</div> 
+                            </div>
+                          </a>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="https://twitter.com"
+                            target="_blank"
+                            className={classNames(
+                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                              'block px-4 py-2 text-sm'
+                            )}
+                          >
+                            <div className='flex display-inline'>
+                              <div> <TwitterIcon size={32} round /> </div>
+                              <div className='pl-4 pt-4'> Telegram</div> 
+                            </div>
+                        </a>
+                        )}
+                      </Menu.Item>
+                      <form method="POST" action="#">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="https://t.me"
+                              target="_blank"
+                              className={classNames(
+                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                'block px-4 py-2 text-sm'
+                              )}
+                            >
+                              <div className='flex display-inline'>
+                                <div> <TelegramIcon size={32} round /> </div>
+                                <div className='pl-4 pt-4'> Telegram</div> 
+                              </div>
+                          </a>
+                          )}
+                        </Menu.Item>
+                      </form>
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
+  
+            </div>
+          </div>
+                    
         }
 
         <MobileDrawer />             
@@ -120,6 +240,7 @@ const styles = {
     transition: 'all 0.4s ease',
     animation: `${positionAnim} 0.4s ease`,
     '.signin__btn': {
+      height: '50px',
       //backgroundImage: `url(/assets/bksignup.png)`,
       backgroundColor: '#FF7F27',
       flexShrink: 0,

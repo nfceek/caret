@@ -25,7 +25,7 @@ const data = {
       alttext: 'Remember',
       title: 'Pick a word, name or phrase',
       text:
-        'Choose a word or phrase to use as your Caret Label.',
+        'Choose a word or phrase to use as your Caret Tag',
     },
     {
       id: 2,
@@ -33,7 +33,7 @@ const data = {
       alttext: 'Remember',
       title: 'Don`t add the Caret ( ^ )',
       text:
-        'Do Not put a ^ before your Caret Label, we will add that create your Caret Tag',
+        'Do Not put a ^ before your Caret input. The system will add the Caret Symbol',
     },
     {
       id: 3,

@@ -157,7 +157,7 @@ const packages = {
         {
           id: 6,
           icon: <IoIosCheckmarkCircle />,
-          text: 'Caret Tag shares multi chain',
+          text: 'Caret Tags for multiple chains',
           isAvailable: true,
         },        
         {

@@ -4,7 +4,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 1
   }
+
+  .imgShare {
+    height: 24px;
+    width: 24px;
+  }
+
+  .shareMenu {
+    z-index: 50;
+  }
+
+  #bnrHeader {
+    z-index: 10;
+  }
+
+
   .cardHeader {
     background-color: grey;
   }
