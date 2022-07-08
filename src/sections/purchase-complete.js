@@ -26,7 +26,7 @@ export default function PurchaseComplete() {
   postUp(caret, status) 
 
   async function lgClick(){
-    router.push('/account')
+    router.push('/login')
   }
 
   async function cClick(){
