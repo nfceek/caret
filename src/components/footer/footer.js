@@ -3,13 +3,15 @@
 import { Box, Container, Image, Text } from 'theme-ui';
 import { Link } from 'components/link';
 import data from './footer.data';
-import { FaInstagram, FaTwitter, FaTiktok, FaDiscord } from 'react-icons/fa';
+import { FaInstagram, FaTwitter, FaTiktok, FaTelegram } from 'react-icons/fa';
 
 const social = [
+  /*
   {
     path: '/',
     icon: <FaInstagram />,
   },
+  */
   {
     path: 'https://twitter.com/caret_cloud',
     icon: <FaTwitter />,
@@ -19,8 +21,8 @@ const social = [
     icon: <FaTiktok />,
   },
   {
-    path: 'https://discord.com/channels/993907594747990056/993907595351953521',
-    icon: <FaDiscord />,
+    path: 'https://t.me/caret_cloud',
+    icon: <FaTelegram />,
   },
 ];
 
@@ -39,6 +41,7 @@ const cLogo = '/assets/caret-logo01.png';
           <nav>
             {data.menuItem.map((item,i) => (
               <Link 
+
                 path={item.path}
                 key={i}
                 label={item.label}
@@ -50,7 +53,7 @@ const cLogo = '/assets/caret-logo01.png';
           <Box sx={styles.social}>
               {social.map((socialItem, i) =>(
                 <Box as="span" key={i} sx={styles.social.icon}>
-                  <Link to={socialItem.path}> {socialItem.icon} </Link>
+                  <div>< a href={socialItem.path} target="_blank" > {socialItem.icon} </a></div>
                 </Box>
               ))}            
             </Box>  
@@ -123,7 +126,7 @@ const styles = {
       alignItems: 'center',
       justifyContent: 'center',
       color: 'text',
-      fontSize: 14,
+      fontSize: 34,
       mr: '15px',
       transition: 'all 0.25s',
       cursor: 'pointer',
