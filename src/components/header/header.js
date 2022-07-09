@@ -12,8 +12,8 @@ import menuItems from './header.data';
 import {
   FacebookShareButton,
   FacebookIcon,
-  PinterestShareButton,
-  PinterestIcon,
+  FacebookMessengerShareButton,
+  FacebookMessengerIcon,
   TwitterShareButton,
   TwitterIcon,
   TelegramShareButton,
@@ -26,11 +26,14 @@ import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
 
 
-const sLogo = '/assets/share-30.png';
+
 
 export default function Header({ className, uStatus}) {
   const cLogo = '/assets/caret-logo01.png'
   const uLogo = '/assets/user_sm.png'
+  const sLogo = '/assets/share-30.png';
+  const cIcon = '/assets/caretIconSm.png'
+  
   const [userIn, setUserIn] = useState()               
   const router = useRouter()
   
@@ -93,21 +96,106 @@ export default function Header({ className, uStatus}) {
             </Link>
           ))}
         </Flex>
-
         {userIn === 1 ?
-          <div className='flex display-inline'>
-            <img id='imgAcct' src={uLogo} alt='acct' onClick={uAcct} />
-            <div className='ml-4'>
-              <a onClick={logout} className="btn btn-link">Logout</a>
-            </div>
-          </div>  
+          <div className='flex display-inline ml-6'>
+            <Menu as="div" className="relative inline-block text-left">
+              <div>
+                <Menu.Button className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                  <img id='imgShare' src={uLogo} alt='acct'/>                   
+                </Menu.Button>
+              </div>
+
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="py-1 pl-2">
+                    <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href="/dashboard"
+                            className={classNames(
+                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                              'block px-4 py-2 text-sm'
+                            )}
+                          >
+                            <div className='flex display-inline'>
+                              <div> <img id='imgShare' src={cIcon} alt='acct'/> </div>
+                              <div className='pl-4 pt-4'> My Account</div> 
+                            </div>
+                          </a>
+                        )}
+                      </Menu.Item>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <a
+                        href="/logout"
+                        className={classNames(
+                          active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                          'block px-4 py-2 text-sm'
+                        )}
+                      >
+                        <div className='flex display-inline'>
+                          <div> <img id='imgShare' src={cIcon} alt='acct'/>   </div>
+                          <div className='pl-4 pt-4'> Logout</div> 
+                        </div>
+                      </a>
+                      )} 
+                    </Menu.Item>
+                  </div>
+                </Menu.Items>
+              </Transition>
+            </Menu>
+          </div> 
         : 
           <div className='flex display-inline ml-6'>
-            <div>       
-              <Button className='signin__btn' variant='secondary' aria-label='Caret' onClick={signIn}>
-                My Caret
-              </Button>
-            </div> 
+            <div className='flex display-inline ml-6'>
+                <Menu as="div" className="relative inline-block text-left">
+                  <div>
+                    <Menu.Button className="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                      <img id='imgShare' src={uLogo} alt='acct'/>                   
+                    </Menu.Button>
+                  </div>
+
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="py-1 pl-2">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                            href="/login"
+                            className={classNames(
+                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                              'block px-4 py-2 text-sm'
+                            )}
+                          >
+                            <div className='flex display-inline'>
+                              <div> <img id='imgShare' src={cIcon} alt='acct'/>   </div>
+                              <div className='pl-4 pt-4'> Login</div> 
+                            </div>
+                          </a>
+                          )} 
+                        </Menu.Item>
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+            </div>
+
             <div className='flex display-inline ml-6'>
               <Menu as="div" className="relative inline-block text-left">
                 <div>
@@ -130,7 +218,7 @@ export default function Header({ className, uStatus}) {
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                          href="https://pinterest.com"
+                          href="https://messenger.com"
                           target="_blank"
                           className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
@@ -138,8 +226,8 @@ export default function Header({ className, uStatus}) {
                           )}
                         >
                           <div className='flex display-inline'>
-                            <div> <PinterestIcon size={32} round /> </div>
-                            <div className='pl-4 pt-4'> Pinterest</div> 
+                            <div> <FacebookMessengerIcon size={32} round /> </div>
+                            <div className='pl-4 pt-4'> Messenger</div> 
                           </div>
                         </a>
                         )} 
@@ -201,12 +289,9 @@ export default function Header({ className, uStatus}) {
                   </Menu.Items>
                 </Transition>
               </Menu>
-  
             </div>
-          </div>
-                    
+          </div>                    
         }
-
         <MobileDrawer />             
       </Container>
     </Box>
@@ -239,16 +324,6 @@ const styles = {
     backgroundColor: 'white',
     transition: 'all 0.4s ease',
     animation: `${positionAnim} 0.4s ease`,
-    '.signin__btn': {
-      height: '50px',
-      //backgroundImage: `url(/assets/bksignup.png)`,
-      backgroundColor: '#FF7F27',
-      flexShrink: 0,
-      pt: [6, 6, 6, null, 2],
-      pb: [6, 6, 6, null, 2],
-      mr: [15, 20, null, null, 0],
-      ml: ['auto', null, null, null, 0],
-    },
     '&.sticky': {
       position: 'fixed',
       backgroundColor: 'background',

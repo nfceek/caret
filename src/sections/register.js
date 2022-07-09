@@ -82,7 +82,7 @@ import RegisterFeature from 'components/register-feature';
     function Register() {
         const router = useRouter();
 
-        const [isAdmin, setIsAdmin] = useState(false)
+        const [isAdmin, setIsAdmin] = useState(true)
         const [agreeState, setAgreeState] = useState('false')
         const [chainValue, setChainValue] = useState('');
         const [walletState, setwalletState] = useState('false')   // does user have wallet

@@ -4,15 +4,34 @@ import { useRouter } from 'next/router'
 
 import { Container, Box, Flex, Button } from 'theme-ui';
 import { keyframes } from '@emotion/react';
-import Link from 'next/link'
+import { Link } from 'react-scroll';
 import Logo from 'components/logo';
 import MobileDrawer from './mobile-drawer';
 import menuItems from './header.data';
+
+import {
+  FacebookShareButton,
+  FacebookIcon,
+  PinterestShareButton,
+  PinterestIcon,
+  TwitterShareButton,
+  TwitterIcon,
+  TelegramShareButton,
+  TelegramIcon,
+} from 'next-share';
+
+
+import { Fragment } from 'react'
+import { Menu, Transition } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/solid'
 
 
 export default function Header({ className, uStatus }) {
   const cLogo = '/assets/caret-logo01.png'
   const uLogo = '/assets/user_sm.png'
+  const sLogo = '/assets/share-30.png';
+  const cIcon = '/assets/caretIconSm.png'
+
   const [userIn, setUserIn] = useState()               // is user logged in
   const router = useRouter()
   
@@ -44,6 +63,10 @@ export default function Header({ className, uStatus }) {
     router.push('/');
   }
 
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
+  }
+
   return (
 
     <Box id='id' className='bnrHeader' sx={styles.header} >
@@ -54,16 +77,16 @@ export default function Header({ className, uStatus }) {
         </Flex>
 
         {userIn === 1 &&
-          <div className='flex display-inline'>
-            <div className=''>
-              <Link href='/dashboard'>
+          <div className='flex display-inline ml-6'>
+            <div className='flex display-inline'>
+              <div className=''>
                 <img id='imgInnerAcct' src={uLogo} alt='acct' />
-              </Link>
+              </div>
+              <div className='ml-4 '>
+                <a onClick={logout} className="btn btn-link">Logout</a>
+              </div>
             </div>
-            <div className='ml-4 '>
-              <a onClick={logout} className="btn btn-link">Logout</a>
-            </div>
-          </div>  
+          </div> 
         }
         <MobileDrawer />             
       </Container>
