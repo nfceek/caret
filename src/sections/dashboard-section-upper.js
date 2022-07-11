@@ -162,8 +162,11 @@ export default function SectionUpper() {
 
       setRollPro(sPro * 5)
       setRollPrem(sPrem * 20)
+
       setRollTotal(rollPro + rollPrem)
+
       setRollPaid(sPro + sPrem)
+      
       setRollPromo(sFree + sPromo + sProPromo + sPremPromo)
 
     }

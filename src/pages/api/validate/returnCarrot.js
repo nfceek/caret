@@ -3,8 +3,8 @@ import { prisma } from '../../../db'
 
 export default async(req, res) => {
     const data = JSON.parse(req.body)
-    //console.log('check: ' + data)
-    const response = await prisma.carrots.findFirst({ 
+    //console.log('rt check: ' + data)
+    const response = await prisma.carrots.count({ 
             where: {                   
                 word: data,
             },

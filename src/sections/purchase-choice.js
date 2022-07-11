@@ -116,7 +116,7 @@ export default function PurchaseChoice() {
 
   async function caretCheck(data) { 
     var formData = JSON.stringify(data)
-    //console.log('caretCheck 1 ' + data + ' ' + server)
+    //console.log('caretCheck 1 ' + data)
     const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
@@ -126,13 +126,49 @@ export default function PurchaseChoice() {
     })
     const stepOne = await response.json() 
     //console.log('caretCheck 1 result ' + JSON.stringify(stepOne))
-    caretInformation(stepOne)
+    caretInformation(data, stepOne)
   }
 
-  async function caretNumCheck(data) { 
-    var formData = JSON.stringify(data)
-    //console.log('caretCheck 2 ' + formData)
-    const response = await fetch('../api/validate/returnCarrot', {
+  async function caretInformation(data, info) {
+    //console.log('caretData ' + data + ' caretInfo ' + info) 
+    // is person logged in
+    if(localStorage === window.localStorage){
+      if(typeof window !== "undefined" && localStorage.caret !== null || localStorage.caret !== "undefined"){
+      }
+    } 
+    if(info === 0){ 
+      setCarrotIsAvail(' is available')
+      setCarrotAvail(true)
+      setCarrotInDb(false)
+    } else {      
+      const wordAvail = await caretAvailCheck(data)
+      //console.log('returned availWord ' + JSON.stringify(wordAvail))    
+        if(wordAvail === 0){
+          setCarrotIsAvail(' is NOT available ')
+          setCarrotAvail(false)
+          console.log('not avail')
+        }else{          
+          var data = (data + numberCount.toString())
+          //console.log('numCheck data ' + data)
+          const wordNumAvail = await caretNumCheck(data)
+          //console.log('word and number avail ' + wordNumAvail)
+            if(wordNumAvail === 0){
+              setCarrotIsAvail(' is available')
+              setCarrotAvail(true)
+              setCarrotInDb(true)
+            }else{
+              setCarrotIsAvail(' is NOT available ')
+              setCarrotAvail(false)
+            }
+            
+        }
+      
+    }
+  }
+
+  async function caretAvailCheck(data) { 
+    var formData = data
+    const response = await fetch('../api/validate/returnAvailCarrot', {
       method: 'POST',
       body: formData, 
       headers: {
@@ -140,59 +176,28 @@ export default function PurchaseChoice() {
       },
     })
     const stepTwo = await response.json() 
-    caretNumInformation(stepTwo)
+    //console.log('caretCheck 3 test ' + stepTwo[0].available)
+    const availWord = stepTwo[0].available
+    return availWord
+    
   }
 
-  function caretInformation(data) { 
-    // is person logged in
-    if(localStorage === window.localStorage){
-      if(typeof window !== "undefined" && localStorage.caret !== null || localStorage.caret !== "undefined"){
-      }
-    } 
-
-    if(data === null){ 
-      //console.log('Im null')
-      setCarrotIsAvail(' is available')
-      setCarrotAvail(true)
-      setCarrotInDb(false)
-    } else {  
-      const dbAvail = JSON.stringify(data.available)
-      
-        if(dbAvail === '0'){
-          setCarrotIsAvail(' is NOT available ')
-          setCarrotAvail(false)
-        }else{ 
-          setCarrotIsAvail(' is available')
-          setCarrotAvail(true)
-          setCarrotInDb(true)
-          var data = (data.word.toUpperCase() + numberCount.toString())
-          caretNumCheck(data)
-        }
-    }
+  async function caretNumCheck(data) { 
+    var formData = JSON.stringify(data)
+    /console.log('numCheck 2 ' + formData)
+    const response = await fetch('../api/validate/returnCarrot', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const stepThree = await response.json() 
+    //console.log('caretCheck 3 ' + JSON.stringify(stepThree))
+    return stepThree
   }
 
-  function caretNumInformation(data){
-    if(data === null){ 
-      //console.log('Im null')
-      setCarrotIsAvail(' is available')
-      setCarrotAvail(true)
-      setCarrotNumInDb(false)
-    }else{
-      const dbAvailNum = JSON.stringify(data.available)
-        //console.log(' dbAvailNum ' + dbAvailNum )
-        if(dbAvailNum === 'false'){
-          setCarrotIsAvail(' is NOT available ')
-          setCarrotAvail(false)
-        }else{
-          setCarrotIsAvail(' is available ')
-          setCarrotAvail(true)
-          setCarrotNumInDb(true)
-          setWordPrice(data.price) 
-        }
-    }
-  }
 
-  //console.log('In Avail: ' + carrotAvail + ' in Info ' + JSON.stringify(carrotInDb))
   var validationProcess = ''
   if(carrotAvail === false){
     validationProcess = Yup.object().shape({
