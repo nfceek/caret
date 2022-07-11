@@ -12,7 +12,7 @@ const Member1 = '../assets/user.png';
 const data = [
   {
     id: 1,
-    imgSrc: Member1,
+    imgSrc: '',
     alttext: 'user img',
     title: '',
     designation: '',
@@ -28,10 +28,9 @@ export default function SectionUpper() {
   const [caret, setCaret] = useState()
   const [plan, setPlan] = useState()
   const [dataPlan, setDataPlan] = useState()
-  const [isAdmin, setIsAdmin] = useState(1)
   const [level, setLevel] = useState()
   const [email, setEmail] = useState()
-
+  const [userCount, setUserCount] = useState()
   const [primaryChainValue, setPrimaryChainValue] = useState('');
   const [primaryWallet, setPrimaryWallet] = useState()
   const [secondChainValue, setSecondChainValue] = useState('');
@@ -39,11 +38,31 @@ export default function SectionUpper() {
   const [thirdChainValue, setThirdChainValue] = useState('');
   const [thirdWallet, setThirdWallet] = useState('')
 
+  const [isAdmin, setIsAdmin] = useState(true)
   const [userIn, setUserIn] = useState(0) 
   const [loading, setLoading] = useState(true)
   const [uUpdate, setUUpdate] = useState(false)
   const [premPlan, setPremPlan] = useState(false)
 
+  // admin section
+  const [aAdminCount, setAAdminCount] = useState()
+  const [aPendCount, setAPendCount] = useState()
+  const [aUserCount, setAUserCount] = useState()
+
+  // sales section
+  const[sFree, setSFree] = useState()
+  const[sPro, setSPro] = useState()
+  const[sPrem, setSPrem] = useState()
+  const[sPromo, setSPromo] = useState()
+  const[sProPromo, setSProPromo] = useState()
+  const[sPremPromo, setSPremPromo] = useState()
+  // rollups
+  
+  const[rollPro, setRollPro] = useState()
+  const[rollPrem, setRollPrem] = useState()
+  const[rollTotal, setRollTotal] = useState()
+  const[rollPaid, setRollPaid] = useState()
+  const[rollPromo, setRollPromo] = useState()
 
   const router = useRouter()
   
@@ -54,6 +73,7 @@ export default function SectionUpper() {
   }, [])
 
   const validationRequest = Yup.object().shape({
+    username: Yup.string(),    
     firstname: Yup.string()
         .matches(/^[a-zA-Z-_\s]*$/, "Only Alpha characters, dash ( - ) and underscore ( _ ) are allowed.")
         .min(4, 'Password must be at least 5 characters'),  
@@ -110,16 +130,60 @@ export default function SectionUpper() {
     })
 
     const stepOne = await response.json() 
-    //console.log(' return caret ' + JSON.stringify(stepOne))
+    console.log(' return caret ' + JSON.stringify(stepOne))
     
+    if(stepOne.admin === false){
+      setAvatar('../assets/user-med.png')
+    }else{
+      setAvatar('../assets/admin-med.png')
+
+      console.log('active ' + stepOne.active + ' admin ' + stepOne.admin)
+      // admin section
+      const aCount = await adminAdminCount(stepOne.admin)
+        setAAdminCount(aCount)
+      const uCount = await adminUserCount(stepOne.active)
+        setAUserCount(uCount)
+      const pCount = await adminPendCount(stepOne.active)
+        setAPendCount(pCount)
+      console.log('returned active count: ' + aUserCount)
+      //sales section
+      const freeCount = await salesCount(1)
+        setSFree(freeCount)
+      const proCount = await salesCount(2)
+        setSPro(proCount)
+      const premCount = await salesCount(3)
+        setSPrem(premCount)
+      const promoCount = await salesCount(4)
+        setSPromo(promoCount)
+      const proPromoCount = await salesCount(5)
+        setSProPromo(proPromoCount)
+      const premPromoCount = await salesCount(6)
+        setSPremPromo(premPromoCount)
+
+      setRollPro(sPro * 5)
+      setRollPrem(sPrem * 20)
+      setRollTotal(rollPro + rollPrem)
+      setRollPaid(sPro + sPrem)
+      setRollPromo(sFree + sPromo + sProPromo + sPremPromo)
+
+    }
+
     setFname(stepOne.firstname)
     setLname(stepOne.lastname)
 
-    setUname(stepOne.username)
-
+    if(stepOne.caret === "" || stepOne.caret === undefined){
+      setUname(stepOne.username)
+    }else{
+      setUname('^' + stepOne.caret)
+    }
 
     //setAvatar(stepOne.avatar)
-    setCaret(stepOne.caret)
+    if(stepOne.caret === "" || stepOne.caret === undefined){
+      setCaret('No Input')
+    }else{
+      setCaret('^' + stepOne.caret)
+    }
+      
     setPlan(stepOne.plan)
       if(setPlan === 3 || setPlan === 6) {
         setDataPlan('Premium')
@@ -141,7 +205,63 @@ export default function SectionUpper() {
     setThirdChainValue()
     setThirdWallet()
   }
- 
+
+  async function salesCount(data){
+    var formData = data
+    console.log(' admin ' + JSON.stringify(data))
+    const response = await fetch('/../api/admin/salesCount', {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const AdminCount = await response.json() 
+    return AdminCount
+  }
+
+  async function adminAdminCount(data){
+    var formData = 'true'
+    console.log(' admin ' + JSON.stringify(data))
+    const response = await fetch('/../api/admin/adminCount', {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const AdminCount = await response.json() 
+    return AdminCount
+  }
+
+  async function adminUserCount(data){
+    var formData = 1
+    console.log(' user ' + JSON.stringify(data))
+    const response = await fetch('/../api/admin/userCount', {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const adminUserCount = await response.json() 
+    return adminUserCount
+  }
+
+   async function adminPendCount(data){
+    var formData = 0
+    console.log(' pend ' + JSON.stringify(data))
+    const response = await fetch('/../api/admin/userCount', {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const adminUserPendCount = await response.json() 
+    return adminUserPendCount
+  }
+
   return (
     <div id='bxDash' className='block  align-center'>
       <div className='block'>
@@ -154,7 +274,7 @@ export default function SectionUpper() {
           <div id='bxUserLeft' className='block' key='member'>
             {data.map((item) => (
               <TeamCard 
-              src = {Member1}
+              src = {avatar}
               alttext= 'avatar'
               title={email}
               />
@@ -174,7 +294,7 @@ export default function SectionUpper() {
                       <div className='primaryCaret border border-gray-200 ml-4 mt-2 pr-6 pb-6 pt-6'>
                         <div className='flex display-inline justify-left'>
                           <div className='text-right w-48 mt-2'>Primary Caret: </div>
-                          <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret}</div>                           
+                          <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
                         </div>
                         <div className='flex display-inline justify-left'>
                           <div className='text-right w-48 mt-2'>Chain: </div>
@@ -320,7 +440,20 @@ export default function SectionUpper() {
                       </div>
                     }
                     <div className='primaryCaret border border-gray-200 ml-4 mt-2 pr-6 pb-6'>
-                      <div className='flex display-inline justify-left mt-6'>
+                    <div className='flex display-inline justify-left mt-6'>
+                        <div className='text-right w-48 mt-2'>Username: </div>
+                          {uUpdate === false ?                        
+                            <div>
+                              <div className='w-64 ml-4 mt-2 pl-2'>{uname}</div>
+                            </div>
+                          :
+                            <div>
+                              <input name="username" type="text" placeholder=" Add Username" {...register('username')} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2' + `form-control ${errors.username ? 'is-invalid' : ''}`} />
+                              <div className="invalid-feedback">{errors.username?.message}</div>
+                            </div>
+                          }
+                      </div>
+                      <div className='flex display-inline justify-left'>
                         <div className='text-right w-48 mt-2'>First Name: </div>
                           {uUpdate === false ?                        
                             <div>
@@ -360,46 +493,52 @@ export default function SectionUpper() {
           </div>
       </div>       
       </div>
-      {isAdmin === false &&
+      {isAdmin === true &&
         <div>
-          <div className='block pt-10 pb-10 mb-6'>
-            <div className='text-center text-6xl font-bold pb-4 mb-4'>Admin Section
+          <div className='block py-10 mb-6'>
+          <div className='text-center'>
+              <div className='text-center text-6xl font-bold py-6 '>Admin Section</div>
             <div>
-              <div class="grid grid-rows-3 grid-flow-col gap-4 text-3xl bg-slate-100 pt-2">
-                <div class="row-span-3 ... bg-indigo-100 m-2 p-2">01 - graph</div>
-                <div class="col-span-2 ... bg-amber-100 m-2 p-2">Totalusers
-                  <div class="grid grid-cols-3 gap-4">
-                    <div class=" bg-indigo-100 m-2 p-2">01 - admins</div>
-                    <div class=" bg-blue-100 m-2 p-2">02 - active </div>
-                    <div class=" bg-indigo-100 m-2 p-2">03 - pend</div>               
+              <div class="grid grid-rows-3 border border-gray-200 grid-flow-col gap-4 text-3xl bg-slate-100 ">
+                <div class="row-span-3 ... bg-gray-100 m-2 p-2"></div>
+
+                <div class="col-span-2 ...  border border-gray-200">
+                  <div class="col-span-2 ... text-4xl font-bold py-6">Total Users: {userCount}</div>
+                  <div class="grid grid-cols-3 gap-4 px-10">
+                    <div class="bg-blue-100 m-2 py-4">Admins: {aAdminCount}</div>
+                    <div class="bg-blue-100 m-2 py-4">Active Users: {aUserCount} </div>
+                    <div class="bg-blue-100 m-2 py-4">Pending Users: {aPendCount}</div>               
                   </div>
                 </div>
-                <div class="row-span-2 col-span-2 ... bg-blue-100 m-2 p-2">Sales Data
-                <div class="col-span-2 ... bg-amber-100 m-2 px-2 py-6">Recent
 
-                  <div class="grid grid-cols-4 gap-4">
-                    <div class=" bg-indigo-100 m-2 p-2">01 - free</div>
-                    <div class=" bg-blue-100 m-2 p-2">02 - pro </div>
-                    <div class=" bg-indigo-100 m-2 p-2">03 - prem</div> 
-                    <div class=" bg-blue-100 m-2 p-2">04 - promo </div>              
+                <div class="row-span-2 col-span-2 ... border border-gray-200">
+                  <div class="row-span-2 col-span-2 ... text-4xl font-bold py-6">Sales Data</div>
+                  <div class="col-span-2 ... bg-gray-100">
+                  <div class="row-span-2 col-span-2 ... text-3xl font-bold ">Promos</div>                            
+                    <div class="grid grid-cols-5 gap-4">
+                      <div class=" bg-blue-100 m-2 p-2">Free: {sFree}</div>
+                      <div class=" bg-blue-100 m-2 p-2">Promo: {sPromo} </div>   
+                      <div class=" bg-blue-100 m-2 p-2">Pro Promo: {sProPromo} </div>
+                      <div class=" bg-blue-100 m-2 p-2">Prem promo: {sPremPromo}</div> 
+                      <div class=" bg-blue-100 m-2 p-2">Total Promos Signups: {rollPromo} </div>                                
                   </div>
 
-
-                  <div class="col-span-2 ... bg-green-100 m-2 px-2 py-6">30 Day                             
-                    <div class="grid grid-cols-4 gap-4"> 
-                    <div class=" bg-indigo-100 m-2 p-2">01 - free</div>
-                    <div class=" bg-blue-100 m-2 p-2">02 - pro </div>
-                    <div class=" bg-indigo-100 m-2 p-2">03 - prem</div> 
-                    <div class=" bg-blue-100 m-2 p-2">04 - promo </div>              
+                  <div class="col-span-2 ... bg-gray-100 m-2 py-2">
+                  <div class="row-span-2 col-span-2 ... text-3xl font-bold pb-2">Sales</div>
+                  <div class="grid grid-cols-5 gap-4 ml-2">                    
+                    <div class=" bg-blue-100 m-2 p-2">Pro: {sPro} @ $ 5.00 = $ {rollPro}.00</div>
+                    <div class=" bg-blue-100 m-2 p-2">Prem: {sPrem} @ $ 20.00 = $ {rollPrem}.00</div>
+                    <div class=" bg-blue-100 m-2 p-2">Total Sale: $ {rollTotal}.00</div> 
+                    <div class=" bg-gray-100 m-2 p-2"></div> 
+                    <div class=" bg-blue-100 m-2 p-2">Total Paid Signups: {rollPaid}</div>         
+                      </div>
                     </div>
-                  </div>
-                 </div>
-                
+                 </div>               
                 </div>
+                <div class="row-span-3 ... bg-gray-100 m-2 p-2"></div>
               </div>
             </div>
-
-            </div>
+          </div>
       
       
 

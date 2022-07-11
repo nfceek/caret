@@ -651,7 +651,6 @@ export default function PurchaseChoice() {
   async function accountCheck(data) {
     //console.log(' user data ' + JSON.stringify( data))
     var formData = JSON.stringify(data)
-    //console.log('formData out Acct: ' + formData)
     const response = await fetch(server + '/api/validate/preAccount', {
       method: 'POST',
       body: formData, 
