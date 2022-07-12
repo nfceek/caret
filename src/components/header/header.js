@@ -261,7 +261,7 @@ export default function Header({ className, uStatus}) {
                           >
                             <div className='flex display-inline'>
                               <div> <TwitterIcon size={32} round /> </div>
-                              <div className='pl-4 pt-4'> Telegram</div> 
+                              <div className='pl-4 pt-4'> Twitter</div> 
                             </div>
                         </a>
                         )}
