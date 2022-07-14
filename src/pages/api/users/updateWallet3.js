@@ -18,8 +18,8 @@ export default async(req, res) => {
             email: email,
            },        
         data: {
-            chain: pChain,
-            account: pAccount,
+            chain3: pChain,
+            account3: pAccount,
 
 
             dateupdated: curDate,

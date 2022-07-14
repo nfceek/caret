@@ -24,8 +24,20 @@ export default function SectionUpper() {
   const [fname, setFname] = useState()
   const [lname, setLname] = useState()
   const [uname, setUname] = useState()
+  const [pname, setPname] = useState()
   const [avatar, setAvatar] = useState()
   const [caret, setCaret] = useState()
+  const [caret2, setCaret2] = useState()
+  const [caret3, setCaret3] = useState()
+
+  const [primaryChain, setPrimaryChain] = useState('');
+  const [secondChain, setSecondChain] = useState('');
+  const [thirdChain, setThirdChain] = useState('');
+  const [primaryWallet, setPrimaryWallet] = useState() 
+  const [primaryWalletIsSet, setPrimaryWalletIsSet] = useState(true) 
+  const [secondWallet, setSecondWallet] = useState('')  
+  const [thirdWallet, setThirdWallet] = useState('')
+
   const [plan, setPlan] = useState()
   const [dataPlan, setDataPlan] = useState()
   const [level, setLevel] = useState()
@@ -33,21 +45,26 @@ export default function SectionUpper() {
   const [password, setPassword] = useState()
   const [prePassword, setPrePassword] = useState('******')
   const [userCount, setUserCount] = useState()
-  const [primaryChainValue, setPrimaryChainValue] = useState('');
-  const [primaryWallet, setPrimaryWallet] = useState()
-  const [secondChainValue, setSecondChainValue] = useState('');
-  const [secondWallet, setSecondWallet] = useState('')
-  const [thirdChainValue, setThirdChainValue] = useState('');
-  const [thirdWallet, setThirdWallet] = useState('')
+  const [upgradePlan, setUpgradePlan] = useState()
+
+  // emails for updates
   const [userInfoEmail, setUserInfoEmail] = useState(false)
   const [userPwdEmail, setUserPwdEmail] = useState(false)
   const [userWalletEmail, setUserWalletEmail] = useState(false)
-
+  const [userWallet2Email, setUserWallet2Email] = useState(false)
+  const [userWallet3Email, setUserWallet3Email] = useState(false)
+  //form
   const [fmAvatar, setFmAvatar] = useState('')
   const [fmUserName, setFmUserName] = useState('')
   const [fmFirstName, setFmFirstName] = useState('')
   const [fmLastName, setFmLastName] = useState('')
-
+  const [fmPlan, setFmPlan] = useState('')
+  const [account, setAccount] = useState()
+  const [account2, setAccount2] = useState()
+  const [account3, setAccount3] = useState()
+  const [chain, setChain] = useState()
+  const [chain2, setChain2] = useState()
+  const [chain3, setChain3] = useState()
   const [fmPassword, setFmPassword] = useState('')
   const [fmPwdConfirm, setFmPwdConfirm] = useState('')
 
@@ -55,10 +72,13 @@ export default function SectionUpper() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [userIn, setUserIn] = useState(0) 
   const [loading, setLoading] = useState(false)
+  const [premPlan, setPremPlan] = useState(false)
+  const [aUpdate, setAUpdate] = useState(false)
   const [uUpdate, setUUpdate] = useState(false)
-  const [uPpdate, setPUpdate] = useState(false)
-  const [uWpdate, setWUpdate] = useState(false)
-  const [premPlan, setPremPlan] = useState(true)
+  const [uPUpdate, setPUpdate] = useState(false)
+  const [uWUpdate, setWUpdate] = useState(false)
+  const [uW2Update, setW2Update] = useState(false)
+  const [uW3Update, setW3Update] = useState(false)
 
   // admin section
   const [aAdminCount, setAAdminCount] = useState()
@@ -96,12 +116,7 @@ export default function SectionUpper() {
     lastname: Yup.string()
       .matches(/^[a-zA-Z-_\s]*$/, "Only Alpha characters, dash ( - ) and underscore ( _ ) are allowed.")
       .min(2, 'First Name must be at least 3 characters'), 
-    primarychain: Yup.string(),
-    primarywallet: Yup.string(),
-    secondchain: Yup.string(),
-    secondwallet: Yup.string(),
-    thirdchain: Yup.string(),
-    thirdwallet: Yup.string(),          
+        
     });
 
   const formOptions = { resolver: yupResolver(validationRequest) };
@@ -122,6 +137,20 @@ export default function SectionUpper() {
     */       
   }
 
+  // admin updating
+  function editAInfo(){
+    setAUpdate(true)
+  }
+  
+  function cancelAInfo(){
+    setAUpdate(false)
+  }
+
+  async function updateAInfo(user){
+
+  }
+
+  // user info
   function editInfo(){
     setUUpdate(true)
   }
@@ -194,15 +223,205 @@ export default function SectionUpper() {
     //return userUpdated
   }
 
-  function editPassword(){
+  // pwd updating
+  function editPInfo(){
     setPUpdate(true)
   }
   
-  function cancelPassword(){
+  function cancelPInfo(){
     setPUpdate(false)
   }
 
-  async function updatePassord(user){
+  async function updatePInfo(user){
+    var cEmail = email  
+    var cChain = ''
+    var cWallet = ''
+
+
+  }
+
+  // wallet 1 updating
+  function editWInfo(){
+    setWUpdate(true)
+  }
+  
+  function cancelWInfo(){
+    setWUpdate(false)
+  }
+
+  async function updateWInfo(user){
+    console.log('wallet prime: ' + primaryWallet + ' chain ' + primaryChain)
+    var cEmail = email  
+    var cChain = ''
+    var cWallet = ''
+
+    if(chain === '' || primaryChain === chain){
+      cChain = primaryChain
+    }else{
+      cChain = chain
+    }
+
+    if(account === '' || primaryWallet === account){
+      cWallet = primaryWallet
+    }else{
+      cWallet = account
+    }
+
+    setAccount(cWallet)
+    setChain(cChain)
+
+    var cUpdateUser = []
+    cUpdateUser.push(cEmail)
+    cUpdateUser.push(cChain)
+    cUpdateUser.push(cWallet)
+    //console.log(JSON.stringify(cUpdateUser))
+    
+    setWUpdate(false)
+    var type = 'wallet1'
+    var data = '1'    
+    const walletUpdate = await updateWalletInfo(type, cUpdateUser)
+      pageReset(type, data)
+  }  
+
+  // wallet 2 updating
+  function editW2Info(){
+    console.log('secondwallet: ' + secondWallet + ' secondchain ' + secondChain)
+    setW2Update(true)
+  }
+  
+  function cancelW2Info(){
+    setW2Update(false)
+  }
+
+  async function updateW2Info(user){
+    console.log('secondwallet: ' + secondWallet + ' secondchain ' + secondChain)
+    var cEmail = email  
+    var cChain = ''
+    var cWallet = ''
+
+    if(chain2 === '' || secondChain === chain2){
+      cChain = secondChain
+    }else{
+      cChain = chain2
+    }
+
+    if(account2 === '' || secondWallet === account2){
+      cWallet = secondWallet
+    }else{
+      cWallet = account2
+    }
+
+    setAccount2(cWallet)
+    setChain2(cChain)
+
+    var cUpdateUser = []
+    cUpdateUser.push(cEmail)
+    cUpdateUser.push(cChain)
+    cUpdateUser.push(cWallet)
+    //console.log(JSON.stringify(cUpdateUser))
+    
+    setW2Update(false)
+    var type = 'wallet2'
+    var data = '2'    
+    const walletUpdate = await updateWalletInfo(type, cUpdateUser)
+      pageReset(type, data)
+  }
+
+    // wallet 3 updating
+  function editW3Info(){
+    setW3Update(true)
+  }
+  
+  function cancelW3Info(){
+    setW3Update(false)
+  }
+
+  async function updateW3Info(user){
+    console.log('thirdwallet: ' + thirdWallet + ' thirdchain ' + thirdChain)
+    var cEmail = email  
+    var cChain = ''
+    var cWallet = ''
+
+    if(chain3 === '' || thirdChain === chain3){
+      cChain = thirdChain
+    }else{
+      cChain = chain3
+    }
+
+    if(account3 === '' || thirdWallet === account3){
+      cWallet = thirdWallet
+    }else{
+      cWallet = account3
+    }
+
+    setAccount3(cWallet)
+    setChain3(cChain)
+
+    var cUpdateUser = []
+    cUpdateUser.push(cEmail)
+    cUpdateUser.push(cChain)
+    cUpdateUser.push(cWallet)
+    //console.log(JSON.stringify(cUpdateUser))
+    
+    setW3Update(false)
+    var type = 'wallet3'
+    var data = '3'    
+    const walletUpdate = await updateWalletInfo(type, cUpdateUser)
+      pageReset(type, data)
+  }
+
+  async function updateWalletInfo(type, data){
+    var formData = data
+    var formType = ''
+
+    console.log(' Update ' + JSON.stringify(data))
+    if(type === 'wallet1'){
+      formType = '/../api/users/updateWallet'
+    }else if(type === 'wallet2'){
+      formType = '/../api/users/updateWallet2'
+    }else if(type === 'wallet3'){
+      formType = '/../api/users/updateWallet3'
+    }
+
+    const response = await fetch(formType, {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const walletUpdated = await response.json() 
+    console.log(' wallet update result ' + JSON.stringify(walletUpdated))
+    //return userUpdated
+  }
+
+
+  function pageReset(type, data){  
+    if(type === 'user'){
+
+    }else if(type === 'pwd'){
+
+    }else if(type === 'wallet1'){
+      if(primaryWallet !== account || primaryChain !== chain){
+        //console.log(' type ' + type +  ' data ' + data + 'wallet prime: ' + primaryWallet + ' chain ' + primaryChain)	
+        //console.log('Nu acct ' + account + ' Nu chain ' + chain)          
+        router.reload('/dashboard'); 
+      }
+    }else if(type === 'wallet2'){
+      if(secondWallet !== account2 || secondChain !== chain2){
+        //console.log(' type ' + type +  ' data ' + data + 'secondwallet : ' + secondWallet + ' secondchain ' + secondChain)	
+        //console.log('Nu acct2 ' + account2 + ' Nu chain2 ' + chain2)
+        router.reload('/dashboard'); 
+      }
+    }else if(type === 'wallet3'){
+      if(thirdWallet !== account3 || thirdChain !== chain3){
+        //console.log(' type ' + type +  ' data ' + data + 'thirdwallet: ' + thirdWallet + ' thirdchain ' + thirdChain)	
+        //console.log('Nu acct3 ' + account3 + ' Nu chain3 ' + chain3)
+        router.reload('/dashboard'); 
+      }
+      }else{
+
+    }
 
   }
 
@@ -272,11 +491,12 @@ export default function SectionUpper() {
 
     setFname(stepOne.firstname)
     setLname(stepOne.lastname)
+    setPname(stepOne.password)
 
-    if(stepOne.caret === "" || stepOne.caret === undefined){
-      setUname(stepOne.username)
+    if(stepOne.username === "" || stepOne.username === undefined){
+      setUname('^' + stepOne.caret)  
     }else{
-      setUname('^' + stepOne.caret)
+      setUname(stepOne.username)
     }
 
     //setAvatar(stepOne.avatar)
@@ -285,16 +505,84 @@ export default function SectionUpper() {
     }else{
       setCaret('^' + stepOne.caret)
     }
+
+    if(stepOne.caret2 === "" || stepOne.caret2 === undefined){
+      setCaret2('No Input')
+    }else{
+      setCaret2('^' + stepOne.caret)
+    }
+
+    if(stepOne.caret3 === "" || stepOne.caret3 === undefined){
+      setCaret3('No Input')
+    }else{
+      setCaret3('^' + stepOne.caret)
+    }
+        
+    //wallet    
+    setPrimaryWallet(stepOne.account)
+    setSecondWallet(stepOne.account2)
+    setThirdWallet(stepOne.account3)
+
+    if(stepOne.account === "" || stepOne.account === undefined){
+      setAccount('No Input')
+    }else{
+      setAccount(stepOne.account)
+    }
+
+    if(stepOne.account2 === "" || stepOne.account2 === undefined){
+      setAccount2('No Input')
+    }else{
+      setAccount2(stepOne.account2)
+    }
+
+    if(stepOne.account3 === "" || stepOne.account3 === undefined){
+      setAccount3('No Input')
+    }else{
+      setAccount3(stepOne.account3)
+    }
       
+    //chain
+    setPrimaryChain(stepOne.chain)   
+    setSecondChain(stepOne.chain2)
+    setThirdChain(stepOne.chain3)
+    if(stepOne.chain === "" || stepOne.chain === undefined){
+      setChain('')
+    }else{
+      setChain(stepOne.Chain)
+    }
+
+    if(stepOne.chain2 === "" || stepOne.chain2 === undefined){
+      setChain2('')
+    }else{
+      setChain2(stepOne.Chain2)
+    }
+
+    if(stepOne.chain3 === "" || stepOne.chain3 === undefined){
+      setChain3('')
+    }else{
+      setChain3(stepOne.Chain3)
+    }
+
     setPlan(stepOne.plan)
-      if(setPlan === 3 || setPlan === 6) {
+    console.log(' plan ' + stepOne.plan)
+      if(plan === 99){
+        setPremPlan(true)
+        setDataPlan('Admin')
+        setUpgradePlan(false)
+      }else if(plan === 3 || plan === 6) {
         setDataPlan('Premium')
-      }else if(setPlan === 4) {
+        setPremPlan(true)
+        setUpgradePlan(false)
+      }else if(plan === 4) {
         setDataPlan('Promo')
-      }else if(setPlan === 2 || setPlan === 5) {
+        setPremPlan(true)
+        setUpgradePlan(truee)
+      }else if(plan === 2 || plan === 5) {
         setDataPlan('Pro')
+        setUpgradePlan(true)
       }else {
         setDataPlan('Free')
+        setUpgradePlan(true)
       }
     setIsAdmin(stepOne.admin)
     setLevel(stepOne.level)
@@ -306,13 +594,6 @@ export default function SectionUpper() {
       setPassword(stepOne.password)
     }
 
-    //chain & acct 1
-    setPrimaryChainValue(stepOne.chain)
-    setPrimaryWallet(stepOne.account)
-    setSecondChainValue()
-    setSecondWallet()
-    setThirdChainValue()
-    setThirdWallet()
   }
 
   async function salesCount(data){
@@ -383,170 +664,180 @@ export default function SectionUpper() {
           <div id='bxUserLeft' className='block' key='member'>
             {data.map((item) => (
               <TeamCard 
+              key={item.id}
               src = {avatar}
               alttext= 'avatar'
               title={email}
               />
             ))}
-          {isAdmin === true ? 
-            <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-              <div className='flex display-inline justify-left'>
-                <div className='text-right w-48 mt-2 pt-2'>Update User: </div>
-                  <div>                  
-                    <div className=''>
-                      <div className='w-64 ml-4 mt-2 pl-2'></div>
-                    </div>
-                    <div className=''>
-                      <input name="updateUser" type="text" placeholder=' enter Email ' className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
-                    </div>
-                  </div>
+      </div>
+      <div className='block'>
+      {isAdmin === true ? 
+        <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+          <div className='flex display-inline justify-left'>
+            <div className='text-right w-48 mt-2 pt-2'>Update User: </div>
+              <div>                  
+                <div className=''>
+                  <div className='w-64 ml-4 mt-2 pl-2'></div>
+                </div>
+                <div className=''>
+                  <input name="updateUser" type="text" placeholder=' enter Email ' 
+                  className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                </div>
               </div>
+          </div>
+            {aUpdate === false ?
+              <div>
+                <div className='flex display-inline justify-right m-6 '>
+                  <div className='text-right w-48 mt-2'> </div>
+                  <div className='text-right ml-4 mt-2 pl-2'>
+                    <button id='btnEditInfo' 
+                      className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                      onClick={() => {editAInfo()}}>Edit Info</button>
+                  </div>          
+                </div>
+              </div>
+            :
               <div className='flex display-inline justify-right m-6 '>
                 <div className='text-right w-48 mt-2'>
-                  <button id='btnCancel' disabled={loading} className='btn btn-primary align-right m-2 pb-4'>Cancel</button>
+                  <button id='btnACancel' disabled={loading} 
+                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={() => {cancelAInfo()}}>Cancel</button>
                 </div>
                 <div className='text-right ml-4 mt-2 pl-2'>
-                  <button id='btnUpdateUser' disabled={loading} className='btn btn-primary align-right m-2 pb-4'>Update User Info</button>
+                  <button id='btnAUpdateUser' disabled={loading} 
+                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={() => {updateAInfo()}}>Update User Info</button>
                 </div>          
               </div>
-            </div> 
-          :
-            <div></div>
-          }         
-            <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                <form onSubmit={handleSubmit(updateInfo)}>
-                <div className='flex display-inline justify-left mt-2'>
-                  {uUpdate === false ?                     
-                      <div>
-                        <div className='w-64 ml-4 mt-2 pl-2'></div>
-                      </div>
-                    :
-                    <div className='flex display-inline justify-left mt-2'>
-                      <div>
-                        <div className='text-right w-48 mt-2'>Avatar: </div>
-                      </div>
-                      <div>
-                        <div name="avatar" className="ml-2 pl-2 pt-2"> Avatars avail Soon </div>
-                      </div>
-                    </div>
-                    }
-                </div>
-                <div className='flex display-inline justify-left'>
-                  <div className='text-right w-48 mt-2'>Username: </div>
-                    {uUpdate === false ?                        
-                      <div>
-                        <div className='w-64 ml-4 mt-2 pl-2'>{uname}</div>
-                      </div>
-                    :
-                      <div>
-                        <input name="username" type="text" text={uname} placeholder={uname} value={fmUserName} 
-                          onChange={(e) => { setFmUserName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} /> 
-                      </div>
-                    }
-                </div>
-                <div className='flex display-inline justify-left'>
+            }
+        </div>              
+      :
+        <div></div>
+      }         
+        <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+            <form onSubmit={handleSubmit(updateInfo)}>
+              {uUpdate === false ?
+                <div> 
 
-                  <div className='text-right w-48 mt-2'>First Name: </div>
-                    {uUpdate === false ?                        
-                      <div>
-                        <div className='w-64 ml-4 mt-2 pl-2'>{fname}</div>
-                      </div>
-                    :
-                      <div>
-                        <input name="firstname" type="text" placeholder={fname} value={fmFirstName} 
-                          onChange={(e) => { setFmFirstName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
-                      </div>
-                    }
-                </div>
                 <div className='flex display-inline justify-left'>
-                  <div className='text-right w-48 mt-2'>Last Name: </div>
-                  {uUpdate === false ?                        
+                  <div className='text-right w-48 mt-2'>Username: </div>                    
+                  <div>
+                    <div className='w-64 ml-4 mt-2 pl-2'>{uname}</div>
+                  </div> 
+                </div>
+
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>First Name: </div>                    
+                  <div>
+                    <div className='w-64 ml-4 mt-2 pl-2'>{fname}</div>
+                  </div>                  
+                </div>
+
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>Last Name: </div>                      
                     <div className=''>
                       <div className='w-64 ml-4 mt-2 pl-2'>{lname}</div>
-                    </div>
-                  :
-                    <div className=''>
-                      <input name="lastname" type="text" text={lname} 
-                        placeholder={lname} 
-                        value={fmLastName} onChange={(e) => { setFmLastName(e.target.value); }} 
-                        className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
-                    </div>
-                  }
+                    </div>                                 
                 </div>
-                <div className='flex display-inline justify-right m-6 '>
-                  {uUpdate === false ?                        
+
+                <div>
+                  <div className='flex display-inline justify-right m-6 '>
+                    <div className='text-right w-48 mt-2'> </div>
+                    <div className='text-right ml-4 mt-2 pl-2'>
+                      <button id='btnEditInfo' 
+                        className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => {editInfo()}}>Edit Info</button>
+                    </div>          
+                  </div>
+                </div>
+                </div>
+              :
+                <div>
+                  <div className='flex display-inline justify-left mt-2'>                   
+                    <div className='text-right w-48 mt-2'>Avatar: </div>
                     <div>
-                      <div className='w-64 ml-4 mt-2 pl-2'></div>
+                      <div name="avatar" className="ml-2 pl-2 pt-2"> Avatars avail Soon </div>
                     </div>
-                  :
-                    <div className='flex display-inline justify-right'>
+                  </div>
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Username: </div>                    
+                    <div>
+                      <input name="username" type="text" text={uname} placeholder={uname} value={fmUserName} 
+                        onChange={(e) => { setFmUserName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} /> 
+                    </div>                   
+                  </div>
+
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>First Name: </div>                                    
+                    <div>
+                      <input name="firstname" type="text" placeholder={fname} value={fmFirstName} 
+                        onChange={(e) => { setFmFirstName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                    </div>
+                  </div>
+
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Last Name: </div>                                       
+                      <div className=''>
+                        <input name="lastname" type="text" text={lname} 
+                          placeholder={lname} value={fmLastName} 
+                          onChange={(e) => { setFmLastName(e.target.value); }} 
+                          className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                      </div>                 
+                  </div>
+
+                  <div className='flex display-inline justify-left m-6 '>                     
+        
+                    <div className='flex display-inline justify-left'>
                       <div className='mr-6 '>Email confirmation : </div>
                       <div  className="flex display-inline">
                         <input type="radio" className='ml-4 mr-4' value="Yes" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}}  />&nbsp;Yes
                         <div className='ml-4 text-sm'> </div>
                         <input type="radio" className='l-4' value="No" defaultChecked="false" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}} />&nbsp;No
                       </div>
-                    </div>
-                  }
-                </div>
-                {uUpdate === false ?
-                  <div>
-                    <div className='flex display-inline justify-right m-6 '>
-                      <div className='text-right w-48 mt-2'> </div>
-                      <div className='text-right ml-4 mt-2 pl-2'>
-                        <button id='btnEditInfo' className='btn btn-primary align-right m-2 pb-4'
-                         onClick={() => {editInfo()}}>Edit Info</button>
-                      </div>          
-                    </div>
+                    </div>                 
                   </div>
-                :
+                  
                   <div>
                     <div className='flex display-inline justify-right m-6 '>
                       <div className='text-right w-48 mt-2'>
-                        <button id='btnCancel' disabled={loading} className='btn btn-primary align-right m-2 pb-4'
-                         onClick={() => {cancelInfo()}}>Cancel</button>
+                        <button id='btnCancel' disabled={loading} 
+                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          onClick={() => {cancelInfo()}}>Cancel</button>
                       </div>
                       <div className='text-right ml-4 mt-2 pl-2'>
-                        <button id='btnUpdateInfo' disabled={loading} className='btn btn-primary align-right m-2 pb-4'
-                         onClick={() => {updateInfo()}}>Update User Info</button>
+                        <button id='btnUpdateInfo' disabled={loading} 
+                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          onClick={() => {updateInfo()}}>Update User Info</button>
                       </div>          
                     </div>
                   </div>
-                }
-              </form>
-            </div>
-            <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+                </div>
+              }
+          </form>
+        </div>
+        <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>                
+          {uPUpdate === true ?                        
+            <div>
               <div className='flex display-inline justify-left'>
                 <div className='text-right w-48 mt-2'>Password: </div>
-                  {uUpdate === false ?                        
-                    <div>
-                      <div className='w-64 ml-4 mt-2 pl-2'>{prePassword}</div>
-                    </div>
-                  :
-                    <div>
-                      <input name="password" type="text"  placeholder=' Password ' 
-                      {...register('password')} 
-                      className={'border border-gray-300 w-64 ml-4 mt-2 pl-2' + `form-control ${errors.password ? 'is-invalid' : ''}`} />
-                    
-                      <div className="invalid-feedback">{errors.username?.message}</div>
-                    </div>
-                  }
-              </div>
+                <div>
+                  <input name="password" type="text"  placeholder=' Password ' 
+                  {...register('password')} 
+                  className={'border border-gray-300 w-64 ml-4 mt-2 pl-2' + `form-control ${errors.password ? 'is-invalid' : ''}`} />                  
+                  <div className="invalid-feedback">{errors.username?.message}</div>
+                </div>
+              </div>                  
               <div className='flex display-inline justify-left'>
                 <div className='text-right w-48 mt-2'>Confirm Password: </div>
-                  {uUpdate === false ?                        
-                    <div>
-                      <div className='w-64 ml-4 mt-2 pl-2'></div>
-                    </div>
-                  :
-                    <div>
-                      <input name="confirmPassword" type="text" placeholder=' Confirm Password ' 
-                      {...register('confirmPassword')} value={fmPwdConfirm} 
-                      onChange={(e) => { setFmPwdConfirm(e.target.value); }} 
-                      className={'border border-gray-300 w-64 ml-4 mt-2 pl-2' + `form-control ${errors.confirmPassword ? 'is-invalid' : ''}`} />
-                      <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
-                    </div>
-                  }
+              <div>
+                <input name="confirmPassword" type="text" placeholder=' Confirm Password ' 
+                {...register('confirmPassword')} value={fmPwdConfirm} 
+                onChange={(e) => { setFmPwdConfirm(e.target.value); }} 
+                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2' + `form-control ${errors.confirmPassword ? 'is-invalid' : ''}`} />
+                <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
+              </div>
+                  
               </div>
               <div className='flex display-inline justify-right m-6 '>
                 <div className='mr-6 '>Email confirmation : </div>
@@ -554,198 +845,339 @@ export default function SectionUpper() {
                   <input type="radio" className='ml-4 mr-4' value="Yes" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;Yes
                   <div className='ml-4 text-sm'> </div>
                   <input type="radio" className='l-4' value="No" defaultChecked="false" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;No
-                </div>
+              </div>
               </div>
               <div className='flex display-inline justify-right m-6 '>
-                <div className='text-right w-48 mt-2'>
-                  <button id='btnCancel' disabled={loading} className='btn btn-primary align-right m-2 pb-4'>Cancel</button>
-                </div>
+              <div className='text-right w-48 mt-2'>
+                <button id='btnCancel' disabled={loading} 
+                  className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                  onClick={() => {cancelPInfo()}}>Cancel</button>
+              </div>
+              <div className='text-right ml-4 mt-2 pl-2'>
+                <button id='btnPassword' disabled={loading} 
+                  className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                  onClick={() => {updatePInfo()}}>Update Password</button>
+              </div>          
+              </div>
+
+            </div>          
+          :
+            <div>
+              <div className='flex display-inline justify-left'>
+                <div className='text-right w-48 mt-2'>Password: </div>
+                <div className='w-64 ml-4 mt-2 pl-2'>{prePassword}</div>
+              </div>
+              <div className='flex display-inline justify-right m-6 '>
+                <div className='text-right w-48 mt-2'> </div>
                 <div className='text-right ml-4 mt-2 pl-2'>
-                  <button id='btnPassword' disabled={loading} className='btn btn-primary align-right m-2 pb-4'>Update Pasword</button>
+                  <button id='btnEditInfo' 
+                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={() => {editPInfo()}}>Edit Info</button>
                 </div>          
-              </div>              
+              </div>
             </div>
-          </div>
-          <div className='block'>
-              <div className='updateUserInfo py-6'>
-                <div id='bxUserInfo' className='block border border-gray-300'>
-                  <form onSubmit={handleSubmit(onSubmit)}>
+          }     
+        </div>
+      </div>             
+
+      <div className='block'>
+          <div className='updateUserInfo pt-2 pb-6'>
+            <div id='bxUserInfo' className='block border border-gray-300'>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                {aUpdate === false ?
+                  <div>
                     <div className='flex display-inline justify-left'>                 
-                      <div className='text-center text-3xl w-48 mt-2'>User Plan: </div>
-                      <div className=' text-3xl w-64 ml-4 mt-2 pl-2 mb-6'>{dataPlan}</div>
-                      <div>
-                        {/*<button class="bg-indigo-300 hover:bg-indigo-700 text-white font-bold py-2 px-4  pl-2  ml-2 rounded-full">Upgrade</button>*/}
+                    <div className='text-center text-3xl w-48 mt-2'>User Plan: </div>
+                    <div className=' text-3xl w-64 ml-4 mt-2 pl-2 mb-2'>{dataPlan}</div>
+                  </div>
+                  <div className='flex display-inline justify-left mb-6 pl-10'> 
+                    {upgradePlan === true  &&                    
+                      <div className=''> 
+                        <button 
+                          class="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          >Upgrade
+                        </button>
                       </div>
+                    }
                     </div>
-                      <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                        <div className='flex display-inline justify-left'>
-                          <div className='text-right w-48 mt-2'>Primary Caret: </div>
-                          <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
-                        </div>
-                        <div className='flex display-inline justify-left'>
-                          <div className='text-right w-48 mt-2'>Chain: </div>
-                          {uUpdate !== true ?
-                            <div>
-                              <div className='w-64 ml-4 mt-2 pl-2'>{primaryChainValue}</div>
-                            </div>
-                          :
-                            <div>    
-                              <div className=''>
-                                <select id='primarychain' name="primarychain" placeholder="" {...register('primarychain')} value={primaryChainValue} onChange={(e) => { setPrimaryChainValue(e.target.value); }} className={'border border-gray-300 h-10 pt-2 ml-4 pl-2' + `form-control ${errors.primarychain ? 'is-invalid' : ''}`} >
-                                <option value="" disabled hidden>chain</option>
-                                    <option value="Eth">Ethereum</option>
-                                    <option value="Btc">Bitcoin</option>
-                                    <option value="Matic">Matic</option>
-                                    <option value="Doge">Doge</option>
-                                </select>
-                              </div>                             
-                              <div className="invalid-feedback">{errors.primarychain?.message}</div>
-                            </div> 
-                          }
-                        </div>
-                        <div className='flex display-inline justify-left'>
-                          
-                          {uUpdate !== true ?
-                            <div className='flex display-inline justify-left'>
-                              <div className='text-right w-48 mt-2'>Wallet: </div>
-                              <div className='w-144 ml-4 mt-2 pl-2'>{primaryWallet}</div>
-                            </div>
-                          :
-                            <div>
-                              <div className='flex display-inline justify-left'>
-                                <div className='text-right w-48 mt-2'>Wallet: </div>
-                                <input name="primarywallet" type="text" placeholder=" Add Primary Wallet" {...register('primarywallet')} value={primaryWallet} onChange={(e) => { setPrimaryWallet(e.target.value); }} className={'border border-gray-300 ml-4 mt-2 pl-2' + `form-control ${errors.primarywallet ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.primarywallet?.message}</div>  
-                              </div>
-                            </div>                          
-                          }
-                        </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>IPFS Published: </div>
-                            <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
-                          </div> 
+                  </div>
+                :
+                  <div className='flex display-inline justify-left'>                 
+                    <div className='text-center text-3xl w-48 mt-2'>User Plan: </div>
+                    <div className=''>
+                    <input name="userPlan" type="text" text={dataPlan}
+                      placeholder={dataPlan}
+                      value={fmPlan} onChange={(e) => { setFmPlan(e.target.value); }} 
+                      className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                  </div>
+                </div>
+                }
+
+                <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+                  {uWUpdate === false ?
+                    <div>
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Primary Caret: </div>
+                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
                       </div>
-                    {premPlan === true &&
+
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Chain: </div>                         
+                        <div className='w-64 ml-4 mt-2 pl-2'>{primaryChain}</div>
+                      </div>
+
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Wallet: </div>
+                        <div className='w-144 ml-4 mt-2 pl-2'>{primaryWallet}</div>
+                      </div>
+
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>IPFS Published: </div>
+                        <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
+                      </div>
+
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='text-right w-48 mt-2'> </div>
+                          {primaryWalletIsSet === true &&
+                            <div>
+                              <div className='text-right ml-4 mt-2 pl-2'>
+                                <button id='btnEditInfo' 
+                                  className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                  onClick={() => {editWInfo()}}>
+                                Edit Info</button>
+                              </div> 
+                            </div>
+                          }
+                      </div>                        
+                    </div>
+                  :
+                    <div>    
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Primary Caret: </div>
+                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
+                      </div>
+
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Chain : </div>
+                        <div className=''>
+                          <select id='primarychain' name="primarychain" placeholder=""
+                          text={primaryChain} onChange={(e) => { setChain(e.target.value); }} 
+                          className='border border-gray-300 h-10 pt-2 ml-4 pl-2' >
+                            <option value="" >Chain</option>
+                            <option value="Eth">Ethereum</option>
+                            <option value="Btc">Bitcoin</option>
+                            <option value="Matic">Matic</option>
+                            <option value="Doge">Doge</option>
+                          </select>
+                        </div>  
+                      </div>
+                    
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Wallet: </div>
+                        <input name="primarywallet" type="text" text={primaryWallet} placeholder={primaryWallet}
+                        onChange={(e) => { setAccount(e.target.value); }} className='border border-gray-300 ml-4 mt-2 pl-2' /> 
+                      </div> 
+
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='mr-6 '>Email confirmation : </div>
+                        <div  className="flex display-inline">
+                        <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;Yes
+                        <div className='ml-4 text-sm'> </div>
+                        <input type="radio" className='l-4' value="No" defaultChecked="false" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;No
+                        </div>
+                      </div>
+        
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='text-right w-48 mt-2'>
+                          <button id='btnCancel' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {cancelWInfo()}}>Cancel</button>
+                        </div>
+                        <div className='text-right ml-4 mt-2 pl-2'>
+                        <button id='btnChain' disabled={loading} 
+                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          onClick={() => {updateWInfo()}}>Update Master Chain</button>
+                        </div>          
+                      </div>                           
+
+                    </div>
+                  }
+                </div>
+                  
+                {premPlan === true &&
+                  <div>
+                    {uW2Update === false ?
                       <div>
                         <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
                           <div className='flex display-inline justify-left'>
                             <div className='text-right w-48 mt-2'>Caret 2: </div>
-                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret}</div>                           
+                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
+                          </div>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Chain 2: </div>                         
+                            <div className='w-64 ml-4 mt-2 pl-2'>{secondChain}</div>
+                          </div>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Wallet 2: </div>
+                            <div className='w-144 ml-4 mt-2 pl-2'>{secondWallet}</div>
+                          </div>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>IPFS Published: </div>
+                            <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
+                          </div>
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='text-right w-48 mt-2'> </div>
+                            <div className='text-right ml-4 mt-2 pl-2'>
+                              <button id='btnEditInfo' className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                onClick={() => {editW2Info()}}>Edit Info</button>
+                            </div>          
+                          </div>                        
+                        </div>
+                      </div>
+                    :
+                      <div> 
+                        <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Caret 2: </div>
+                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
                           </div>
                           <div className='flex display-inline justify-left'>
                             <div className='text-right w-48 mt-2'>Chain 2: </div>
-                            {uUpdate === false ?
-                              <div>
-                                <div className='w-64 ml-4 mt-2 pl-2'>{secondChainValue}</div>
-                              </div>
-                            :
-                              <div>    
-                                <div className=''>
-                                  <select id='secondchain' name="secondchain" placeholder="" {...register('secondchain')} value={secondChainValue} onChange={(e) => { setSecondChainValue(e.target.value); }} className={'border border-gray-300 h-10 pt-2 ml-4 pl-2' + `form-control ${errors.secondchain ? 'is-invalid' : ''}`} >
-                                  <option value="" disabled hidden>chain</option>
-                                      <option value="Eth">Ethereum</option>
-                                      <option value="Btc">Bitcoin</option>
-                                      <option value="Matic">Matic</option>
-                                      <option value="Doge">Doge</option>
-                                  </select>
-                                </div>                             
-                                <div className="invalid-feedback">{errors.secondchain?.message}</div>
-                              </div> 
-                            }
-                          </div>
+                            <div className=''>
+                              <select id='secondchain' name="secondchain" placeholder="" 
+                              text={secondChain} onChange={(e) => { setChain2(e.target.value); }} 
+                              className='border border-gray-300 h-10 pt-2 ml-4 pl-2' >
+                                <option value="">Chain</option>
+                                <option value="Eth">Ethereum</option>
+                                <option value="Btc">Bitcoin</option>
+                                <option value="Matic">Matic</option>
+                                <option value="Doge">Doge</option>
+                              </select>
+                            </div>  
+                          </div>                            
                           <div className='flex display-inline justify-left'>
-                          {uUpdate === false ?
-                            <div className='flex display-inline justify-left'>
-                              <div className='text-right w-48 mt-2'>Wallet 2: </div>
-                              <div className='w-144 ml-4 mt-2 pl-2'>{secondWallet}</div>
+                            <div className='text-right w-48 mt-2'>Wallet 2: </div>
+                            <input name="primarywallet" type="text" text={secondWallet} placeholder={secondWallet}
+                              onChange={(e) => { setAccount2(e.target.value); }} 
+                              className='border border-gray-300 ml-4 mt-2 pl-2' />
+                          </div> 
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='mr-6 '>Email confirmation : </div>
+                            <div  className="flex display-inline">
+                            <input type="radio" className='ml-4 mr-4' 
+                              value="Yes" name="userWalletsecondEmail" 
+                              onClick={() => {setUserWallet2Email(true)}}  />&nbsp;Yes
+                            <div className='ml-4 text-sm'> </div>
+                            <input type="radio" className='l-4' 
+                              value="No" defaultChecked="false" name="userWallet2Email" 
+                              onClick={() => {setUserWallet2Email(true)}}  />&nbsp;No
                             </div>
-                          :
-                            <div>
-                              <div className='flex display-inline justify-left'>
-                              <div className='text-right w-48 mt-2'>Wallet 2: </div>
-                              <input name="secondwallet" type="text" placeholder=" Add Primary Wallet" {...register('secondwallet')} value={secondWallet} onChange={(e) => { setSecondWallet(e.target.value); }} className={'border border-gray-300 ml-4 mt-2 pl-2' + `form-control ${errors.secondwallet ? 'is-invalid' : ''}`} />
-                              <div className="invalid-feedback">{errors.secondwallet?.message}</div>  
-                            </div>                         
-                            <div className='flex display-inline justify-left'>
-                              <div className='text-right w-48 mt-2'>IPFS Published: </div>
-                              <div className='secondIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
-                              </div>
-                            </div>                          
-                          }
-                          </div>
-                        </div>
-
-                        <div className='thirdCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Caret 3: </div>
-                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret}</div>                           
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Chain 3: </div>
-                            {uUpdate === false ?
-                              <div>
-                                <div className='w-64 ml-4 mt-2 pl-2'>{thirdChainValue}</div>
-                              </div>
-                            :
-                              <div>    
-                                <div className=''>
-                                  <select id='thirdchain' name="thirdchain" placeholder="" {...register('thirdchain')} value={thirdChainValue} onChange={(e) => { setThirdChainValue(e.target.value); }} className={'border border-gray-300 h-10 pt-2 ml-4 pl-2' + `form-control ${errors.thirdchain ? 'is-invalid' : ''}`} >
-                                  <option value="" disabled hidden>chain</option>
-                                      <option value="Eth">Ethereum</option>
-                                      <option value="Btc">Bitcoin</option>
-                                      <option value="Matic">Matic</option>
-                                      <option value="Doge">Doge</option>
-                                  </select>
-                                </div>                             
-                                <div className="invalid-feedback">{errors.thirdchain?.message}</div>
-                              </div> 
-                            }
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            {uUpdate === false ?
-                              <div className='flex display-inline justify-left'>
-                                <div className='text-right w-48 mt-2'>Wallet 3: </div>
-                                <div className='w-144 ml-4 mt-2 pl-2'>{thirdWallet}</div>
-                              </div>
-                            :
-                              <div>
-                                <div className='flex display-inline justify-left'>
-                                  <div className='text-right w-48 mt-2'>Wallet 3: </div>
-                                  <input name="thirdwallet" type="text" placeholder=" Add Third Wallet" {...register('thirdwallet')} value={thirdWallet} onChange={(e) => { setThirdWallet(e.target.value); }} className={'border border-gray-300 ml-4 mt-2 pl-2' + `form-control ${errors.thirdwallet ? 'is-invalid' : ''}`} />
-                                  <div className="invalid-feedback">{errors.thirdwallet?.message}</div>  
-                                </div>
-    
-                                <div className='flex display-inline justify-left'>
-                                  <div className='text-right w-48 mt-2'>IPFS Published: </div>
-                                  <div className='secondIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
-                                </div>
-                              </div>                          
-                            }
-                          </div>
+                          </div>                 
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='text-right w-48 mt-2'>
+                              <button id='btnW2Cancel' disabled={loading} 
+                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                onClick={() => {cancelW2Info()}}>Cancel</button>
+                            </div>
+                            <div className='text-right ml-4 mt-2 pl-2'>
+                            <button id='btnW2Chain' disabled={loading} 
+                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                              onClick={() => {updateW2Info()}}>Update Master Chain</button>
+                            </div>          
+                          </div>                           
                         </div>
                       </div>
                     }
-                    <div className='flex display-inline justify-right m-6 '>
-                      <div className='mr-6 '>Email confirmation : </div>
-                      <div  className="flex display-inline">
-                        <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;Yes
-                        <div className='ml-4 text-sm'> </div>
-                        <input type="radio" className='l-4' value="No" defaultChecked="false" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;No
+                    {uW3Update === false ?
+                      <div>
+                        <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Caret 3: </div>
+                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
+                          </div>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Chain 3: </div>                         
+                            <div className='w-64 ml-4 mt-2 pl-2'>{thirdChain}</div>
+                          </div>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Wallet 3: </div>
+                            <div className='w-144 ml-4 mt-2 pl-2'>{thirdWallet}</div>
+                          </div>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>IPFS Published: </div>
+                            <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
+                          </div>
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='text-right w-48 mt-2'> </div>
+                            <div className='text-right ml-4 '>
+                              <button id='btnEdit3Info' 
+                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                onClick={() => {editW3Info()}}>Edit Info</button>
+                            </div>          
+                          </div>                        
+                        </div>
                       </div>
-                    </div>
-                    <div className='flex display-inline justify-right m-6 '>
-                      <div className='text-right w-48 mt-2'>
-                      <button id='btnCancel' disabled={loading} className='btn btn-primary align-right m-2 pb-4'>Cancel</button>
+                    :
+                      <div> 
+                        <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Caret 3: </div>
+                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
+                          </div>
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Chain 3: </div>
+                            <div className=''>
+                              <select id='thirdchain' name="thirdchain" placeholder="" 
+                                text={thirdChain} onChange={(e) => { setChain3(e.target.value); }} 
+                                className='border border-gray-300 h-10 pt-2 ml-4 pl-2' >
+                                  <option value="">Chain</option>
+                                  <option value="Eth">Ethereum</option>
+                                  <option value="Btc">Bitcoin</option>
+                                  <option value="Matic">Matic</option>
+                                  <option value="Doge">Doge</option>
+                              </select>
+                            </div>  
+                          </div>                            
+                          <div className='flex display-inline justify-left'>
+                            <div className='text-right w-48 mt-2'>Wallet 3: </div>
+                            <input name="thirdwallet" type="text"  text={thirdWallet} placeholder={thirdWallet}
+                              onChange={(e) => { setAccount3(e.target.value); }} 
+                              className='border border-gray-300 ml-4 mt-2 pl-2' />
+                          </div> 
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='mr-6 '>Email confirmation : </div>
+                            <div  className="flex display-inline">
+                            <input type="radio" className='ml-4 mr-4' 
+                              value="Yes" name="userWalletThirdEmail" 
+                              onClick={() => {setUserWallet3Email(true)}}  />&nbsp;Yes
+                            <div className='ml-4 text-sm'> </div>
+                            <input type="radio" className='l-4' 
+                              value="No" defaultChecked="false" name="userWallet3Email" 
+                              onClick={() => {setUserWallet3Email(true)}}  />&nbsp;No
+                            </div>
+                          </div>                 
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='text-right w-48 mt-2'>
+                              <button id='btnW3Cancel' disabled={loading} className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                onClick={() => {cancelW3Info()}}>Cancel</button>
+                            </div>
+                            <div className='text-right ml-4 mt-2 pl-2'>
+                            <button id='btnW3Chain' disabled={loading} className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+
+                              onClick={() => {updateW3Info()}}>Update Master Chain</button>
+                            </div>          
+                          </div>                           
+                        </div>
                       </div>
-                      <div className='text-right ml-4 mt-2 pl-2'>
-                        <button id='btnChain' disabled={loading} className='btn btn-primary align-right m-2 pb-4'>Update Chain Info</button>
-                      </div>          
-                    </div>
-                  </form>
-                </div>
-              </div>
-            
+                    }
+                  </div>
+                }
+
+              </form>
+            </div>
           </div>
+        
+      </div>
       </div>       
       </div>
       {isAdmin === true &&

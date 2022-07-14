@@ -23,7 +23,7 @@ function CustomApp({ Component, pageProps }) {
   
   return (
     <>
-
+{/*
     <div className="container">  
 
       <Script
@@ -41,7 +41,7 @@ function CustomApp({ Component, pageProps }) {
       </Script>
 
     </div>
-    
+  */}  
       <Component {...pageProps} />
     </>
   );
