@@ -10,8 +10,8 @@
     text-align: center;
   }
 
-  #bxUserInfo {
-    padding: 25px 5px 5px 5px;
+  #bxUserInfo, #bxAdminInfo, #bxCaretInfo {
+    padding: 5px 5px 5px 5px;
   }
 
   #bxUserLeft{

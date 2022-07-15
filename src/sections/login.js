@@ -131,7 +131,7 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
                             <div className="form-group mt-6 mb-6justify-left text-left">
                                 <label>How do you want to log in? </label>
                                 <div  className="flex display-inline">
-                                    <input type="radio" className='ml-4 mr-4' value="Yes" defaultChecked="true" name="loginChoice" onClick={() => {loginValue(true)}} />&nbsp;Password
+                                    <input type="radio" className='ml-4 mr-4' value="Yes" defaultChecked={true} name="loginChoice" onClick={() => {loginValue(true)}} />&nbsp;Password
                                     <div className='ml-4 text-sm'> </div>
                                     <input type="radio" className='l-4' value="No" name="loginChoice"  onClick={() => {loginValue(false)}} />&nbsp;Wallet Address
                                 </div>

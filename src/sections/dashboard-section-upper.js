@@ -2,23 +2,10 @@
 import React, { useState, useEffect } from "react"
 import { useRouter } from 'next/router'
 
-import TeamCard from '../components/team-card';
 import { useForm } from 'react-hook-form';
-import RegisterFeature from 'components/register-feature';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-
-const Member1 = '../assets/user.png';
-const data = [
-  {
-    id: 1,
-    imgSrc: '',
-    alttext: 'user img',
-    title: '',
-    designation: '',
-    socialProfile: ''
-  },
-];
+const bcrypt = require('bcryptjs');
 
 export default function SectionUpper() {
   const [fname, setFname] = useState()
@@ -42,6 +29,11 @@ export default function SectionUpper() {
   const [dataPlan, setDataPlan] = useState()
   const [level, setLevel] = useState()
   const [email, setEmail] = useState()
+  const [oldPwd, setOldPwd] = useState()
+  const [newPwd, setNewPwd] = useState() 
+  const [newConfirmPwd, setNewConfirmPwd] = useState() 
+  const [oldPwdError, setOldPwdError] = useState(false)
+  const [newPwdError, setNewPwdError] = useState(false)
   const [password, setPassword] = useState()
   const [prePassword, setPrePassword] = useState('******')
   const [userCount, setUserCount] = useState()
@@ -101,7 +93,7 @@ export default function SectionUpper() {
   const[rollPromo, setRollPromo] = useState()
 
   const router = useRouter()
-  
+
   useEffect(() => {
     var item = localStorage.getItem('caret')
     //console.log('item ' + item)
@@ -125,7 +117,7 @@ export default function SectionUpper() {
 
   async function onSubmit(user) {
 
-    console.log('on submit ' + JSON.stringify(user) )
+    //console.log('on submit ' + JSON.stringify(user) )
 
     /*
     router.push(
@@ -224,21 +216,71 @@ export default function SectionUpper() {
   }
 
   // pwd updating
-  function editPInfo(){
+  function editPwdInfo(){
     setPUpdate(true)
   }
   
-  function cancelPInfo(){
+  function cancelPwdInfo(){
+    setOldPwdError(false)
+    setNewPwdError(false)
     setPUpdate(false)
   }
 
-  async function updatePInfo(user){
-    var cEmail = email  
-    var cChain = ''
-    var cWallet = ''
+  async function updatePwdInfo(user){
+    console.log(' pwd ' + pname + ' curPwd ' + oldPwd + ' newPwd ' + newPwd + ' newConfirmPwd ' + newConfirmPwd)
+      
+    if(oldPwd !== undefined || oldPwd === ''){
+      if (!(bcrypt.compareSync(oldPwd, pname))) {
+        setOldPwdError(true)
+      }else{
+        setOldPwdError(false)
+      }
+    }
+
+    if(newPwd !== undefined || newConfirmPwd !== undefined || newPwd === '' || newConfirmPwd === ''){
+      console.log(' new Pwd ' + newPwd + ' conf Pwd ' + newConfirmPwd)
+      if (newPwd !== newConfirmPwd) {
+        setNewPwdError(true)
+      }else{
+        setNewPwdError(false)
+      }  
+    
+    console.log(' old Error' + oldPwdError + ' new Erro ' + newPwdError)
 
 
+    if(newPwd === newConfirmPwd){
+      var cPwd = bcrypt.hashSync(newPwd, 10); 
+
+      var cUpdatePwd = []
+      cUpdatePwd.push(email)
+      cUpdatePwd.push(cPwd) 
+  
+      console.log('I passed ' + JSON.stringify(cUpdatePwd))
+      setOldPwd('')
+      setNewPwd('')
+      setNewConfirmPwd('')
+      setPUpdate(false)
+      var type = 'pwd'
+      var data = '1'    
+      const uPwdInfo = await updatePasswordInfo(cUpdatePwd)
+        pageReset(type, data)
+    }
+  } 
+}
+
+  async function updatePasswordInfo(data){
+    var formData = data
+    console.log(' userUpdate ' + JSON.stringify(data))
+    const response = await fetch('/../api/users/updatePwd', {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const pwdUpdated = await response.json() 
   }
+
 
   // wallet 1 updating
   function editWInfo(){
@@ -448,7 +490,7 @@ export default function SectionUpper() {
     })
 
     const stepOne = await response.json() 
-    //console.log(' return caret ' + JSON.stringify(stepOne))
+    console.log(' return caret ' + JSON.stringify(stepOne))
     
     if(stepOne.admin === false){
       setAvatar('../assets/avatar/user-med.png')
@@ -509,13 +551,13 @@ export default function SectionUpper() {
     if(stepOne.caret2 === "" || stepOne.caret2 === undefined){
       setCaret2('No Input')
     }else{
-      setCaret2('^' + stepOne.caret)
+      setCaret2('^' + stepOne.caret2)
     }
 
     if(stepOne.caret3 === "" || stepOne.caret3 === undefined){
       setCaret3('No Input')
     }else{
-      setCaret3('^' + stepOne.caret)
+      setCaret3('^' + stepOne.caret3)
     }
         
     //wallet    
@@ -565,25 +607,25 @@ export default function SectionUpper() {
 
     setPlan(stepOne.plan)
     console.log(' plan ' + stepOne.plan)
-      if(plan === 99){
-        setPremPlan(true)
-        setDataPlan('Admin')
-        setUpgradePlan(false)
-      }else if(plan === 3 || plan === 6) {
-        setDataPlan('Premium')
-        setPremPlan(true)
-        setUpgradePlan(false)
-      }else if(plan === 4) {
-        setDataPlan('Promo')
-        setPremPlan(true)
-        setUpgradePlan(truee)
-      }else if(plan === 2 || plan === 5) {
-        setDataPlan('Pro')
-        setUpgradePlan(true)
-      }else {
-        setDataPlan('Free')
-        setUpgradePlan(true)
-      }
+    if(stepOne.plan === 99){
+      setPremPlan(true)
+      setDataPlan('Admin')
+      setUpgradePlan(false)
+    }else if(stepOne.plan === 3 || stepOne.plan === 6) {
+      setDataPlan('Premium')
+      setPremPlan(true)
+      setUpgradePlan(false)
+    }else if(stepOne.plan === 4) {
+      setDataPlan('Promo')
+      setPremPlan(true)
+      setUpgradePlan(truee)
+    }else if(stepOne.plan === 2 || stepOne.plan === 5) {
+      setDataPlan('Pro')
+      setUpgradePlan(true)
+    }else {
+      setDataPlan('Free')
+      setUpgradePlan(true)
+    }
     setIsAdmin(stepOne.admin)
     setLevel(stepOne.level)
     setEmail(stepOne.email)
@@ -653,265 +695,290 @@ export default function SectionUpper() {
   }
 
   return (
-    <div id='bxDash' className='block  align-center'>
-      <div className='block'>
-        <div className='text-center text-6xl font-bold'>
-            {uname} Dashboard
-        </div>
-      </div>
-      <div className='block'>
-        <div className='flex display-inline justify-center'>
-          <div id='bxUserLeft' className='block' key='member'>
-            {data.map((item) => (
-              <TeamCard 
-              key={item.id}
-              src = {avatar}
-              alttext= 'avatar'
-              title={email}
-              />
-            ))}
-      </div>
-      <div className='block'>
-      {isAdmin === true ? 
-        <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-          <div className='flex display-inline justify-left'>
-            <div className='text-right w-48 mt-2 pt-2'>Update User: </div>
-              <div>                  
-                <div className=''>
-                  <div className='w-64 ml-4 mt-2 pl-2'></div>
-                </div>
-                <div className=''>
-                  <input name="updateUser" type="text" placeholder=' enter Email ' 
-                  className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
-                </div>
+    <div id='bxDash' className='block align-center'>
+      <div id='blkDash' className='block align-center'>   
+
+        <div id='blkUserInfo' className='block'>
+          <div id='bxUserInfo' className='text-center text-6xl font-bold'>{uname} Dashboard</div>
+          <div className='block align-center'>
+            <div className='flex display-inline justify-center'>
+              <div className='block justify-center'>
+                <div id='bxUserLeft'>
+                  <div>
+                    <div className='flex display-inline justify-center py-8'>                 
+                      <img src={avatar} />
+                    </div>
+                    <div className='flex display-inline justify-center'>                 
+                      <div className=' text-3xl ml-4 mt-2 pl-2 mb-2'>{email}</div>
+                    </div>
+                    <div className='flex display-inline justify-center'>                 
+                      <div className='text-center text-3xl mt-2'>Plan: {dataPlan}</div>
+                    </div>
+                    <div className='flex display-inline justify-center py-6'> 
+                      {upgradePlan === false  &&                    
+                        <div className='flex content-center'> 
+                          <div>
+                            <button 
+                              class="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                              >Upgrade
+                            </button>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
               </div>
+            </div>
+            </div>
           </div>
-            {aUpdate === false ?
+        </div>
+
+        <div id='blkAdminInfo' className='block align-center '>
+          <div className='flex display-inline justify-center '>
+            <div id='bxAdminInfo' className='block border border-gray-300 mb-4'>
               <div>
-                <div className='flex display-inline justify-right m-6 '>
-                  <div className='text-right w-48 mt-2'> </div>
-                  <div className='text-right ml-4 mt-2 pl-2'>
-                    <button id='btnEditInfo' 
-                      className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                      onClick={() => {editAInfo()}}>Edit Info</button>
-                  </div>          
-                </div>
-              </div>
-            :
-              <div className='flex display-inline justify-right m-6 '>
-                <div className='text-right w-48 mt-2'>
-                  <button id='btnACancel' disabled={loading} 
-                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {cancelAInfo()}}>Cancel</button>
-                </div>
-                <div className='text-right ml-4 mt-2 pl-2'>
-                  <button id='btnAUpdateUser' disabled={loading} 
-                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {updateAInfo()}}>Update User Info</button>
-                </div>          
-              </div>
-            }
-        </div>              
-      :
-        <div></div>
-      }         
-        <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-            <form onSubmit={handleSubmit(updateInfo)}>
-              {uUpdate === false ?
-                <div> 
-
-                <div className='flex display-inline justify-left'>
-                  <div className='text-right w-48 mt-2'>Username: </div>                    
-                  <div>
-                    <div className='w-64 ml-4 mt-2 pl-2'>{uname}</div>
-                  </div> 
-                </div>
-
-                <div className='flex display-inline justify-left'>
-                  <div className='text-right w-48 mt-2'>First Name: </div>                    
-                  <div>
-                    <div className='w-64 ml-4 mt-2 pl-2'>{fname}</div>
-                  </div>                  
-                </div>
-
-                <div className='flex display-inline justify-left'>
-                  <div className='text-right w-48 mt-2'>Last Name: </div>                      
-                    <div className=''>
-                      <div className='w-64 ml-4 mt-2 pl-2'>{lname}</div>
-                    </div>                                 
-                </div>
-
-                <div>
-                  <div className='flex display-inline justify-right m-6 '>
-                    <div className='text-right w-48 mt-2'> </div>
-                    <div className='text-right ml-4 mt-2 pl-2'>
-                      <button id='btnEditInfo' 
-                        className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                        onClick={() => {editInfo()}}>Edit Info</button>
-                    </div>          
-                  </div>
-                </div>
-                </div>
-              :
-                <div>
-                  <div className='flex display-inline justify-left mt-2'>                   
-                    <div className='text-right w-48 mt-2'>Avatar: </div>
+                {isAdmin === true ? 
+                  <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+                  {aUpdate === false ?
                     <div>
-                      <div name="avatar" className="ml-2 pl-2 pt-2"> Avatars avail Soon </div>
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='text-right w-48 mt-2'>Edit / Add User:  </div>
+                        <div className='text-right ml-4 mt-2 pl-2'>
+                          <button id='btnEditUserInfo' 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {editAInfo()}}>Edit User</button>
+                        </div>          
+                      </div>
+                      
                     </div>
-                  </div>
-                  <div className='flex display-inline justify-left'>
-                    <div className='text-right w-48 mt-2'>Username: </div>                    
+                  :
                     <div>
-                      <input name="username" type="text" text={uname} placeholder={uname} value={fmUserName} 
-                        onChange={(e) => { setFmUserName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} /> 
-                    </div>                   
-                  </div>
+                      <div className='flex display-inline justify-left'>                   
+                        <div className='text-right w-48 mt-2 pt-2'>Update User: </div>                                  
+                          <div className=''>
+                            <input name="updateUser" type="text" placeholder=' enter Email ' 
+                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                          </div>
+                          <div className='text-left ml-4 w-48 mt-2'>
+                            <button id='btnUserInfo' disabled={loading} 
+                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                              onClick={() => {loadUserInfo()}}>Load User</button>
+                        </div>                  
+                      </div>
+                      <div className='flex display-inline justify-left'>                   
+                        <div className='text-right w-48 mt-2 pt-2'>Update Caret: </div>                                  
+                          <div className=''>
+                            <input name="updateUser" type="text" placeholder=' enter Caret ' 
+                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                          </div>
+                          <div className='text-left ml-4 w-48 mt-2'>
+                            <button id='btnCaretInfo' disabled={loading} 
+                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                              onClick={() => {loadCaretInfo()}}>Load Caret</button>
+                        </div>                  
+                      </div>
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='text-right w-48 mt-2'>
+                          <button id='btnACancel' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {cancelAInfo()}}>Cancel</button>
+                        </div>
+                        <div className='text-right ml-4 mt-2 pl-2'>
+                          <button id='btnAUpdateUser' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {updateAInfo()}}>Update User Info</button>
+                        </div>          
+                      </div>
 
-                  <div className='flex display-inline justify-left'>
-                    <div className='text-right w-48 mt-2'>First Name: </div>                                    
-                    <div>
-                      <input name="firstname" type="text" placeholder={fname} value={fmFirstName} 
-                        onChange={(e) => { setFmFirstName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
                     </div>
-                  </div>
+                  }
+                  </div>              
+                :
+                  <div></div>
+                } 
+              </div>
+            </div>
+          </div>
+        </div>
 
-                  <div className='flex display-inline justify-left'>
-                    <div className='text-right w-48 mt-2'>Last Name: </div>                                       
-                      <div className=''>
-                        <input name="lastname" type="text" text={lname} 
-                          placeholder={lname} value={fmLastName} 
-                          onChange={(e) => { setFmLastName(e.target.value); }} 
-                          className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
-                      </div>                 
-                  </div>
+        <div id='blkUserData' className='block'>
+          <div className='flex display-inline justify-center '>
+            <div id='bxUserInfo' className='block border border-gray-300 mb-4'>
+              <div className='primaryUser border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+                  <form onSubmit={handleSubmit(updateInfo)}>
+                    {uUpdate === false ?
+                      <div> 
 
-                  <div className='flex display-inline justify-left m-6 '>                     
-        
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Username: </div>                    
+                        <div>
+                          <div className='w-64 ml-4 mt-2 pl-2'>{uname}</div>
+                        </div> 
+                      </div>
+
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>First Name: </div>                    
+                        <div>
+                          <div className='w-64 ml-4 mt-2 pl-2'>{fname}</div>
+                        </div>                  
+                      </div>
+
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Last Name: </div>                      
+                          <div className=''>
+                            <div className='w-64 ml-4 mt-2 pl-2'>{lname}</div>
+                          </div>                                 
+                      </div>
+
+                      <div>
+                        <div className='flex display-inline justify-right m-6 '>
+                          <div className='text-right w-48 mt-2'> </div>
+                          <div className='text-right ml-4 mt-2 pl-2'>
+                            <button id='btnEditUserData' 
+                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                              onClick={() => {editInfo()}}>Edit Info</button>
+                          </div>          
+                        </div>
+                      </div>
+                      </div>
+                    :
+                      <div>
+                        <div className='flex display-inline justify-left mt-2'>                   
+                          <div className='text-right w-48 mt-2'>Avatar: </div>
+                          <div>
+                            <div name="avatar" className="ml-2 pl-2 pt-2"> Avatars avail Soon </div>
+                          </div>
+                        </div>
+                        <div className='flex display-inline justify-left'>
+                          <div className='text-right w-48 mt-2'>Username: </div>                    
+                          <div>
+                            <input name="username" type="text" text={uname} placeholder={uname} value={fmUserName} 
+                              onChange={(e) => { setFmUserName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} /> 
+                          </div>                   
+                        </div>
+
+                        <div className='flex display-inline justify-left'>
+                          <div className='text-right w-48 mt-2'>First Name: </div>                                    
+                          <div>
+                            <input name="firstname" type="text" placeholder={fname} value={fmFirstName} 
+                              onChange={(e) => { setFmFirstName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                          </div>
+                        </div>
+
+                        <div className='flex display-inline justify-left'>
+                          <div className='text-right w-48 mt-2'>Last Name: </div>                                       
+                            <div className=''>
+                              <input name="lastname" type="text" text={lname} 
+                                placeholder={lname} value={fmLastName} 
+                                onChange={(e) => { setFmLastName(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                            </div>                 
+                        </div>
+
+                        <div className='flex display-inline justify-left m-6 '>                     
+              
+                          <div className='flex display-inline justify-left'>
+                            <div className='mr-6 '>Email confirmation : </div>
+                            <div  className="flex display-inline">
+                              <input type="radio" className='ml-4 mr-4' value="Yes" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}}  />&nbsp;Yes
+                              <div className='ml-4 text-sm'> </div>
+                              <input type="radio" className='l-4' value="No" defaultChecked="false" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}} />&nbsp;No
+                            </div>
+                          </div>                 
+                        </div>
+                        
+                        <div>
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='text-right w-48 mt-2'>
+                              <button id='btnCancel' disabled={loading} 
+                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                onClick={() => {cancelInfo()}}>Cancel</button>
+                            </div>
+                            <div className='text-right ml-4 mt-2 pl-2'>
+                              <button id='btnUpdateInfo' disabled={loading} 
+                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                onClick={() => {updateInfo()}}>Update User Info</button>
+                            </div>          
+                          </div>
+                        </div>
+                      </div>
+                    }
+                </form>
+              </div>
+              <div className='primaryCaret border border-gray-200 m-2 px-6 pb-6 pt-6'>                
+                {uPUpdate === true ?                        
+                  <div>
                     <div className='flex display-inline justify-left'>
+                      <div className='text-right w-48 mt-2'>Current Password: </div>
+                      <div>
+                        <input name="curPassword" type="password" onChange={(e) => { setOldPwd(e.target.value); }} placeholder=' Old Password ' 
+                          className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />                  
+                          {oldPwdError === true && <div className="curPwdError" >Password Does Not Match</div>}
+                      </div>
+                    </div>                
+                    <div className='flex display-inline justify-left pt-8'>
+                      <div className='text-right w-48 mt-2' >New Password: </div>
+                      <div>
+                        <input name="newPassword" type="password" onChange={(e) => { setNewPwd(e.target.value); }} placeholder=' New Password ' 
+                          className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />                  
+                      </div>
+                    </div>                  
+                    <div className='flex display-inline justify-left'>
+                      <div className='text-right w-48 mt-2'>Confirm Password: </div>
+                    <div>
+                      <input name="confirmPassword" type="password" onChange={(e) => { setNewConfirmPwd(e.target.value); }} placeholder=' Confirm Password ' 
+                        className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />
+                        {newPwdError === true && <div className="curPwdError" >New Passwords Do Not Match</div>}
+                    </div>
+                        
+                    </div>
+                    <div className='flex display-inline justify-right m-6 '>
                       <div className='mr-6 '>Email confirmation : </div>
                       <div  className="flex display-inline">
-                        <input type="radio" className='ml-4 mr-4' value="Yes" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}}  />&nbsp;Yes
+                        <input type="radio" className='ml-4 mr-4' value="Yes" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;Yes
                         <div className='ml-4 text-sm'> </div>
-                        <input type="radio" className='l-4' value="No" defaultChecked="false" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}} />&nbsp;No
-                      </div>
-                    </div>                 
-                  </div>
-                  
-                  <div>
+                        <input type="radio" className='l-4' value="No" defaultChecked="false" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;No
+                    </div>
+                    </div>
                     <div className='flex display-inline justify-right m-6 '>
-                      <div className='text-right w-48 mt-2'>
-                        <button id='btnCancel' disabled={loading} 
-                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                          onClick={() => {cancelInfo()}}>Cancel</button>
-                      </div>
+                    <div className='text-right w-48 mt-2'>
+                      <button id='btnCancel' disabled={loading} 
+                        className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => {cancelPwdInfo()}}>Cancel</button>
+                    </div>
+                    <div className='text-right ml-4 mt-2 pl-2'>
+                      <button id='btnPassword' disabled={loading} 
+                        className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => {updatePwdInfo()}}>Update Password</button>
+                    </div>          
+                    </div>
+
+                  </div>          
+                :
+                  <div>
+                    <div className='flex display-inline justify-left'>
+                      <div className='text-right w-48 mt-2'>Password: </div>
+                      <div className='w-64 ml-4 mt-2 pl-2'>{prePassword}</div>
+                    </div>
+                    <div className='flex display-inline justify-right m-6 '>
+                      <div className='text-right w-48 mt-2'> </div>
                       <div className='text-right ml-4 mt-2 pl-2'>
-                        <button id='btnUpdateInfo' disabled={loading} 
+                        <button id='btnEditPwdInfo' 
                           className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                          onClick={() => {updateInfo()}}>Update User Info</button>
+                          onClick={() => {editPwdInfo()}}>Edit Info</button>
                       </div>          
                     </div>
                   </div>
-                </div>
-              }
-          </form>
-        </div>
-        <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>                
-          {uPUpdate === true ?                        
-            <div>
-              <div className='flex display-inline justify-left'>
-                <div className='text-right w-48 mt-2'>Password: </div>
-                <div>
-                  <input name="password" type="text"  placeholder=' Password ' 
-                  {...register('password')} 
-                  className={'border border-gray-300 w-64 ml-4 mt-2 pl-2' + `form-control ${errors.password ? 'is-invalid' : ''}`} />                  
-                  <div className="invalid-feedback">{errors.username?.message}</div>
-                </div>
-              </div>                  
-              <div className='flex display-inline justify-left'>
-                <div className='text-right w-48 mt-2'>Confirm Password: </div>
-              <div>
-                <input name="confirmPassword" type="text" placeholder=' Confirm Password ' 
-                {...register('confirmPassword')} value={fmPwdConfirm} 
-                onChange={(e) => { setFmPwdConfirm(e.target.value); }} 
-                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2' + `form-control ${errors.confirmPassword ? 'is-invalid' : ''}`} />
-                <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
+                }     
               </div>
-                  
-              </div>
-              <div className='flex display-inline justify-right m-6 '>
-                <div className='mr-6 '>Email confirmation : </div>
-                <div  className="flex display-inline">
-                  <input type="radio" className='ml-4 mr-4' value="Yes" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;Yes
-                  <div className='ml-4 text-sm'> </div>
-                  <input type="radio" className='l-4' value="No" defaultChecked="false" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;No
-              </div>
-              </div>
-              <div className='flex display-inline justify-right m-6 '>
-              <div className='text-right w-48 mt-2'>
-                <button id='btnCancel' disabled={loading} 
-                  className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                  onClick={() => {cancelPInfo()}}>Cancel</button>
-              </div>
-              <div className='text-right ml-4 mt-2 pl-2'>
-                <button id='btnPassword' disabled={loading} 
-                  className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                  onClick={() => {updatePInfo()}}>Update Password</button>
-              </div>          
-              </div>
+            </div> 
+          </div>
+        </div>             
 
-            </div>          
-          :
-            <div>
-              <div className='flex display-inline justify-left'>
-                <div className='text-right w-48 mt-2'>Password: </div>
-                <div className='w-64 ml-4 mt-2 pl-2'>{prePassword}</div>
-              </div>
-              <div className='flex display-inline justify-right m-6 '>
-                <div className='text-right w-48 mt-2'> </div>
-                <div className='text-right ml-4 mt-2 pl-2'>
-                  <button id='btnEditInfo' 
-                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                    onClick={() => {editPInfo()}}>Edit Info</button>
-                </div>          
-              </div>
-            </div>
-          }     
-        </div>
-      </div>             
-
-      <div className='block'>
-          <div className='updateUserInfo pt-2 pb-6'>
-            <div id='bxUserInfo' className='block border border-gray-300'>
+        <div id='blkCaretInfo' className='block'>
+          <div className='flex display-inline justify-center '>
+            <div id='bxCaretInfo' className='block border border-gray-300'>
               <form onSubmit={handleSubmit(onSubmit)}>
-                {aUpdate === false ?
-                  <div>
-                    <div className='flex display-inline justify-left'>                 
-                    <div className='text-center text-3xl w-48 mt-2'>User Plan: </div>
-                    <div className=' text-3xl w-64 ml-4 mt-2 pl-2 mb-2'>{dataPlan}</div>
-                  </div>
-                  <div className='flex display-inline justify-left mb-6 pl-10'> 
-                    {upgradePlan === true  &&                    
-                      <div className=''> 
-                        <button 
-                          class="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                          >Upgrade
-                        </button>
-                      </div>
-                    }
-                    </div>
-                  </div>
-                :
-                  <div className='flex display-inline justify-left'>                 
-                    <div className='text-center text-3xl w-48 mt-2'>User Plan: </div>
-                    <div className=''>
-                    <input name="userPlan" type="text" text={dataPlan}
-                      placeholder={dataPlan}
-                      value={fmPlan} onChange={(e) => { setFmPlan(e.target.value); }} 
-                      className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
-                  </div>
-                </div>
-                }
 
                 <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
                   {uWUpdate === false ?
@@ -920,28 +987,24 @@ export default function SectionUpper() {
                         <div className='text-right w-48 mt-2'>Primary Caret: </div>
                         <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
                       </div>
-
                       <div className='flex display-inline justify-left'>
                         <div className='text-right w-48 mt-2'>Chain: </div>                         
                         <div className='w-64 ml-4 mt-2 pl-2'>{primaryChain}</div>
                       </div>
-
                       <div className='flex display-inline justify-left'>
                         <div className='text-right w-48 mt-2'>Wallet: </div>
-                        <div className='w-144 ml-4 mt-2 pl-2'>{primaryWallet}</div>
+                        <div className='w-auto ml-4 mt-2 pl-2'>{primaryWallet}</div>
                       </div>
-
                       <div className='flex display-inline justify-left'>
                         <div className='text-right w-48 mt-2'>IPFS Published: </div>
                         <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
                       </div>
-
                       <div className='flex display-inline justify-right m-6 '>
                         <div className='text-right w-48 mt-2'> </div>
                           {primaryWalletIsSet === true &&
                             <div>
                               <div className='text-right ml-4 mt-2 pl-2'>
-                                <button id='btnEditInfo' 
+                                <button id='btnEditPrimaryWalletInfo' 
                                   className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
                                   onClick={() => {editWInfo()}}>
                                 Edit Info</button>
@@ -956,7 +1019,6 @@ export default function SectionUpper() {
                         <div className='text-right w-48 mt-2'>Primary Caret: </div>
                         <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
                       </div>
-
                       <div className='flex display-inline justify-left'>
                         <div className='text-right w-48 mt-2'>Chain : </div>
                         <div className=''>
@@ -970,14 +1032,12 @@ export default function SectionUpper() {
                             <option value="Doge">Doge</option>
                           </select>
                         </div>  
-                      </div>
-                    
+                      </div>                   
                       <div className='flex display-inline justify-left'>
                         <div className='text-right w-48 mt-2'>Wallet: </div>
                         <input name="primarywallet" type="text" text={primaryWallet} placeholder={primaryWallet}
                         onChange={(e) => { setAccount(e.target.value); }} className='border border-gray-300 ml-4 mt-2 pl-2' /> 
                       </div> 
-
                       <div className='flex display-inline justify-right m-6 '>
                         <div className='mr-6 '>Email confirmation : </div>
                         <div  className="flex display-inline">
@@ -985,8 +1045,7 @@ export default function SectionUpper() {
                         <div className='ml-4 text-sm'> </div>
                         <input type="radio" className='l-4' value="No" defaultChecked="false" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;No
                         </div>
-                      </div>
-        
+                      </div>       
                       <div className='flex display-inline justify-right m-6 '>
                         <div className='text-right w-48 mt-2'>
                           <button id='btnCancel' disabled={loading} 
@@ -999,11 +1058,9 @@ export default function SectionUpper() {
                           onClick={() => {updateWInfo()}}>Update Master Chain</button>
                         </div>          
                       </div>                           
-
                     </div>
                   }
-                </div>
-                  
+                </div>              
                 {premPlan === true &&
                   <div>
                     {uW2Update === false ?
@@ -1028,7 +1085,7 @@ export default function SectionUpper() {
                           <div className='flex display-inline justify-right m-6 '>
                             <div className='text-right w-48 mt-2'> </div>
                             <div className='text-right ml-4 mt-2 pl-2'>
-                              <button id='btnEditInfo' className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                              <button id='btnEdit2Info' className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
                                 onClick={() => {editW2Info()}}>Edit Info</button>
                             </div>          
                           </div>                        
@@ -1082,7 +1139,7 @@ export default function SectionUpper() {
                             <div className='text-right ml-4 mt-2 pl-2'>
                             <button id='btnW2Chain' disabled={loading} 
                               className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                              onClick={() => {updateW2Info()}}>Update Master Chain</button>
+                              onClick={() => {updateW2Info()}}>Update Second Chain</button>
                             </div>          
                           </div>                           
                         </div>
@@ -1093,7 +1150,7 @@ export default function SectionUpper() {
                         <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
                           <div className='flex display-inline justify-left'>
                             <div className='text-right w-48 mt-2'>Caret 3: </div>
-                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
+                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret3}</div>                           
                           </div>
                           <div className='flex display-inline justify-left'>
                             <div className='text-right w-48 mt-2'>Chain 3: </div>                         
@@ -1119,7 +1176,7 @@ export default function SectionUpper() {
                       </div>
                     :
                       <div> 
-                        <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
+                        <div className='thirdCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
                           <div className='flex display-inline justify-left'>
                             <div className='text-right w-48 mt-2'>Caret 3: </div>
                             <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
@@ -1164,7 +1221,7 @@ export default function SectionUpper() {
                             <div className='text-right ml-4 mt-2 pl-2'>
                             <button id='btnW3Chain' disabled={loading} className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
 
-                              onClick={() => {updateW3Info()}}>Update Master Chain</button>
+                              onClick={() => {updateW3Info()}}>Update Third Chain</button>
                             </div>          
                           </div>                           
                         </div>
@@ -1175,11 +1232,11 @@ export default function SectionUpper() {
 
               </form>
             </div>
-          </div>
-        
-      </div>
-      </div>       
-      </div>
+          </div>     
+        </div>
+
+    </div>       
+
       {isAdmin === true &&
         <div>
           <div className='block py-10 mb-6'>
