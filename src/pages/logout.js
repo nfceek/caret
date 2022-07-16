@@ -1,18 +1,19 @@
-import React from 'react';
 
-import { useRouter } from 'next/router'
+import React from 'react';
+import { ThemeProvider } from 'theme-ui';
+import Theme from '../theme';
+import SEO from '../components/seo';
+import Layout from '../components/layoutInner';
+import Logout from '../sections/logout';
+
 
 export default function IndexPage() {
-    const router = useRouter()
-
-    localStorage.removeItem('caret');
-    //setUserIn(0)  
-    //localStorage.removeItem('wallet');
-    router.push('/');
-    
   return (
-
-       <div >Logout</div>
-
+       <ThemeProvider theme={Theme} >
+        <Layout>
+          <SEO title="Caret.Cloud Logout" />
+          <Logout />
+        </Layout>
+    </ThemeProvider>
   );
 }

@@ -211,8 +211,9 @@ export default function SectionUpper() {
       },
   })
     const userUpdated = await response.json() 
-    //console.log(' user update result ' + JSON.stringify(userUpdated))
-    //return userUpdated
+    var type = 'user'
+    var data = '1' 
+    pageReset(type, data)
   }
 
   // pwd updating
@@ -440,9 +441,9 @@ export default function SectionUpper() {
 
   function pageReset(type, data){  
     if(type === 'user'){
-
+      router.reload('/dashboard'); 
     }else if(type === 'pwd'){
-
+      router.reload('/dashboard'); 
     }else if(type === 'wallet1'){
       if(primaryWallet !== account || primaryChain !== chain){
         //console.log(' type ' + type +  ' data ' + data + 'wallet prime: ' + primaryWallet + ' chain ' + primaryChain)	
@@ -569,6 +570,7 @@ export default function SectionUpper() {
       setAccount('No Input')
     }else{
       setAccount(stepOne.account)
+      setPrimaryWalletIsSet(true)      
     }
 
     if(stepOne.account2 === "" || stepOne.account2 === undefined){
@@ -582,6 +584,8 @@ export default function SectionUpper() {
     }else{
       setAccount3(stepOne.account3)
     }
+
+
       
     //chain
     setPrimaryChain(stepOne.chain)   
@@ -733,74 +737,74 @@ export default function SectionUpper() {
           </div>
         </div>
 
+      {isAdmin === true ? 
         <div id='blkAdminInfo' className='block align-center '>
           <div className='flex display-inline justify-center '>
             <div id='bxAdminInfo' className='block border border-gray-300 mb-4'>
-              <div>
-                {isAdmin === true ? 
-                  <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                  {aUpdate === false ?
-                    <div>
-                      <div className='flex display-inline justify-right m-6 '>
-                        <div className='text-right w-48 mt-2'>Edit / Add User:  </div>
-                        <div className='text-right ml-4 mt-2 pl-2'>
-                          <button id='btnEditUserInfo' 
-                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                            onClick={() => {editAInfo()}}>Edit User</button>
-                        </div>          
-                      </div>
-                      
-                    </div>
-                  :
-                    <div>
-                      <div className='flex display-inline justify-left'>                   
-                        <div className='text-right w-48 mt-2 pt-2'>Update User: </div>                                  
-                          <div className=''>
-                            <input name="updateUser" type="text" placeholder=' enter Email ' 
-                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
-                          </div>
-                          <div className='text-left ml-4 w-48 mt-2'>
-                            <button id='btnUserInfo' disabled={loading} 
-                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                              onClick={() => {loadUserInfo()}}>Load User</button>
-                        </div>                  
-                      </div>
-                      <div className='flex display-inline justify-left'>                   
-                        <div className='text-right w-48 mt-2 pt-2'>Update Caret: </div>                                  
-                          <div className=''>
-                            <input name="updateUser" type="text" placeholder=' enter Caret ' 
-                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
-                          </div>
-                          <div className='text-left ml-4 w-48 mt-2'>
-                            <button id='btnCaretInfo' disabled={loading} 
-                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                              onClick={() => {loadCaretInfo()}}>Load Caret</button>
-                        </div>                  
-                      </div>
-                      <div className='flex display-inline justify-right m-6 '>
-                        <div className='text-right w-48 mt-2'>
-                          <button id='btnACancel' disabled={loading} 
-                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                            onClick={() => {cancelAInfo()}}>Cancel</button>
-                        </div>
-                        <div className='text-right ml-4 mt-2 pl-2'>
-                          <button id='btnAUpdateUser' disabled={loading} 
-                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                            onClick={() => {updateAInfo()}}>Update User Info</button>
-                        </div>          
-                      </div>
-
-                    </div>
-                  }
-                  </div>              
+              <div>               
+                <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+                {aUpdate === false ?
+                  <div>
+                    <div className='flex display-inline justify-right m-6 '>
+                      <div className='text-right w-48 mt-2'>Edit / Add User:  </div>
+                      <div className='text-right ml-4 mt-2 pl-2'>
+                        <button id='btnEditUserInfo' 
+                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          onClick={() => {editAInfo()}}>Edit User</button>
+                      </div>          
+                    </div>                
+                  </div>
                 :
-                  <div></div>
-                } 
+                  <div>
+                    <div className='flex display-inline justify-left'>                   
+                      <div className='text-right w-48 mt-2 pt-2'>Update User: </div>                                  
+                        <div className=''>
+                          <input name="updateUser" type="text" placeholder=' enter Email ' 
+                            className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                        </div>
+                        <div className='text-left ml-4 w-48 mt-2'>
+                          <button id='btnUserInfo' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {loadUserInfo()}}>Load User</button>
+                      </div>                  
+                    </div>
+                    <div className='flex display-inline justify-left'>                   
+                      <div className='text-right w-48 mt-2 pt-2'>Update Caret: </div>                                  
+                        <div className=''>
+                          <input name="updateUser" type="text" placeholder=' enter Caret ' 
+                            className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                        </div>
+                        <div className='text-left ml-4 w-48 mt-2'>
+                          <button id='btnCaretInfo' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {loadCaretInfo()}}>Load Caret</button>
+                      </div>                  
+                    </div>
+                    <div className='flex display-inline justify-right m-6 '>
+                      <div className='text-right w-48 mt-2'>
+                        <button id='btnACancel' disabled={loading} 
+                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          onClick={() => {cancelAInfo()}}>Cancel</button>
+                      </div>
+                      <div className='text-right ml-4 mt-2 pl-2'>
+                        <button id='btnAUpdateUser' disabled={loading} 
+                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          onClick={() => {updateAInfo()}}>Update User Info</button>
+                      </div>          
+                    </div>
+
+                  </div>
+                }
+                </div>              
               </div>
             </div>
           </div>
         </div>
-
+      :
+      <div></div>
+      }
+<div class="grid grid-flow-row auto-rows-max">
+  <div>
         <div id='blkUserData' className='block'>
           <div className='flex display-inline justify-center '>
             <div id='bxUserInfo' className='block border border-gray-300 mb-4'>
@@ -876,7 +880,7 @@ export default function SectionUpper() {
                         </div>
 
                         <div className='flex display-inline justify-left m-6 '>                     
-              
+                          {/*
                           <div className='flex display-inline justify-left'>
                             <div className='mr-6 '>Email confirmation : </div>
                             <div  className="flex display-inline">
@@ -884,7 +888,8 @@ export default function SectionUpper() {
                               <div className='ml-4 text-sm'> </div>
                               <input type="radio" className='l-4' value="No" defaultChecked="false" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}} />&nbsp;No
                             </div>
-                          </div>                 
+                          </div> 
+                          */}                
                         </div>
                         
                         <div>
@@ -933,12 +938,14 @@ export default function SectionUpper() {
                         
                     </div>
                     <div className='flex display-inline justify-right m-6 '>
+                      {/*
                       <div className='mr-6 '>Email confirmation : </div>
                       <div  className="flex display-inline">
                         <input type="radio" className='ml-4 mr-4' value="Yes" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;Yes
                         <div className='ml-4 text-sm'> </div>
                         <input type="radio" className='l-4' value="No" defaultChecked="false" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;No
-                    </div>
+                      </div>
+                      */}
                     </div>
                     <div className='flex display-inline justify-right m-6 '>
                     <div className='text-right w-48 mt-2'>
@@ -962,7 +969,7 @@ export default function SectionUpper() {
                     </div>
                     <div className='flex display-inline justify-right m-6 '>
                       <div className='text-right w-48 mt-2'> </div>
-                      <div className='text-right ml-4 mt-2 pl-2'>
+                      <div className='text-right mt-2'>
                         <button id='btnEditPwdInfo' 
                           className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
                           onClick={() => {editPwdInfo()}}>Edit Info</button>
@@ -974,7 +981,8 @@ export default function SectionUpper() {
             </div> 
           </div>
         </div>             
-
+  </div>
+  <div>
         <div id='blkCaretInfo' className='block'>
           <div className='flex display-inline justify-center '>
             <div id='bxCaretInfo' className='block border border-gray-300'>
@@ -1003,7 +1011,7 @@ export default function SectionUpper() {
                         <div className='text-right w-48 mt-2'> </div>
                           {primaryWalletIsSet === true &&
                             <div>
-                              <div className='text-right ml-4 mt-2 pl-2'>
+                              <div className='text-right ml-4 mt-2'>
                                 <button id='btnEditPrimaryWalletInfo' 
                                   className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
                                   onClick={() => {editWInfo()}}>
@@ -1039,12 +1047,14 @@ export default function SectionUpper() {
                         onChange={(e) => { setAccount(e.target.value); }} className='border border-gray-300 ml-4 mt-2 pl-2' /> 
                       </div> 
                       <div className='flex display-inline justify-right m-6 '>
+                      {/*
                         <div className='mr-6 '>Email confirmation : </div>
                         <div  className="flex display-inline">
-                        <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;Yes
+                          <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;Yes
                         <div className='ml-4 text-sm'> </div>
-                        <input type="radio" className='l-4' value="No" defaultChecked="false" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;No
+                          <input type="radio" className='l-4' value="No" defaultChecked="false" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;No
                         </div>
+                      */}
                       </div>       
                       <div className='flex display-inline justify-right m-6 '>
                         <div className='text-right w-48 mt-2'>
@@ -1061,7 +1071,7 @@ export default function SectionUpper() {
                     </div>
                   }
                 </div>              
-                {premPlan === true &&
+                {premPlan === false &&
                   <div>
                     {uW2Update === false ?
                       <div>
@@ -1118,17 +1128,18 @@ export default function SectionUpper() {
                               onChange={(e) => { setAccount2(e.target.value); }} 
                               className='border border-gray-300 ml-4 mt-2 pl-2' />
                           </div> 
+
                           <div className='flex display-inline justify-right m-6 '>
+                            {/*
                             <div className='mr-6 '>Email confirmation : </div>
                             <div  className="flex display-inline">
-                            <input type="radio" className='ml-4 mr-4' 
-                              value="Yes" name="userWalletsecondEmail" 
-                              onClick={() => {setUserWallet2Email(true)}}  />&nbsp;Yes
+                              <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletsecondEmail" 
+                                onClick={() => {setUserWallet2Email(true)}}  />&nbsp;Yes
                             <div className='ml-4 text-sm'> </div>
-                            <input type="radio" className='l-4' 
-                              value="No" defaultChecked="false" name="userWallet2Email" 
-                              onClick={() => {setUserWallet2Email(true)}}  />&nbsp;No
+                              <input type="radio" className='l-4' 
+                                value="No" defaultChecked="false" name="userWallet2Email" onClick={() => {setUserWallet2Email(true)}}  />&nbsp;No
                             </div>
+                            */}
                           </div>                 
                           <div className='flex display-inline justify-right m-6 '>
                             <div className='text-right w-48 mt-2'>
@@ -1202,6 +1213,7 @@ export default function SectionUpper() {
                               className='border border-gray-300 ml-4 mt-2 pl-2' />
                           </div> 
                           <div className='flex display-inline justify-right m-6 '>
+                          {/*
                             <div className='mr-6 '>Email confirmation : </div>
                             <div  className="flex display-inline">
                             <input type="radio" className='ml-4 mr-4' 
@@ -1212,6 +1224,7 @@ export default function SectionUpper() {
                               value="No" defaultChecked="false" name="userWallet3Email" 
                               onClick={() => {setUserWallet3Email(true)}}  />&nbsp;No
                             </div>
+                          */}
                           </div>                 
                           <div className='flex display-inline justify-right m-6 '>
                             <div className='text-right w-48 mt-2'>
@@ -1234,7 +1247,8 @@ export default function SectionUpper() {
             </div>
           </div>     
         </div>
-
+  </div>
+</div>
     </div>       
 
       {isAdmin === true &&

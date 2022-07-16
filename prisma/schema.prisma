@@ -113,3 +113,19 @@ model sales {
  promo String
  salesdate String
 }
+
+model email{
+id Int @id @default(autoincrement())
+email Int
+userid Int
+emailall Int
+emailsystem Int
+emailnotify Int
+emailupdates Int
+emailpromos Int
+emailseasonal Int
+emailspecial Int
+emailextra Int
+reason String
+curdate String
+}
