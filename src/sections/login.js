@@ -118,56 +118,64 @@ import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
     return (
         <Box >                                                  
             <Box sx={{ variant : 'section.feature' }}>                 
-                <Container sx={styles.containerBox} >                        
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="form-group">
-						<label>Email: </label>
-                          <input id='inputEmail' name="email" type="text" onChange={e => this.setState({ text: e.target.value })} placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
-                          <div className="invalid-feedback">{errors.email?.message}</div>
-                          {emailDupe === 1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
-                        </div>
+                <Container sx={styles.containerBox} >
+                    <div className='block inline justify-center'>
+                        <div className='block text-3xl font-bold m-6 pl-4'>Welcome to Caret.Cloud </div>
+                        <div className='block border border-gray-300 mb-6 p-4'>
+                            <div className='text-2xl font-bold m-6'>Please Sign In </div>
+                            <div className='m-6'>
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="form-group">
+                                    <label>Email: </label>
+                                    <input id='inputEmail' name="email" type="text" onChange={e => this.setState({ text: e.target.value })} placeholder="Email" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} autoComplete="off" />
+                                    <div className="invalid-feedback">{errors.email?.message}</div>
+                                    {emailDupe === 1 &&<div id='errEmail' className='errEmail' >Email already in use</div>}
+                                    </div>
 
-                        <div>
-                            <div className="form-group mt-6 mb-6justify-left text-left">
-                                <label>How do you want to log in? </label>
-                                <div  className="flex display-inline">
-                                    <input type="radio" className='ml-4 mr-4' value="Yes" defaultChecked={true} name="loginChoice" onClick={() => {loginValue(true)}} />&nbsp;Password
-                                    <div className='ml-4 text-sm'> </div>
-                                    <input type="radio" className='l-4' value="No" name="loginChoice"  onClick={() => {loginValue(false)}} />&nbsp;Wallet Address
-                                </div>
+                                    <div>
+                                        <div className="form-group mt-6 mb-6justify-left text-left">
+                                            <label>How do you want to log in? </label>
+                                            <div  className="flex display-inline">
+                                                <input type="radio" className='ml-4 mr-4' value="Yes" defaultChecked={true} name="loginChoice" onClick={() => {loginValue(true)}} />&nbsp;Password
+                                                <div className='ml-4 text-sm'> </div>
+                                                <input type="radio" className='l-4' value="No" name="loginChoice"  onClick={() => {loginValue(false)}} />&nbsp;Wallet Address
+                                            </div>
+                                        </div>
+                                    </div>
+                                {loginChoice === 'pwd' ?
+                                    <div>
+                                        <div className="form-group">
+                                            <label>Password</label>
+                                            <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
+                                            <div className="invalid-feedback">{errors.password?.message}</div>
+                                            {pwdError === 1 &&<div id='errEmail' className='errEmail' >Password is incorrect</div>}
+                                        </div>
+                                    </div>
+                                :
+                                    <div>
+                                        <div className="form-group">
+                                            <label>Wallet Address</label>
+                                            <input name="Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
+                                            <div className="invalid-feedback">{errors.account?.message}</div>
+                                            {accError === 1 &&<div id='errEmail' className='errEmail' >Wallet Address is incorrect</div>}
+                                        </div> 
+                                    </div>
+                                }
+                                    <div className='flex display-inline'>
+                                        <div>
+                                            <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">
+                                                {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                                                Login
+                                            </button>
+                                        </div>
+                                        <div className='ml-6 pt-3'>
+                                            {/*<Link href="/registration" className="btn btn-link">Register</Link>  */}
+                                        </div>               
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    {loginChoice === 'pwd' ?
-                        <div>
-                            <div className="form-group">
-                                <label>Password</label>
-                                <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.password?.message}</div>
-								{pwdError === 1 &&<div id='errEmail' className='errEmail' >Password is incorrect</div>}
-                            </div>
-                        </div>
-                    :
-                        <div>
-                            <div className="form-group">
-                                <label>Wallet Address</label>
-                                <input name="Wallet" type="text" {...register('account')} className={`form-control ${errors.account ? 'is-invalid' : ''}`} />
-                                <div className="invalid-feedback">{errors.account?.message}</div>
-								{accError === 1 &&<div id='errEmail' className='errEmail' >Wallet Address is incorrect</div>}
-                            </div> 
-                        </div>
-                    }
-                        <div className='flex display-inline'>
-                            <div>
-                                <button disabled={formState.isSubmitting} className="btn btn-primary mr-12">
-                                    {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
-                                    Login
-                                </button>
-                            </div>
-                            <div className='ml-6 pt-3'>
-                                {/*<Link href="/registration" className="btn btn-link">Register</Link>  */}
-                            </div>               
-                        </div>
-                    </form>
+                    </div>
                 </Container>
             </Box>
         </Box>
@@ -182,7 +190,7 @@ const styles = {
     containerBox: {
         display: 'flex',
         alignItems: ['flex-start', null, null, 'center'],
-        justifyContent: ['flex-start', null, null, 'space-between'],
+        justifyContent: ['flex-start', null, null, 'center'],
         flexDirection: ['column', null, null, 'row'],
         pb: [0, null, null, null, null, 7],
         pt:[120, null, null, null, null, 150],
