@@ -1009,7 +1009,7 @@ export default function SectionUpper() {
                       </div>
                       <div className='flex display-inline justify-right m-6 '>
                         <div className='text-right w-48 mt-2'> </div>
-                          {primaryWalletIsSet === true &&
+                          {primaryWalletIsSet === false &&
                             <div>
                               <div className='text-right ml-4 mt-2'>
                                 <button id='btnEditPrimaryWalletInfo' 
@@ -1071,7 +1071,7 @@ export default function SectionUpper() {
                     </div>
                   }
                 </div>              
-                {premPlan === false &&
+                {premPlan === true &&
                   <div>
                     {uW2Update === false ?
                       <div>
