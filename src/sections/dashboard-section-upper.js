@@ -491,7 +491,7 @@ export default function SectionUpper() {
     })
 
     const stepOne = await response.json() 
-    console.log(' return caret ' + JSON.stringify(stepOne))
+    //console.log(' return caret ' + JSON.stringify(stepOne))
     
     if(stepOne.admin === false){
       setAvatar('../assets/avatar/user-med.png')
