@@ -27,7 +27,7 @@ export default function PurchaseChoice() {
   const [carrotNumInDb, setCarrotNumInDb ] = useState('')
   const [userCountCheck, setUserCountCheck] = useState(0) 
   const [itemData, setItemData] = useState('') 
-  const [numberCount, setNumberCount] = useState(Math.floor(Math.random() * (999 - 100 + 1)) + 0)
+  const [numberCount, setNumberCount] = useState(Math.floor(Math.random() * (999 - 50 + 1)) + 4)
   const [itemDataAppend, setItemDataAppend] = useState('')
   const [chainValue, setChainValue] = useState('');
   const [walletState, setwalletState] = useState(false)   // does user have wallet

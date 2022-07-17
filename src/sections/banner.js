@@ -21,7 +21,7 @@ export default function Banner() {
           </Text>
         </Box>
         <Box sx={styles.banner.imageBox}>
-          <Image src={BannerImg} alt='banner' />
+          <img src={BannerImg} alt='banner' />
         </Box>
       </Container>
     </Box>
@@ -31,7 +31,7 @@ export default function Banner() {
 const styles = {
   
   banner: {
-    pt: ['40px', '45px', '55px', '70px', null, null, '80px', '115px'],
+    pt: ['75px', '75px', '75px', '80px', null, null, '105px', '105px'],
     //pt: ['140px', '145px', '155px', '170px', null, null, '180px', '215px'],
     pb: [2, null, 0, null, 2, 0, null, 105],
     position: 'relative',
