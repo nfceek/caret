@@ -19,7 +19,7 @@ export default function CoreFeature() {
   const  shapePattern = '/assets/shape-pattern2.png';
 
   return (
-   <Box sx={{variant: 'section.coreFeature'}}>
+   <Box id='caretfeature' sx={{variant: 'section.coreFeature'}}>
     <Container sx={styles.containerBox}>
       <Box sx={styles.contentBox}>
         <TextFeature 

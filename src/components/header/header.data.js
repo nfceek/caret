@@ -1,11 +1,7 @@
 export default [
   {
-    path: 'Home',
+    path: 'home',
     label: 'Home',
-  },
-  {
-    path: 'feature',
-    label: 'Features',
   },
   {
     path: 'workflow',
@@ -14,6 +10,10 @@ export default [
   {
     path: 'pricing',
     label: 'Pricing',
+  },
+  {
+    path: 'signup',
+    label: 'Sign Up',
   },
 
 ];

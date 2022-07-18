@@ -1,6 +1,16 @@
 
+import React, { useState } from "react"
+import { Container, Box, Grid, Text, Heading, Button, Image } from 'theme-ui';
 
-import { Container, Box, Heading, Text, Image, Button } from 'theme-ui';
+import SectionHeader from 'components/section-header';
+import SignupFeature from 'components/signup-feature';
+import Theme from '../theme';
+import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form';
+
+import RegisterFeature from 'components/register-feature';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 
   const ShapeLeft = '../assets/shape-left.png'
   const ShapeRight = '../assets/shape-right.png'
@@ -8,17 +18,55 @@ import { Container, Box, Heading, Text, Image, Button } from 'theme-ui';
 export default function Banner() {
   const BannerImg = '../assets/caret-banner-open.png'
 
-  
+  const router = useRouter()
+  const validationRequest = Yup.object().shape({
+    request: Yup.string()
+        .matches(/^[a-zA-Z-_\s]*$/, "Only Alpha characters, dash ( - ) and underscore ( _ ) are allowed.")
+        .min(4, 'Password must be at least 5 characters'),         
+    });
+
+  const formOptions = { resolver: yupResolver(validationRequest) };
+  const { register, handleSubmit, formState } = useForm(formOptions);
+  const { errors } = formState;
+
+  async function onSubmit(user) {
+    var rUpper = user.request.toUpperCase()
+
+    const item = rUpper
+    //console.log(item)
+    router.push(
+      {
+        pathname: '/purchase',
+        query: {data: item}   
+      }, '/purchase')
+      //},)        
+  }
+
   return (
-    <Box sx={styles.banner} id='home'>
+    <Box id='home' sx={styles.banner}>
       <Container sx={styles.banner.container} >
         <Box sx={styles.banner.contentBox} >
-          <Heading as="h2" variant='heroPrimary'>
-           Caret.Cloud
-          </Heading>
-          <Text as='p' variant='heroSecondary'>
-            The crypto wallet address reducer service
-          </Text>
+        <div>
+          
+              <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className ="card-body"> 
+                    <div>                
+                      <div className="form-group">
+                          <div className='text-4xl m-4'>Begin Your Journey</div>
+                            <div className='flex justify-center'>
+                              <div className='w-1/3'>
+                                <input name="request" type="text" placeholder="Choose Your Caret Word" {...register('request')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                              </div>
+                            </div>
+                          <div className="invalid-feedback">{errors.request?.message}</div>
+                      </div>
+                      <div>                                 
+                      <button type="submit" className ="btn btn-primary" id="caretCheck" >Check Availability</button>  
+                      </div>
+                    </div>                                       
+                  </div>
+              </form>                      
+        </div>
         </Box>
         <Box sx={styles.banner.imageBox}>
           <img src={BannerImg} alt='banner' />

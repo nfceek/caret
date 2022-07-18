@@ -88,10 +88,13 @@ export default function Signup() {
     }
  
     return (
-        <Box sx={{ variant : 'section.signup' }}>
+        <Box id='signup' sx={{ variant : 'section.signup' }}>
+
+
         <Container sx={styles.containerBox} >
-            <Box sx={styles.halfLBox} >
-            <SignupFeature subTitle={data.subTitle} />
+          
+          <Box sx={styles.halfLBox} >
+          <SignupFeature subTitle={data.subTitle} />
             <Grid sx={styles.grid}>
                 {data.features.map((feature, i) =>(
                 <Box sx={styles.card} key={feature.id}>
@@ -103,32 +106,40 @@ export default function Signup() {
                 </Box>
                 ))}
             </Grid>
-            </Box>
-            <Box sx={styles.halfRBox}>
-            <SignupFeature title={data.title} />
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className ="card-body"> 
-                    {loading === true ? 
-                      <div>                
-                        <div className="form-group">
-                            <label>Step 1: </label>
-                            <input name="request" type="text" placeholder="Choose Your Caret Word" {...register('request')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
-                            <div className="invalid-feedback">{errors.request?.message}</div>
-                        </div>
-                        <div>                                 
-                        <button type="submit" className ="btn btn-primary" id="caretCheck" >Check Availability</button>  
-                        </div>
-                      </div>
+          </Box>
+          
+          <Box sx={styles.halfRBox}>
+              <div className='grid grid-rows-3 grid-flow-col gap-4'>
+                <div>
+                  <div className='text-3xl'>Your Journey Begins HERE!</div>
+                  <div>
+                    <SignupFeature title={data.title} />
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <div className ="card-body"> 
+                            {loading === true ? 
+                              <div>                
+                                <div className="form-group">
+                                    <label>Step 1: </label>
+                                    <input name="request" type="text" placeholder="Choose Your Caret Word" {...register('request')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                                    <div className="invalid-feedback">{errors.request?.message}</div>
+                                </div>
+                                <div>                                 
+                                <button type="submit" className ="btn btn-primary" id="caretCheck" >Check Availability</button>  
+                                </div>
+                              </div>
+                            :
+                              <div>
+                                <div className='text-6xl '>Coming 7/7 @ 7 </div>
+                              </div>                    
+                            }                                       
+                            </div>
+                        </form>                      
+                  </div>
+                  <div></div>
+                </div>
+              </div>
+          </Box> 
 
-                    :
-                      <div>
-                        <div className='text-6xl '>Coming 7/7 @ 7 </div>
-                      </div>                    
-                    } 
-                                
-                    </div>
-                </form>
-            </Box>                       
         </Container>
         </Box>
   )
@@ -154,7 +165,7 @@ const styles = {
     display: ['none', null, null, null, null, 'inline-block'],
   },
   halfLBox: {
-    width: ['100%', null, null, 315, 390, 450, null, 500],
+    width: ['100%', null, null, 315, 390, 400, null, 350],
     flexShrink: 0,
     mb: [7, null, 60, 0],
     textAlign: ['center', null, null, 'left'],

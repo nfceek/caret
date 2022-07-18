@@ -89,26 +89,34 @@ export default {
       pb: ['90px', null, 9, null, null, 10, null, '165px'],
     },
     feature: {
-      pb: [8, null, 9, null, null, 10, null, '170px'],
+      pb: [8, null, 9, null, null, 10, null, '120px'],
     },
     news: {
-      pb: [8, null, 9, null, null, 10, null, '170px'],
+      pb: [8, null, 9, null, null, 10, null, '120px'],
     },
     coreFeature: {
-      pb: [8, null, 9, null, null, 10, null, '170px'],
+      pb: [8, null, 9, null, null, 10, null, '120px'],
       overflow: 'hidden',
     },
     testimonial: {
-      pt: [8, null, 8, '70px', null, 8, null, '145px'],
-      pb: ['90px', null, 9, null, null, 10, null, '190px'],
+      pt: [8, null, 8, '70px', null, 8, null, '125px'],
+      pb: ['90px', null, 9, null, null, 10, null, '120px'],
       overflow: 'hidden',
     },
     services: {
-      pb: ['90px', null, 9, null, null, 10, null, '150px'],
+      pb: ['90px', null, 9, null, null, 10, null, '120px'],
     },
     pricing: {
-      pt: [8, null, 9, null, null, 10, null, '180px'],
-      pb: ['90px', null, 9, null, null, 10, null, '180px'],
+      pt: [8, null, 9, null, null, 10, null, '120px'],
+      pb: ['90px', null, 9, null, null, 10, null, '50px'],
+    },
+    signup: {
+      pt: [8, null, 9, null, null, 10, null, '120px'],
+      pb: ['90px', null, 9, null, null, 10, null, '50px'],
+    },
+    caretfeature: {
+      pt: [8, null, 9, null, null, 10, null, '120px'],
+      pb: ['90px', null, 9, null, null, 10, null, '50px'],
     },
   },
   sectionHeader: {
@@ -127,7 +135,6 @@ export default {
       fontWeight: '700',
       letterSpacing: '-.5px',
     },
-
     subTitle: {
       fontSize: [0, '13px', null, '14px'],
       color: 'primary',
