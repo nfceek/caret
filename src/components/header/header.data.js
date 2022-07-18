@@ -5,7 +5,7 @@ export default [
   },
   {
     path: 'workflow',
-    label: 'Process Flow',
+    label: 'How It Works',
   }, 
   {
     path: 'pricing',

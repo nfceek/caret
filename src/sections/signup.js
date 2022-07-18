@@ -15,6 +15,7 @@ import * as Yup from 'yup';
 const shapePattern = '../assets/shape-pattern1.png';
 const Smart = '../assets/services/smart.svg';
 const Secure = '../assets/services/secure.svg';
+const instruct = '../assets/caret-instruct-001.png'
 const data = {
   subTitle: 'How it works',
   title: 'Create Your Caret',
@@ -88,65 +89,61 @@ export default function Signup() {
     }
  
     return (
-        <Box id='signup' sx={{ variant : 'section.signup' }}>
-
-
-        <Container sx={styles.containerBox} >
-          
-          <Box sx={styles.halfLBox} >
-          <SignupFeature subTitle={data.subTitle} />
-            <Grid sx={styles.grid}>
-                {data.features.map((feature, i) =>(
-                <Box sx={styles.card} key={feature.id}>
-                    <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
-                    <Box sx={styles.wrapper}>
-                    <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
-                    <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>
+      <div id='signup' >
+          <div className='grid grid-cols-2 grid-flow-col gap-4'> 
+            <div className='flex justify-center pl-5 '>
+              <Box sx={styles.halfLBox} >
+              <SignupFeature subTitle={data.subTitle} />
+                <Grid sx={styles.grid}>
+                    {data.features.map((feature, i) =>(
+                    <Box sx={styles.card} key={feature.id}>
+                        <Image src={feature.imgSrc} alt={feature.alttext} sx={styles.icon} />
+                        <Box sx={styles.wrapper}>
+                        <Heading sx={styles.wrapper.title}>{feature.title}</Heading>
+                        <Text sx={styles.wrapper.subTitle}>{feature.text}</Text>
+                        </Box>
                     </Box>
-                </Box>
-                ))}
-            </Grid>
-          </Box>
-          
-          <Box sx={styles.halfRBox}>
-              <div className='grid grid-rows-3 grid-flow-col gap-4'>
-                <div>
-                  <div className='text-3xl'>Your Journey Begins HERE!</div>
-                  <div>
-                    <SignupFeature title={data.title} />
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className ="card-body"> 
-                            {loading === true ? 
-                              <div>                
-                                <div className="form-group">
-                                    <label>Step 1: </label>
-                                    <input name="request" type="text" placeholder="Choose Your Caret Word" {...register('request')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
-                                    <div className="invalid-feedback">{errors.request?.message}</div>
+                    ))}
+                </Grid>
+              </Box>
+            </div><div> 
+              <Box sx={styles.halfRBox}>
+                  <div className='grid grid-rows-1 grid-flow-col gap-4 mb-10'>
+                    <div>
+                      <div className='text-3xl'>Your Journey Begins HERE!</div>
+                      <div className=' pb-6'>
+                        <SignupFeature title={data.title} />
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className ="card-body">    
+                                  <div>                
+                                    <div className="form-group">
+                                        <label>Step 1: </label>
+                                        <input name="request" type="text" placeholder="Choose Your Caret Word" {...register('request')} className={`form-control ${errors.firstName ? 'is-invalid' : ''}`} />
+                                        <div className="invalid-feedback">{errors.request?.message}</div>
+                                    </div>
+                                    <div>                                 
+                                    <button type="submit" className ="btn btn-primary" id="caretCheck" >Check Availability</button>  
+                                    </div>
+                                  </div>                                         
                                 </div>
-                                <div>                                 
-                                <button type="submit" className ="btn btn-primary" id="caretCheck" >Check Availability</button>  
-                                </div>
-                              </div>
-                            :
-                              <div>
-                                <div className='text-6xl '>Coming 7/7 @ 7 </div>
-                              </div>                    
-                            }                                       
-                            </div>
-                        </form>                      
+                            </form>                      
+                      </div>
+                      {/*<div className='pt-20 text2-xl'>3 Easy Steps</div>*/}
+                      <div className='pt-10'>
+                        <img src='../assets/caret-instruct-002.png' alt='howitworks' />
+                      </div>
+                    </div>
                   </div>
-                  <div></div>
-                </div>
-              </div>
-          </Box> 
+              </Box> 
+            </div>
+          </div> 
 
-        </Container>
-        </Box>
+      </div>
   )
 }
 
 const styles = {
-  coreFeature: {
+  signup: {
     py: [0, null, null, 2, null, 7],
     position: 'relative',
   },
@@ -167,13 +164,13 @@ const styles = {
   halfLBox: {
     width: ['100%', null, null, 315, 390, 400, null, 350],
     flexShrink: 0,
-    mb: [7, null, 60, 0],
+    mb: [7, null, 10, 0, 20],
     textAlign: ['center', null, null, 'left'],
   },
   halfRBox: {
     width: ['100%', null, null, 315, 390, 450, null, 500],
     flexShrink: 0,
-    mb: [7, null, 60, 0],
+    mb: [7, null, 10, 0, 20],
     textAlign: ['center', null, null, 'left'],
   },
   grid: {
@@ -217,21 +214,5 @@ const styles = {
       lineHeight: 1.9,
     },
   },
-  videoWrapper: {
-    maxWidth: '100%',
-    position: 'relative',
-    width: '900px',
-    '&:before': {
-      content: '""',
-      display: 'block',
-      paddingTop: '56.25%',
-    },
-    iframe: {
-      width: '100%',
-      height: '100%',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-    },
-  },
+
 };
