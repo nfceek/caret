@@ -33,7 +33,7 @@ const data = [
     alttext: 'You Rule',
     title: 'Become King of your crypto wallet Address',
     text:
-      'Go with a Pro or Premium Subscription and personalize your Caret Tag',
+      'Go with a Premium Subscription and personalize your Caret Tag',
   },
   {
     id: 4,

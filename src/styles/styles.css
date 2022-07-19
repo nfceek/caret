@@ -86,7 +86,18 @@
     min-height:180px;
   }
 
+#signup{
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
 
+.background-white{
+  background-color: white;
+}
+
+.background-coral{
+  background-color: cornsilk;
+}
 
   #selChain {
     width: 15ch;

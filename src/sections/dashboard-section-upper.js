@@ -76,7 +76,7 @@ export default function SectionUpper() {
   const [aAdminCount, setAAdminCount] = useState()
   const [aPendCount, setAPendCount] = useState()
   const [aUserCount, setAUserCount] = useState()
-
+  const [adminEdit, setAdminEdit] = useState(false)
   // sales section
   const[sFree, setSFree] = useState()
   const[sPro, setSPro] = useState()
@@ -438,6 +438,42 @@ export default function SectionUpper() {
     //return userUpdated
   }
 
+  async function loadCaretInfo(){
+
+  }
+
+  async function adminCaretInfo(data) { 
+    var formData = data
+    const response = await fetch(server + '/api/validate/preCarrotUserId', {
+      method: 'POST',
+      body:  [JSON.stringify(user.email)],
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const adminEmailInfoReturn = await response.json() 
+    //console.log(' return admin caret ' + JSON.stringify(stepOne))
+
+  }
+
+  async function loadUserInfo(){
+    bxUserInfo
+  }
+
+  async function adminEmailInfo(data) { 
+    var formData = data
+    const response = await fetch('/../api/acctGetUser', {
+      method: 'POST',
+      body: formData, 
+      headers: {
+        'Content-Type':'applications/json'
+      },
+    })
+    const adminUserInfoReturn = await response.json() 
+    //console.log(' return admin email ' + JSON.stringify(stepOne))
+
+  }
+
 
   function pageReset(type, data){  
     if(type === 'user'){
@@ -498,7 +534,6 @@ export default function SectionUpper() {
     }else{
       setAvatar('../assets/avatar/admin-med.png')
 
-      //console.log('active ' + stepOne.active + ' admin ' + stepOne.admin)
       // admin section
       const aCount = await adminAdminCount(stepOne.admin)
         setAAdminCount(aCount)
@@ -506,7 +541,6 @@ export default function SectionUpper() {
         setAUserCount(uCount)
       const pCount = await adminPendCount(stepOne.active)
         setAPendCount(pCount)
-      //console.log('returned active count: ' + aUserCount)
       //sales section
       const freeCount = await salesCount(1)
         setSFree(freeCount)
@@ -521,14 +555,12 @@ export default function SectionUpper() {
       const premPromoCount = await salesCount(6)
         setSPremPromo(premPromoCount)
 
-      setRollPro(sPro * 5)
-      setRollPrem(sPrem * 20)
-
-      setRollTotal(rollPro + rollPrem)
-
-      setRollPaid(sPro + sPrem)
-      
-      setRollPromo(sFree + sPromo + sProPromo + sPremPromo)
+      console.log(' free ' + sFree +' pro ' + sPro +' prem ' + sPrem +' promo ' + sPromo +' proPromo ' + sProPromo +' premPromo ' + sPremPromo)
+      setRollPro(parseInt(sPro) * 5)
+      setRollPrem(parseInt(sPrem) * 20)
+      setRollTotal(parseInt(rollPro) + parseInt(rollPrem))
+      setRollPaid(parseInt(sPro) + parseInt(sPrem))
+      setRollPromo(parseInt(sFree) + parseInt(sPromo) + parseInt(sProPromo) + parseInt(sPremPromo))
 
     }
 
@@ -653,6 +685,7 @@ export default function SectionUpper() {
       },
   })
     const AdminCount = await response.json() 
+    console.log(' adminCount ' + JSON.stringify(AdminCount))
     return AdminCount
   }
 
@@ -700,10 +733,10 @@ export default function SectionUpper() {
 
   return (
     <div id='bxDash' className='block align-center'>
-      <div id='blkDash' className='block align-center'>   
+      <div id='blkDash' className={adminEdit === false ? 'background-white' : 'background-coral'}>   
 
-        <div id='blkUserInfo' className='block'>
-          <div id='bxUserInfo' className='text-center text-6xl font-bold'>{uname} Dashboard</div>
+        <div id='blkUserInfo'>
+          <div id='bxUserLeader' className='text-center text-6xl font-bold '>{uname} Dashboard</div>
           <div className='block align-center'>
             <div className='flex display-inline justify-center'>
               <div className='block justify-center'>
