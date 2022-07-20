@@ -23,7 +23,7 @@ function CustomApp({ Component, pageProps }) {
   
   return (
     <>
-{/*
+{/*}
     <div className="container">  
 
       <Script
@@ -39,9 +39,9 @@ function CustomApp({ Component, pageProps }) {
           gtag('config', 'G-9SCR547G1J');
         `}
       </Script>
-
+ 
     </div>
-  */}    
+   */} 
       <Component {...pageProps} />
     </>
   );
