@@ -16,7 +16,7 @@ projectSecret.js
 stripeId.js
 stripeSecret.js
 
-seo.js
+src/components/seo.js
 
 /out
 /prisma
