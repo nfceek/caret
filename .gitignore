@@ -16,7 +16,6 @@ projectSecret.js
 stripeId.js
 stripeSecret.js
 
-src/components/seo.js
 
 /out
 /prisma
@@ -61,3 +60,4 @@ package-lock.json
 package.json
 BingSiteAuth.xml
 package-lock.json
+src/components/seo.js
