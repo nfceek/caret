@@ -45,22 +45,27 @@ export default function SectionUpper() {
   const [userWalletEmail, setUserWalletEmail] = useState(false)
   const [userWallet2Email, setUserWallet2Email] = useState(false)
   const [userWallet3Email, setUserWallet3Email] = useState(false)
+
   //form
-  const [fmAvatar, setFmAvatar] = useState('')
-  const [fmUserName, setFmUserName] = useState('')
-  const [fmFirstName, setFmFirstName] = useState('')
-  const [fmLastName, setFmLastName] = useState('')
-  const [fmPlan, setFmPlan] = useState('')
   const [account, setAccount] = useState()
   const [account2, setAccount2] = useState()
   const [account3, setAccount3] = useState()
   const [chain, setChain] = useState()
   const [chain2, setChain2] = useState()
   const [chain3, setChain3] = useState()
+  const [fmAvatar, setFmAvatar] = useState('')
+  const [fmUserName, setFmUserName] = useState('')
+  const [fmFirstName, setFmFirstName] = useState('')
+  const [fmLastName, setFmLastName] = useState('')
+  const [fmPlan, setFmPlan] = useState('')
   const [fmPassword, setFmPassword] = useState('')
   const [fmPwdConfirm, setFmPwdConfirm] = useState('')
+  const [fmEmail, setFmEmail] = useState('')
+  const [fmCaretName, setFmCaretName] = useState('')
 
-
+  //update form
+  const [isEmail, setIsEmail] = useState(false)
+  const [isCaretName, setIsCaretName] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
   const [userIn, setUserIn] = useState(0) 
   const [loading, setLoading] = useState(false)
@@ -77,6 +82,7 @@ export default function SectionUpper() {
   const [aPendCount, setAPendCount] = useState()
   const [aUserCount, setAUserCount] = useState()
   const [adminEdit, setAdminEdit] = useState(false)
+  
   // sales section
   const[sFree, setSFree] = useState()
   const[sPro, setSPro] = useState()
@@ -84,13 +90,69 @@ export default function SectionUpper() {
   const[sPromo, setSPromo] = useState()
   const[sProPromo, setSProPromo] = useState()
   const[sPremPromo, setSPremPromo] = useState()
-  // rollups
   
+  // rollups
   const[rollPro, setRollPro] = useState()
   const[rollPrem, setRollPrem] = useState()
   const[rollTotal, setRollTotal] = useState()
   const[rollPaid, setRollPaid] = useState()
   const[rollPromo, setRollPromo] = useState()
+
+// admin update user in
+  const [auuId, setAuuId] = useState()
+  const [auuFkword, setAuuFkword] = useState()
+  const [auuFkwallet, setAuuFkwallet] = useState()
+  const [auuBurned, setAuuBurned] = useState()
+  const [auuEmail, setAuuEmail] = useState()
+  const [auuFirstname, setAuuFirstname] = useState()
+  const [auuLastname, setAuuLastname] = useState()
+  const [auuUsername, setAuuUsername] = useState()
+  const [auuActive, setAuuActive] = useState()
+  const [auuCaret, setAuuCaret] = useState()
+  const [auuAvatar, setAuuAvatar] = useState()
+  const [auuPassword, setAuuPassword] = useState()
+  const [auuPlan, setAuuPlan] = useState()
+  const [auuAdmin, setAuuAdmin] = useState()
+  const [auuLevel, setAuuLevel] = useState()
+  const [auuChain, setAuuChain] = useState()
+  const [auuAccount, setAuuAccount] = useState()
+  const [auuFkword2, setAuuFkword2] = useState()
+  const [auuCaret2, setAuuCaret2] = useState()
+  const [auuChain2, setAuuChain2] = useState()
+  const [auuAccount2, setAuuAccount2] = useState()
+  const [auuFkword3, setAuuFkword3] = useState()
+  const [auuCaret3, setAuuCaret3] = useState()
+  const [auuChain3, setAuuChain3] = useState()
+  const [auuAccount3, setAuuAccount3] = useState()
+  const [auuJoindate, setAuuJoindate] = useState()
+
+// admin update user out for update
+  const [anuId, setAnuId] = useState()
+  const [anuFkword, setAnuFkword] = useState()
+  const [anuFkwallet, setAnuFkwallet] = useState()
+  const [anuBurned, setAnuBurned] = useState()
+  const [anuEmail, setAnuEmail] = useState()
+  const [anuFirstname, setAnuFirstname] = useState()
+  const [anuLastname, setAnuLastname] = useState()
+  const [anuUsername, setAnuUsername] = useState()
+  const [anuActive, setAnuActive] = useState()
+  const [anuCaret, setAnuCaret] = useState()
+  const [anuAvatar, setAnuAvatar] = useState()
+  const [anuPassword, setAnuPassword] = useState()
+  const [anuPlan, setAnuPlan] = useState()
+  const [anuAdmin, setAnuAdmin] = useState()
+  const [anuLevel, setAnuLevel] = useState()
+  const [anuChain, setAnuChain] = useState()
+  const [anuAccount, setAnuAccount] = useState()
+  const [anuFkword2, setAnuFkword2] = useState()
+  const [anuCaret2, setAnuCaret2] = useState()
+  const [anuChain2, setAnuChain2] = useState()
+  const [anuAccount2, setAnuAccount2] = useState()
+  const [anuFkword3, setAnuFkword3] = useState()
+  const [anuCaret3, setAnuCaret3] = useState()
+  const [anuChain3, setAnuChain3] = useState()
+  const [anuAccount3, setAnuAccount3] = useState()
+  const [anuJoindate, setAnuJoindate] = useState()
 
   const router = useRouter()
 
@@ -136,6 +198,8 @@ export default function SectionUpper() {
   
   function cancelAInfo(){
     setAUpdate(false)
+    setIsEmail(false)
+    setIsCaretName(false)
   }
 
   async function updateAInfo(user){
@@ -439,39 +503,114 @@ export default function SectionUpper() {
   }
 
   async function loadCaretInfo(){
-
+    if(fmCaretName === '' || fmCaretName === null){
+      console.log('err')
+    }else{
+      adminCaretInfo(fmCaretName)
+    }
   }
 
   async function adminCaretInfo(data) { 
     var formData = data
-    const response = await fetch(server + '/api/validate/preCarrotUserId', {
+    const response = await fetch('/../api/users/loadCaret', {
       method: 'POST',
-      body:  [JSON.stringify(user.email)],
+      body: formData,
       headers: {
       'Content-Type':'applications/json'
       },
   })
-    const adminEmailInfoReturn = await response.json() 
-    //console.log(' return admin caret ' + JSON.stringify(stepOne))
+    const adminCaretInfoReturn = await response.json() 
+    console.log(' return admin caret ' + JSON.stringify(adminCaretInfoReturn))
 
+    setIsCaretName(true)
   }
 
-  async function loadUserInfo(){
-    bxUserInfo
+  async function loadUserInfo(){   
+    if(fmEmail === '' || fmEmail === null){
+      console.log('err')
+    }else{
+      adminEmailInfo(fmEmail)
+    }
   }
 
   async function adminEmailInfo(data) { 
     var formData = data
-    const response = await fetch('/../api/acctGetUser', {
+    const response = await fetch('/../api/users/loadEmail', {
       method: 'POST',
       body: formData, 
       headers: {
         'Content-Type':'applications/json'
       },
     })
+    
     const adminUserInfoReturn = await response.json() 
-    //console.log(' return admin email ' + JSON.stringify(stepOne))
+    console.log(' return admin email ' + JSON.stringify(adminUserInfoReturn))
+    setIsEmail(true)
 
+    loadAdminEditUser(adminUserInfoReturn)    
+  }
+
+  function loadAdminEditUser(data){
+    console.log(JSON.stringify(data))
+    setAuuId(data.id)
+    setAuuFkword(data.fkword)
+    setAuuFkwallet(data.fkwallet)
+    setAuuBurned(data.burned)
+    setAuuEmail(data.email)
+    setAuuFirstname(data.firstname)
+    setAuuLastname(data.lastname)
+    setAuuUsername(data.username)
+    setAuuActive(data.active)
+    setAuuCaret(data.caret)
+    setAuuAvatar(data.avatar)
+    setAuuPassword(data.password)
+    setAuuPlan(data.plan)
+    setAuuAdmin(data.admin)
+    setAuuLevel(data.level)
+    setAuuChain(data.chain)
+    setAuuAccount(data.account)
+    setAuuFkword2(data.fkword2)
+    setAuuCaret2(data.caret2)
+    setAuuChain2(data.chain2)
+    setAuuAccount2(data.account2)
+    setAuuFkword3(data.fkword3)
+    setAuuCaret3(data.caret3)
+    setAuuChain3(data.chain3)
+    setAuuAccount3(data.account3)
+    setAuuJoindate(data.join_date)
+
+    /*
+    var auuUpdateUser = []
+    
+    auuUpdateUser.push(data.id)
+    auuUpdateUser.push(data.fkword)
+    auuUpdateUser.push(data.fkwallet)
+    auuUpdateUser.push(data.burned)
+    auuUpdateUser.push(data.email)
+    auuUpdateUser.push(data.firstname)
+    auuUpdateUser.push(data.lastname)
+    auuUpdateUser.push(data.username)
+    auuUpdateUser.push(data.active)
+    auuUpdateUser.push(data.caret)
+    auuUpdateUser.push(data.avatar)
+    auuUpdateUser.push(data.password)
+    auuUpdateUser.push(data.plan)
+    auuUpdateUser.push(data.admin)
+    auuUpdateUser.push(data.level)
+    auuUpdateUser.push(data.chain)
+    auuUpdateUser.push(data.account)
+    auuUpdateUser.push(data.fkword2)
+    auuUpdateUser.push(data.caret2)
+    auuUpdateUser.push(data.chain2)
+    auuUpdateUser.push(data.account2)
+    auuUpdateUser.push(data.fkword3)
+    auuUpdateUser.push(data.caret3)
+    auuUpdateUser.push(data.chain3)
+    auuUpdateUser.push(data.account3)
+    auuUpdateUser.push(data.join_date)
+
+    console.log(JSON.stringify(auuUpdateUser))
+    */
   }
 
 
@@ -555,7 +694,7 @@ export default function SectionUpper() {
       const premPromoCount = await salesCount(6)
         setSPremPromo(premPromoCount)
 
-      console.log(' free ' + sFree +' pro ' + sPro +' prem ' + sPrem +' promo ' + sPromo +' proPromo ' + sProPromo +' premPromo ' + sPremPromo)
+      //console.log(' free ' + sFree +' pro ' + sPro +' prem ' + sPrem +' promo ' + sPromo +' proPromo ' + sProPromo +' premPromo ' + sPremPromo)
       setRollPro(parseInt(sPro) * 5)
       setRollPrem(parseInt(sPrem) * 20)
       setRollTotal(parseInt(rollPro) + parseInt(rollPrem))
@@ -642,7 +781,7 @@ export default function SectionUpper() {
     }
 
     setPlan(stepOne.plan)
-    console.log(' plan ' + stepOne.plan)
+    //console.log(' plan ' + stepOne.plan)
     if(stepOne.plan === 99){
       setPremPlan(true)
       setDataPlan('Admin')
@@ -685,7 +824,7 @@ export default function SectionUpper() {
       },
   })
     const AdminCount = await response.json() 
-    console.log(' adminCount ' + JSON.stringify(AdminCount))
+    //console.log(' adminCount ' + JSON.stringify(AdminCount))
     return AdminCount
   }
 
@@ -792,8 +931,8 @@ export default function SectionUpper() {
                     <div className='flex display-inline justify-left'>                   
                       <div className='text-right w-48 mt-2 pt-2'>Update User: </div>                                  
                         <div className=''>
-                          <input name="updateUser" type="text" placeholder=' enter Email ' 
-                            className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                          <input name="updateUser" type="text" placeholder=' enter Email ' value={fmEmail} 
+                            onChange={(e) => {setFmEmail(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
                         </div>
                         <div className='text-left ml-4 w-48 mt-2'>
                           <button id='btnUserInfo' disabled={loading} 
@@ -804,8 +943,8 @@ export default function SectionUpper() {
                     <div className='flex display-inline justify-left'>                   
                       <div className='text-right w-48 mt-2 pt-2'>Update Caret: </div>                                  
                         <div className=''>
-                          <input name="updateUser" type="text" placeholder=' enter Caret ' 
-                            className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                          <input name="updateUser" type="text" placeholder=' enter Caret ' value={fmCaretName} 
+                            onChange={(e) => {setFmCaretName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
                         </div>
                         <div className='text-left ml-4 w-48 mt-2'>
                           <button id='btnCaretInfo' disabled={loading} 
@@ -813,7 +952,282 @@ export default function SectionUpper() {
                             onClick={() => {loadCaretInfo()}}>Load Caret</button>
                       </div>                  
                     </div>
-                    <div className='flex display-inline justify-right m-6 '>
+                    <div className='flex display-inline justify-left'>  
+
+                      {isEmail === true &&
+                        <div>
+                          <div className='primaryCaret border border-gray-200 m-2 px-6 pb-6 pt-6'>
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Id: </div>                                       
+                              <div className=''>
+                                <input name="auuId" type="text" text={auuId} 
+                                placeholder={auuId} value={anuId} 
+                                onChange={(e) => { setAnuId(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Fkword: </div>                                       
+                              <div className=''>
+                                <input name="auuFkword" type="text" text={auuFkword} 
+                                placeholder={auuFkword} value={anuFkword} 
+                                onChange={(e) => { setAnuFkword(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Fkwallet: </div>                                       
+                              <div className=''>
+                                <input name="auuFkwallet" type="text" text={auuFkwallet} 
+                                placeholder={auuFkwallet} value={anuFkwallet} 
+                                onChange={(e) => {setAnuFkwallet(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Burned : </div>
+                              <div  className="flex display-inline ml-6 mt-2">
+                                <input type="radio" className='ml-4 mr-4 ' checked={auuBurned === 1} value="Yes" name="auuBurned" onClick={() => {setAnuBurned(true)}}  />&nbsp;Yes
+                                <div className='ml-4 text-sm'> </div>
+                                <input type="radio" className='l-4' value="No" checked={auuBurned === 0} name="auuBurned" onClick={() => {setAnuBurned(false)}} />&nbsp;No
+                              </div>
+                            </div> 
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Email: </div>                                       
+                              <div className=''>
+                                <input name="auuEmail" type="text" text={auuEmail} 
+                                placeholder={auuEmail} value={anuEmail} 
+                                onChange={(e) => {setAnuEmail(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>First Name: </div>                                       
+                              <div className=''>
+                                <input name="auuFirstname" type="text" text={auuFirstname} 
+                                placeholder={auuFirstname} value={anuFirstname} 
+                                onChange={(e) => {setAnuFirstname(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Last Name: </div>                                       
+                              <div className=''>
+                                <input name="auuLastname" type="text" text={auuLastname} 
+                                placeholder={auuLastname} value={anuLastname} 
+                                onChange={(e) => {setAnuLastname(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Username: </div>                                       
+                              <div className=''>
+                                <input name="auuUsername" type="text" text={auuUsername} 
+                                placeholder={auuUsername} value={anuUsername} 
+                                onChange={(e) => {setAnuUsername(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Active : </div>
+                              <div  className="flex display-inline ml-6 mt-2">
+                              <input type="radio" className='ml-4 mr-4 ' checked={auuActive === 1} value="Yes" name="auuActive" onClick={() => {setAnuActive(true)}}  />&nbsp;Yes
+                              <div className='ml-4 text-sm'> </div>
+                              <input type="radio" className='l-4' value="No" checked={auuActive === 0} name="auuActive" onClick={() => {setAnuActive(false)}} />&nbsp;No
+                              </div>
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Avatar: </div>                                       
+                              <div className=''>
+                                <input name="auuAvatar" type="text" text={auuAvatar} 
+                                placeholder={auuAvatar} value={anuAvatar} 
+                                onChange={(e) => {setAnuAvatar(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Password: </div>                                       
+                              <div className=''>
+                                <input name="auuPassword" type="password" text={auuPassword} 
+                                placeholder={auuPassword} value={anuPassword} 
+                                onChange={(e) => {setAnuPassword(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Plan: </div>                                       
+                              <div className=''>
+                                <input name="auuPlan" type="text" text={auuPlan} 
+                                placeholder={auuPlan} value={anuPlan} 
+                                onChange={(e) => {setAnuPlan(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Admin : </div>
+                              <div  className="flex display-inline ml-6 mt-2">
+                              <input type="radio" className='ml-4 mr-4 ' checked={auuAdmin === true} value="Yes" name="auuAdmin" onClick={() => {setAnuAdmin(true)}}  />&nbsp;Yes
+                              <div className='ml-4 text-sm'> </div>
+                              <input type="radio" className='l-4' value="No" checked={auuAdmin === false} name="auuAdmin" onClick={() => {setAnuAdmin(false)}} />&nbsp;No
+                              </div>
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Caret: </div>                                       
+                              <div className=''>
+                                <input name="auuCaret" type="text" text={auuCaret} 
+                                placeholder={auuCaret} value={anuCaret} 
+                                onChange={(e) => {setAnuCaret(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Level: </div>                                       
+                              <div className=''>
+                                <input name="auuLevel" type="text" text={auuLevel} 
+                                placeholder={auuLevel} value={anuLevel} 
+                                onChange={(e) => {setAnuLevel(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Chain: </div>                                       
+                              <div className=''>
+                                <input name="auuChain" type="text" text={auuChain} 
+                                placeholder={auuChain} value={anuChain} 
+                                onChange={(e) => {setAnuChain(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Account: </div>                                       
+                              <div className=''>
+                                <input name="auuAccount" type="text" text={auuAccount} 
+                                placeholder={auuAccount} value={anuAccount} 
+                                onChange={(e) => {setAnuAccount(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Fkword2: </div>                                       
+                              <div className=''>
+                              <input name="auuFkword2" type="text" text={auuFkword2} 
+                              placeholder={auuFkword2} value={anuFkword2} 
+                              onChange={(e) => { setAnuFkword2(e.target.value); }} 
+                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Caret2: </div>                                       
+                              <div className=''>
+                              <input name="auuCaret2" type="text" text={auuCaret2} 
+                              placeholder={auuCaret2} value={anuCaret2} 
+                              onChange={(e) => {setAnuCaret2(e.target.value); }} 
+                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Chain2: </div>                                       
+                              <div className=''>
+                                <input name="auuChain2" type="text" text={auuChain2} 
+                                placeholder={auuChain2} value={anuChain2} 
+                                onChange={(e) => {setAnuChain(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Account2: </div>                                       
+                              <div className=''>
+                                <input name="auuAccount2" type="text" text={auuAccount2} 
+                                placeholder={auuAccount2} value={anuAccount2} 
+                                onChange={(e) => {setAnuAccount2(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Fkword3: </div>                                       
+                              <div className=''>
+                              <input name="auuFkword3" type="text" text={auuFkword3} 
+                              placeholder={auuFkword3} value={anuFkword3} 
+                              onChange={(e) => { setAnuFkword3(e.target.value); }} 
+                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Caret3: </div>                                       
+                              <div className=''>
+                              <input name="auuCaret3" type="text" text={auuCaret3} 
+                              placeholder={auuCaret3} value={anuCaret3} 
+                              onChange={(e) => {setAnuCaret3(e.target.value); }} 
+                              className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Chain3: </div>                                       
+                              <div className=''>
+                                <input name="auuChain3" type="text" text={auuChain3} 
+                                placeholder={auuChain3} value={anuChain3} 
+                                onChange={(e) => {setAnuChain3(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Account3: </div>                                       
+                              <div className=''>
+                                <input name="auuAccount3" type="text" text={auuAccount3} 
+                                placeholder={auuAccount3} value={anuAccount3} 
+                                onChange={(e) => {setAnuAccount3(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                            <div className='flex display-inline justify-left'>
+                              <div className='text-right w-48 mt-2'>Join Date: </div>                                       
+                              <div className=''>
+                                <input name="auuJoindate" type="text" text={auuJoindate} 
+                                placeholder={auuJoindate} value={anuJoindate} 
+                                onChange={(e) => {setAnuJoindate(e.target.value); }} 
+                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                              </div>                 
+                            </div>
+
+                          </div>
+                        </div>                 
+                      }
+                      {isCaretName === true &&
+                        <div>
+                          <div className='primaryCaret border border-gray-200 m-2 px-6 pb-6 pt-6'>
+                              and Gentettes
+
+                          </div>
+                        </div>                     
+                      }
+                    </div>
+
+                    <div className='flex display-inline justify-center m-6 '>
                       <div className='text-right w-48 mt-2'>
                         <button id='btnACancel' disabled={loading} 
                           className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"

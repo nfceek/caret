@@ -49,10 +49,12 @@ export default function SEO({
       {metaData.map(({ name, content }, i) => (
         <meta key={i} name={name} content={content} />
       ))}
+      {/*}
       <Script src="https://www.googletagmanager.com/gtag/js?id=G-9SCR547G1J" strategy="afterInteractive" />
       <Script id="google-analytics" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];function gtag(){window.dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-9SCR547G1J');`}
       </Script>
+      */}
     </Head>
   );
 }
