@@ -8,9 +8,7 @@ export default async(req, res) => {
         let email = dataArr[0]
         let pChain = dataArr[1] 
         let pAccount = dataArr[2]
-        let pCaret2 = dataArr[3]
      
-
         const curDate = new Date().toISOString()
 
     const response = await prisma.user.updateMany({
@@ -18,10 +16,9 @@ export default async(req, res) => {
             email: email,
            },        
         data: {
+            fkword: 1,
             chain: pChain,
             account: pAccount,
-
-
             dateupdated: curDate,
         }, 
    

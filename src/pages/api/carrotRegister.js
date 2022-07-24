@@ -4,39 +4,41 @@ export default async(req, res) => {
     //console.log('auto generated ')
     const inData = req.body
     var dataArr = inData.split(',');
-        let email = dataArr[0] 
-            email = email.replace(/['"]+/g, '');
-        let uname = dataArr[1] 
-            uname = uname.replace(/['"]+/g, '');
-        let pwd = dataArr[2]
-            pwd =  pwd.replace(/['"]+/g, '');             
-        let chain = dataArr[3]
-            chain =  chain.replace(/['"]+/g, '');                     
-        let acct = dataArr[4]
-            acct = acct.replace(/['"]+/g, '');
-        let plan = dataArr[5]
-            plan = plan.replace(/['"]+/g, '');              
+        let emailIn = dataArr[0] 
+            emailIn = emailIn.replace(/['"]+/g, '');
+        let unameIn = dataArr[1] 
+            unameIn = unameIn.replace(/['"]+/g, '');
+        let pwdIn = dataArr[2]
+            pwdIn =  pwdIn.replace(/['"]+/g, '');             
+        let chainIn = dataArr[3]
+            chainIn =  chainIn.replace(/['"]+/g, '');                     
+        let acctIn = dataArr[4]
+            acctIn = acctIn.replace(/['"]+/g, '');
+        let planIn = dataArr[5]
+            planIn = planIn.replace(/['"]+/g, '');
+        let fkwordIn = dataArr[6]
+            fkwordIn = fkwordIn.replace(/['"]+/g, '');              
     const curDate = new Date().toISOString()
 
     const response = await prisma.user.create({
         data: {
-            fkword: 0,
+            fkword: parseInt(fkwordIn),
             fkwallet: 0,
             burned: 0,
             firstname: '',
             lastname: '',
-            username: uname,
+            username: unameIn,
             active: 0,
-            password: pwd,           
-            plan: parseInt(plan),
+            password: pwdIn,           
+            plan: parseInt(planIn),
             admin: false,
             level: 1,
-            email: email, 
-            chain: chain,
-            account: acct,    
+            email: emailIn, 
+            chain: chainIn,
+            account: acctIn,    
             join_date: curDate,
             dateupdated: curDate,
-            caret: uname, 
+            caret: unameIn, 
             avatar: '', 
             fkword2: 0,
             caret2: '', 

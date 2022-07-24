@@ -19,6 +19,7 @@ export default async(req, res) => {
         let pendIn = parseInt(dataArr[13])
         let soldIn = parseInt(dataArr[14])
         let promoIn = dataArr[15]
+        let ipfsIn = dataArr[16]
         const curDate = new Date().toISOString()
     
     const response = await prisma.carrots.create({
@@ -36,7 +37,7 @@ export default async(req, res) => {
             price: priceIn,
             promo: promoIn,
             cid: cidIn, 
-            ipfs: '0',
+            ipfs: ipfsIn,
             cidw: '',
             sitepublickey: spubkeyIn,
             siteprivatekey: sprvkeyIn,

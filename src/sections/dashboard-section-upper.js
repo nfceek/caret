@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { FcLock } from 'react-icons/fc';
+
 const bcrypt = require('bcryptjs');
 
 export default function SectionUpper() {
@@ -16,14 +18,26 @@ export default function SectionUpper() {
   const [caret, setCaret] = useState()
   const [caret2, setCaret2] = useState()
   const [caret3, setCaret3] = useState()
-
-  const [primaryChain, setPrimaryChain] = useState('');
-  const [secondChain, setSecondChain] = useState('');
-  const [thirdChain, setThirdChain] = useState('');
-  const [primaryWallet, setPrimaryWallet] = useState() 
+  const [fkword, setFkword] = useState()
+  const [fkword2, setFkword2] = useState()
+  const [fkword3, setFkword3] = useState()
+  const [primaryIpfs, setPrimaryIpfs] = useState('FALSE')
+  const [secondIpfs, setSecondIpfs] = useState('FALSE')
+  const [thirdIpfs, setThirdIpfs] = useState('FALSE')
+  const [primaryChain, setPrimaryChain] = useState('')
+  const [secondChain, setSecondChain] = useState('')
+  const [thirdChain, setThirdChain] = useState('')
+  const [chLoaded, setChLoaded] = useState(true)
+  const [chLoaded2, setChLoaded2] = useState(true)
+  const [chLoaded3, setChLoaded3] = useState(true)  
+  const [primaryWallet, setPrimaryWallet] = useState('') 
   const [primaryWalletIsSet, setPrimaryWalletIsSet] = useState(true) 
-  const [secondWallet, setSecondWallet] = useState('')  
-  const [thirdWallet, setThirdWallet] = useState('')
+  const [secondWallet, setSecondWallet] = useState('') 
+  const [preventWallet2, setPreventWallet2] = useState(false) 
+  const [secondWalletIsSet, setSecondWalletIsSet] = useState(false)
+  const [thirdWallet, setThirdWallet] = useState('')  
+  const [preventWallet3, setPreventWallet3] = useState(false)
+  const [thirdWalletIsSet, setThirdWalletIsSet] = useState(false)
 
   const [plan, setPlan] = useState()
   const [dataPlan, setDataPlan] = useState()
@@ -155,6 +169,7 @@ export default function SectionUpper() {
   const [anuJoindate, setAnuJoindate] = useState()
 
   const router = useRouter()
+  var secureKeys=['']
 
   useEffect(() => {
     var item = localStorage.getItem('caret')
@@ -221,11 +236,12 @@ export default function SectionUpper() {
     var cFname = ''
     var cLname = ''
     var cEmail = email
-
+    /*
     console.log('updateUser data ' + JSON.stringify(user))
     console.log(' avatar ' + avatar + ' avatarNu '+ fmAvatar)    
     console.log('user ' + uname + ' fname ' + fname + ' lname ' + lname)
     console.log('userNu ' + fmUserName + ' fnameNu ' + fmFirstName + ' lnameNu ' + fmLastName)
+    */
     if(fmAvatar === '' || avatar === fmAvatar){
       cAvatar = avatar
     }else{
@@ -257,7 +273,7 @@ export default function SectionUpper() {
     cUpdateUser.push(cLname)
     cUpdateUser.push(cEmail)    
 
-    console.log(JSON.stringify(cUpdateUser))
+    //console.log(JSON.stringify(cUpdateUser))
 
     const uUsersInfo = await updateUsersInfo(cUpdateUser)
 
@@ -266,7 +282,7 @@ export default function SectionUpper() {
 
   async function updateUsersInfo(data){
     var formData = data
-    console.log(' userUpdate ' + JSON.stringify(data))
+    //console.log(' userUpdate ' + JSON.stringify(data))
     const response = await fetch('/../api/users/updateInfo', {
       method: 'POST',
       body: formData,
@@ -292,7 +308,7 @@ export default function SectionUpper() {
   }
 
   async function updatePwdInfo(user){
-    console.log(' pwd ' + pname + ' curPwd ' + oldPwd + ' newPwd ' + newPwd + ' newConfirmPwd ' + newConfirmPwd)
+    //console.log(' pwd ' + pname + ' curPwd ' + oldPwd + ' newPwd ' + newPwd + ' newConfirmPwd ' + newConfirmPwd)
       
     if(oldPwd !== undefined || oldPwd === ''){
       if (!(bcrypt.compareSync(oldPwd, pname))) {
@@ -303,14 +319,14 @@ export default function SectionUpper() {
     }
 
     if(newPwd !== undefined || newConfirmPwd !== undefined || newPwd === '' || newConfirmPwd === ''){
-      console.log(' new Pwd ' + newPwd + ' conf Pwd ' + newConfirmPwd)
+      //console.log(' new Pwd ' + newPwd + ' conf Pwd ' + newConfirmPwd)
       if (newPwd !== newConfirmPwd) {
         setNewPwdError(true)
       }else{
         setNewPwdError(false)
       }  
     
-    console.log(' old Error' + oldPwdError + ' new Erro ' + newPwdError)
+    //console.log(' old Error' + oldPwdError + ' new Erro ' + newPwdError)
 
 
     if(newPwd === newConfirmPwd){
@@ -320,7 +336,7 @@ export default function SectionUpper() {
       cUpdatePwd.push(email)
       cUpdatePwd.push(cPwd) 
   
-      console.log('I passed ' + JSON.stringify(cUpdatePwd))
+      //console.log('I passed ' + JSON.stringify(cUpdatePwd))
       setOldPwd('')
       setNewPwd('')
       setNewConfirmPwd('')
@@ -335,7 +351,7 @@ export default function SectionUpper() {
 
   async function updatePasswordInfo(data){
     var formData = data
-    console.log(' userUpdate ' + JSON.stringify(data))
+    //console.log(' userUpdate ' + JSON.stringify(data))
     const response = await fetch('/../api/users/updatePwd', {
       method: 'POST',
       body: formData,
@@ -357,10 +373,12 @@ export default function SectionUpper() {
   }
 
   async function updateWInfo(user){
-    console.log('wallet prime: ' + primaryWallet + ' chain ' + primaryChain)
+    preKeys()
+
     var cEmail = email  
-    var cChain = ''
-    var cWallet = ''
+    var cChain = chain
+    var cWallet = primaryWallet
+    var cWord = caret
 
     if(chain === '' || primaryChain === chain){
       cChain = primaryChain
@@ -381,18 +399,43 @@ export default function SectionUpper() {
     cUpdateUser.push(cEmail)
     cUpdateUser.push(cChain)
     cUpdateUser.push(cWallet)
-    //console.log(JSON.stringify(cUpdateUser))
+
+    var cSitepublickey = secureKeys[0]
+    var cSiteprivatekey = secureKeys[1]
+    var cPublickey = secureKeys[2]
+    var cPrivkey = secureKeys[3]
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var setTime = date + '-' + time;
+    var cidWallet = '_' + cChain +  ':' + cWallet
+    var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
+
+    var cUpdateWord = []
+    cUpdateWord.push(cWord)
+    cUpdateWord.push(cCid)    
+    cUpdateWord.push(cSitepublickey)   
+    cUpdateWord.push(cSiteprivatekey)
+    cUpdateWord.push(cPublickey)
+    cUpdateWord.push(cPrivkey)
+    //console.log('prime carrot update ' + JSON.stringify(cUpdateWord))
+    
     
     setWUpdate(false)
     var type = 'wallet1'
     var data = '1'    
+    const carrotUpdate = await updateCarrotInfo(type, cUpdateWord)
     const walletUpdate = await updateWalletInfo(type, cUpdateUser)
-      pageReset(type, data)
-  }  
+    pageReset(type, data)
+  } 
+  
+  async function updateWWord(type, data){
+
+  }
 
   // wallet 2 updating
   function editW2Info(){
-    console.log('secondwallet: ' + secondWallet + ' secondchain ' + secondChain)
+    //console.log('secondwallet: ' + secondWallet + ' secondchain ' + secondChain)
     setW2Update(true)
   }
   
@@ -401,37 +444,71 @@ export default function SectionUpper() {
   }
 
   async function updateW2Info(user){
-    console.log('secondwallet: ' + secondWallet + ' secondchain ' + secondChain)
+    preKeys()
+    
     var cEmail = email  
-    var cChain = ''
-    var cWallet = ''
+    var cChain2 = ''
+    var cWallet2 = ''
+    var cWord = caret + '2'
+    var cAppend = 2
+    var cPromo = 'PremCaret2'
 
     if(chain2 === '' || secondChain === chain2){
-      cChain = secondChain
+      cChain2 = secondChain
     }else{
-      cChain = chain2
+      cChain2 = chain2
     }
 
     if(account2 === '' || secondWallet === account2){
-      cWallet = secondWallet
+      cWallet2 = secondWallet
     }else{
-      cWallet = account2
+      cWallet2 = account2
     }
 
-    setAccount2(cWallet)
-    setChain2(cChain)
+    setAccount2(cWallet2)
+    setChain2(cChain2)
 
     var cUpdateUser = []
     cUpdateUser.push(cEmail)
-    cUpdateUser.push(cChain)
-    cUpdateUser.push(cWallet)
-    //console.log(JSON.stringify(cUpdateUser))
-    
+    cUpdateUser.push(cChain2)
+    cUpdateUser.push(cWallet2)
+    cUpdateUser.push(cWord)
+   
+    var cSitepublickey = secureKeys[0]
+    var cSiteprivatekey = secureKeys[1]
+    var cPublickey = secureKeys[2]
+    var cPrivkey = secureKeys[3]
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var setTime = date + '-' + time;
+    var cidWallet = '_' + cChain2 +  ':' + cWallet2
+    var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
+
+    var cUpdateWord = []
+    cUpdateWord.push(cEmail)
+    cUpdateWord.push(cWord)
+    cUpdateWord.push(cAppend)
+    cUpdateWord.push(cCid)    
+    cUpdateWord.push(cSitepublickey)   
+    cUpdateWord.push(cSiteprivatekey)
+    cUpdateWord.push(cPublickey)
+    cUpdateWord.push(cPrivkey)
+    cUpdateWord.push(cPromo)
+    //console.log('second carrot update ' + JSON.stringify(cUpdateWord))
+
     setW2Update(false)
     var type = 'wallet2'
-    var data = '2'    
+    var data = '2' 
+    const carrotUpdate = await updateCarrotInfo(type, cUpdateWord)   
     const walletUpdate = await updateWalletInfo(type, cUpdateUser)
-      pageReset(type, data)
+
+    pageReset(type, data)
+  }
+
+  async function updateW2Word(type, data){
+    preKeys()
+
   }
 
     // wallet 3 updating
@@ -444,44 +521,99 @@ export default function SectionUpper() {
   }
 
   async function updateW3Info(user){
-    console.log('thirdwallet: ' + thirdWallet + ' thirdchain ' + thirdChain)
+    preKeys()
+    
     var cEmail = email  
-    var cChain = ''
-    var cWallet = ''
+    var cChain3 = ''
+    var cWallet3 = ''
+    var cWord = caret + '3'
+    var cAppend = 3
+    var cPromo = 'PremCaret3'
 
-    if(chain3 === '' || thirdChain === chain3){
-      cChain = thirdChain
+    if(chain3 === '' || secondChain === chain3){
+      cChain3 = secondChain
     }else{
-      cChain = chain3
+      cChain3 = chain3
     }
 
-    if(account3 === '' || thirdWallet === account3){
-      cWallet = thirdWallet
+    if(account3 === '' || secondWallet === account3){
+      cWallet3 = secondWallet
     }else{
-      cWallet = account3
+      cWallet3 = account3
     }
 
-    setAccount3(cWallet)
-    setChain3(cChain)
+    setAccount3(cWallet3)
+    setChain3(cChain3)
 
     var cUpdateUser = []
     cUpdateUser.push(cEmail)
-    cUpdateUser.push(cChain)
-    cUpdateUser.push(cWallet)
-    //console.log(JSON.stringify(cUpdateUser))
-    
+    cUpdateUser.push(cChain3)
+    cUpdateUser.push(cWallet3)
+    cUpdateUser.push(cWord)
+   
+    var cSitepublickey = secureKeys[0]
+    var cSiteprivatekey = secureKeys[1]
+    var cPublickey = secureKeys[3]
+    var cPrivkey = secureKeys[3]
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var setTime = date + '-' + time;
+    var cidWallet = '_' + cChain3 +  ':' + cWallet3
+    var cCid = ('^' + cWord + '::CNAS' + cidWallet + '::pKey:' + cPublickey + '::settime:' + setTime)
+
+    var cUpdateWord = []
+    cUpdateWord.push(cEmail)
+    cUpdateWord.push(cWord)
+    cUpdateWord.push(cAppend)
+    cUpdateWord.push(cCid)    
+    cUpdateWord.push(cSitepublickey)   
+    cUpdateWord.push(cSiteprivatekey)
+    cUpdateWord.push(cPublickey)
+    cUpdateWord.push(cPrivkey)
+    cUpdateWord.push(cPromo)
+
+    //console.log('third carrot update ' + JSON.stringify(cUpdateWord))
+
     setW3Update(false)
     var type = 'wallet3'
-    var data = '3'    
+    var data = '3' 
+    const carrotUpdate = await updateCarrotInfo(type, cUpdateWord)   
     const walletUpdate = await updateWalletInfo(type, cUpdateUser)
-      pageReset(type, data)
+
+    pageReset(type, data)
+  }
+
+  async function updateW3Word(type, data){
+    preKeys()
+
+  }
+
+  function preKeys(){   
+    const crypto = require('crypto');
+    var prime_length = 100;
+    let sitePublicKey = null
+    let sitePrivateKey = null
+    let publicKey = null
+    let privateKey = null
+    const dhSite = crypto.createDiffieHellman(prime_length);
+    dhSite.generateKeys('hex')    
+      sitePublicKey = dhSite.getPublicKey('hex')
+      sitePrivateKey = dhSite.getPrivateKey('hex')
+    const dh = crypto.createDiffieHellman(prime_length);
+    dh.generateKeys('hex')
+      publicKey = dh.getPublicKey('hex')
+      privateKey = dh.getPrivateKey('hex')
+
+    secureKeys = [sitePublicKey, sitePrivateKey, publicKey, privateKey]
+    return secureKeys
   }
 
   async function updateWalletInfo(type, data){
     var formData = data
     var formType = ''
 
-    console.log(' Update ' + JSON.stringify(data))
+    //console.log(' Update ' + JSON.stringify(data))
     if(type === 'wallet1'){
       formType = '/../api/users/updateWallet'
     }else if(type === 'wallet2'){
@@ -498,9 +630,35 @@ export default function SectionUpper() {
       },
   })
     const walletUpdated = await response.json() 
-    console.log(' wallet update result ' + JSON.stringify(walletUpdated))
+    //console.log(' wallet update result ' + JSON.stringify(walletUpdated))
     //return userUpdated
   }
+
+  async function updateCarrotInfo(type, data){
+    var formData = data
+    var formType = ''
+
+    //console.log(' Update ' + JSON.stringify(data))
+    if(type === 'wallet1'){
+      formType = '/../api/users/updateCarrot'
+    }else if(type === 'wallet2'){
+      formType = '/../api/users/updateCarrot2'
+    }else if(type === 'wallet3'){
+      formType = '/../api/users/updateCarrot2'
+    }
+
+    const response = await fetch(formType, {
+      method: 'POST',
+      body: formData,
+      headers: {
+      'Content-Type':'applications/json'
+      },
+  })
+    const walletUpdated = await response.json() 
+    //console.log(' wallet update result ' + JSON.stringify(walletUpdated))
+    //return userUpdated
+  }
+
 
   async function loadCaretInfo(){
     if(fmCaretName === '' || fmCaretName === null){
@@ -520,7 +678,7 @@ export default function SectionUpper() {
       },
   })
     const adminCaretInfoReturn = await response.json() 
-    console.log(' return admin caret ' + JSON.stringify(adminCaretInfoReturn))
+    //console.log(' return admin caret ' + JSON.stringify(adminCaretInfoReturn))
 
     setIsCaretName(true)
   }
@@ -544,14 +702,14 @@ export default function SectionUpper() {
     })
     
     const adminUserInfoReturn = await response.json() 
-    console.log(' return admin email ' + JSON.stringify(adminUserInfoReturn))
+    //console.log(' return admin email ' + JSON.stringify(adminUserInfoReturn))
     setIsEmail(true)
 
     loadAdminEditUser(adminUserInfoReturn)    
   }
 
   function loadAdminEditUser(data){
-    console.log(JSON.stringify(data))
+    //console.log(JSON.stringify(data))
     setAuuId(data.id)
     setAuuFkword(data.fkword)
     setAuuFkwallet(data.fkwallet)
@@ -638,9 +796,7 @@ export default function SectionUpper() {
         router.reload('/dashboard'); 
       }
       }else{
-
     }
-
   }
 
   async function chStatus(data){
@@ -717,67 +873,94 @@ export default function SectionUpper() {
     if(stepOne.caret === "" || stepOne.caret === undefined){
       setCaret('No Input')
     }else{
-      setCaret('^' + stepOne.caret)
+      setCaret(stepOne.caret)
     }
 
     if(stepOne.caret2 === "" || stepOne.caret2 === undefined){
-      setCaret2('No Input')
+      setCaret2(stepOne.caret + '2')
     }else{
-      setCaret2('^' + stepOne.caret2)
+      setCaret2(stepOne.caret2)
     }
 
     if(stepOne.caret3 === "" || stepOne.caret3 === undefined){
-      setCaret3('No Input')
+      setCaret3(stepOne.caret + '3')
     }else{
-      setCaret3('^' + stepOne.caret3)
+      setCaret3(stepOne.caret3)
     }
-        
-    //wallet    
+          
     setPrimaryWallet(stepOne.account)
     setSecondWallet(stepOne.account2)
     setThirdWallet(stepOne.account3)
 
-    if(stepOne.account === "" || stepOne.account === undefined){
-      setAccount('No Input')
-    }else{
-      setAccount(stepOne.account)
-      setPrimaryWalletIsSet(true)      
-    }
-
-    if(stepOne.account2 === "" || stepOne.account2 === undefined){
-      setAccount2('No Input')
-    }else{
-      setAccount2(stepOne.account2)
-    }
-
-    if(stepOne.account3 === "" || stepOne.account3 === undefined){
-      setAccount3('No Input')
-    }else{
-      setAccount3(stepOne.account3)
-    }
-
-
-      
-    //chain
     setPrimaryChain(stepOne.chain)   
     setSecondChain(stepOne.chain2)
     setThirdChain(stepOne.chain3)
+
+    setFkword(stepOne.fkword)
+    setFkword2(stepOne.fkword2)
+    setFkword3(stepOne.fkword3)
+
+
     if(stepOne.chain === "" || stepOne.chain === undefined){
       setChain('')
     }else{
       setChain(stepOne.Chain)
     }
 
+    if(stepOne.account === "" || stepOne.account === undefined){
+      setAccount('')
+    }else{
+      setAccount(stepOne.account)
+    }  
     if(stepOne.chain2 === "" || stepOne.chain2 === undefined){
       setChain2('')
     }else{
       setChain2(stepOne.Chain2)
     }
 
+    if(stepOne.account2 === "" || stepOne.account2 === undefined){
+      setAccount2('')
+    }else{
+      setAccount2(stepOne.account2)
+    }
+
     if(stepOne.chain3 === "" || stepOne.chain3 === undefined){
       setChain3('')
     }else{
       setChain3(stepOne.Chain3)
+    }
+
+    if(stepOne.account3 === "" || stepOne.account3 === undefined){
+      setAccount3('')
+    }else{
+      setAccount3(stepOne.account3)
+    }
+
+    //console.log(' a '  + primaryWalletIsSet + ' fk ' + stepOne.fkword)
+    if(stepOne.fkword === 0){
+      setPrimaryWalletIsSet(false) 
+      setPreventWallet2(true)
+    }else{
+      setPrimaryWalletIsSet(true) 
+      setPreventWallet2(false) 
+      setSecondWalletIsSet(false) 
+      setPrimaryIpfs('Pending') 
+    }
+
+    //console.log(' b '  + secondWalletIsSet + ' fk2 ' + stepOne.fkword2)
+    if(stepOne.fkword2 === 0){
+      setPreventWallet3(true)
+    }else{
+      setSecondWalletIsSet(true)
+      setPreventWallet3(false) 
+      setSecondIpfs('Pending')
+    }
+    //console.log(' c '  + thirdWalletIsSet + ' fk3 ' + stepOne.fkword3)
+    if(stepOne.fkword3 === 0){
+      setThirdWalletIsSet(false)
+    }else{
+      setThirdWalletIsSet(true)
+      setThirdIpfs('Pending')
     }
 
     setPlan(stepOne.plan)
@@ -873,7 +1056,6 @@ export default function SectionUpper() {
   return (
     <div id='bxDash' className='block align-center'>
       <div id='blkDash' className={adminEdit === false ? 'background-white' : 'background-coral'}>   
-
         <div id='blkUserInfo'>
           <div id='bxUserLeader' className='text-center text-6xl font-bold '>{uname} Dashboard</div>
           <div className='block align-center'>
@@ -1252,452 +1434,512 @@ export default function SectionUpper() {
       }
 <div class="grid grid-flow-row auto-rows-max">
   <div>
-        <div id='blkUserData' className='block'>
-          <div className='flex display-inline justify-center '>
-            <div id='bxUserInfo' className='block border border-gray-300 mb-4'>
-              <div className='primaryUser border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                  <form onSubmit={handleSubmit(updateInfo)}>
-                    {uUpdate === false ?
-                      <div> 
+    <div id='blkUserData' className='block'>
+      <div className='flex display-inline justify-center '>
+        <div id='bxUserInfo' className='block border border-gray-300 mb-4'>
+          <div className='primaryUser border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+              <form onSubmit={handleSubmit(updateInfo)}>
+                {uUpdate === false ?
+                  <div> 
 
-                      <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Username: </div>                    
-                        <div>
-                          <div className='w-64 ml-4 mt-2 pl-2'>{uname}</div>
-                        </div> 
-                      </div>
-
-                      <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>First Name: </div>                    
-                        <div>
-                          <div className='w-64 ml-4 mt-2 pl-2'>{fname}</div>
-                        </div>                  
-                      </div>
-
-                      <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Last Name: </div>                      
-                          <div className=''>
-                            <div className='w-64 ml-4 mt-2 pl-2'>{lname}</div>
-                          </div>                                 
-                      </div>
-
-                      <div>
-                        <div className='flex display-inline justify-right m-6 '>
-                          <div className='text-right w-48 mt-2'> </div>
-                          <div className='text-right ml-4 mt-2 pl-2'>
-                            <button id='btnEditUserData' 
-                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                              onClick={() => {editInfo()}}>Edit Info</button>
-                          </div>          
-                        </div>
-                      </div>
-                      </div>
-                    :
-                      <div>
-                        <div className='flex display-inline justify-left mt-2'>                   
-                          <div className='text-right w-48 mt-2'>Avatar: </div>
-                          <div>
-                            <div name="avatar" className="ml-2 pl-2 pt-2"> Avatars avail Soon </div>
-                          </div>
-                        </div>
-                        <div className='flex display-inline justify-left'>
-                          <div className='text-right w-48 mt-2'>Username: </div>                    
-                          <div>
-                            <input name="username" type="text" text={uname} placeholder={uname} value={fmUserName} 
-                              onChange={(e) => { setFmUserName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} /> 
-                          </div>                   
-                        </div>
-
-                        <div className='flex display-inline justify-left'>
-                          <div className='text-right w-48 mt-2'>First Name: </div>                                    
-                          <div>
-                            <input name="firstname" type="text" placeholder={fname} value={fmFirstName} 
-                              onChange={(e) => { setFmFirstName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
-                          </div>
-                        </div>
-
-                        <div className='flex display-inline justify-left'>
-                          <div className='text-right w-48 mt-2'>Last Name: </div>                                       
-                            <div className=''>
-                              <input name="lastname" type="text" text={lname} 
-                                placeholder={lname} value={fmLastName} 
-                                onChange={(e) => { setFmLastName(e.target.value); }} 
-                                className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
-                            </div>                 
-                        </div>
-
-                        <div className='flex display-inline justify-left m-6 '>                     
-                          {/*
-                          <div className='flex display-inline justify-left'>
-                            <div className='mr-6 '>Email confirmation : </div>
-                            <div  className="flex display-inline">
-                              <input type="radio" className='ml-4 mr-4' value="Yes" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}}  />&nbsp;Yes
-                              <div className='ml-4 text-sm'> </div>
-                              <input type="radio" className='l-4' value="No" defaultChecked="false" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}} />&nbsp;No
-                            </div>
-                          </div> 
-                          */}                
-                        </div>
-                        
-                        <div>
-                          <div className='flex display-inline justify-right m-6 '>
-                            <div className='text-right w-48 mt-2'>
-                              <button id='btnCancel' disabled={loading} 
-                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                                onClick={() => {cancelInfo()}}>Cancel</button>
-                            </div>
-                            <div className='text-right ml-4 mt-2 pl-2'>
-                              <button id='btnUpdateInfo' disabled={loading} 
-                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                                onClick={() => {updateInfo()}}>Update User Info</button>
-                            </div>          
-                          </div>
-                        </div>
-                      </div>
-                    }
-                </form>
-              </div>
-              <div className='primaryCaret border border-gray-200 m-2 px-6 pb-6 pt-6'>                
-                {uPUpdate === true ?                        
-                  <div>
-                    <div className='flex display-inline justify-left'>
-                      <div className='text-right w-48 mt-2'>Current Password: </div>
-                      <div>
-                        <input name="curPassword" type="password" onChange={(e) => { setOldPwd(e.target.value); }} placeholder=' Old Password ' 
-                          className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />                  
-                          {oldPwdError === true && <div className="curPwdError" >Password Does Not Match</div>}
-                      </div>
-                    </div>                
-                    <div className='flex display-inline justify-left pt-8'>
-                      <div className='text-right w-48 mt-2' >New Password: </div>
-                      <div>
-                        <input name="newPassword" type="password" onChange={(e) => { setNewPwd(e.target.value); }} placeholder=' New Password ' 
-                          className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />                  
-                      </div>
-                    </div>                  
-                    <div className='flex display-inline justify-left'>
-                      <div className='text-right w-48 mt-2'>Confirm Password: </div>
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Username: </div>                    
                     <div>
-                      <input name="confirmPassword" type="password" onChange={(e) => { setNewConfirmPwd(e.target.value); }} placeholder=' Confirm Password ' 
-                        className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />
-                        {newPwdError === true && <div className="curPwdError" >New Passwords Do Not Match</div>}
-                    </div>
-                        
-                    </div>
-                    <div className='flex display-inline justify-right m-6 '>
-                      {/*
-                      <div className='mr-6 '>Email confirmation : </div>
-                      <div  className="flex display-inline">
-                        <input type="radio" className='ml-4 mr-4' value="Yes" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;Yes
-                        <div className='ml-4 text-sm'> </div>
-                        <input type="radio" className='l-4' value="No" defaultChecked="false" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;No
-                      </div>
-                      */}
-                    </div>
-                    <div className='flex display-inline justify-right m-6 '>
-                    <div className='text-right w-48 mt-2'>
-                      <button id='btnCancel' disabled={loading} 
-                        className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                        onClick={() => {cancelPwdInfo()}}>Cancel</button>
-                    </div>
-                    <div className='text-right ml-4 mt-2 pl-2'>
-                      <button id='btnPassword' disabled={loading} 
-                        className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                        onClick={() => {updatePwdInfo()}}>Update Password</button>
-                    </div>          
-                    </div>
+                      <div className='w-64 ml-4 mt-2 pl-2'>{uname}</div>
+                    </div> 
+                  </div>
 
-                  </div>          
-                :
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>First Name: </div>                    
+                    <div>
+                      <div className='w-64 ml-4 mt-2 pl-2'>{fname}</div>
+                    </div>                  
+                  </div>
+
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Last Name: </div>                      
+                      <div className=''>
+                        <div className='w-64 ml-4 mt-2 pl-2'>{lname}</div>
+                      </div>                                 
+                  </div>
+
                   <div>
-                    <div className='flex display-inline justify-left'>
-                      <div className='text-right w-48 mt-2'>Password: </div>
-                      <div className='w-64 ml-4 mt-2 pl-2'>{prePassword}</div>
-                    </div>
                     <div className='flex display-inline justify-right m-6 '>
                       <div className='text-right w-48 mt-2'> </div>
-                      <div className='text-right mt-2'>
-                        <button id='btnEditPwdInfo' 
+                      <div className='text-right ml-4 mt-2 pl-2'>
+                        <button id='btnEditUserData' 
                           className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                          onClick={() => {editPwdInfo()}}>Edit Info</button>
+                          onClick={() => {editInfo()}}>Edit Info</button>
                       </div>          
                     </div>
                   </div>
-                }     
-              </div>
-            </div> 
+                  </div>
+                :
+                  <div>
+                    <div className='flex display-inline justify-left mt-2'>                   
+                      <div className='text-right w-48 mt-2'>Avatar: </div>
+                      <div>
+                        <div name="avatar" className="ml-2 pl-2 pt-2"> Avatars avail Soon </div>
+                      </div>
+                    </div>
+                    <div className='flex display-inline justify-left'>
+                      <div className='text-right w-48 mt-2'>Username: </div>                    
+                      <div>
+                        <input name="username" type="text" text={uname} placeholder={uname} value={fmUserName} 
+                          onChange={(e) => { setFmUserName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} /> 
+                      </div>                   
+                    </div>
+
+                    <div className='flex display-inline justify-left'>
+                      <div className='text-right w-48 mt-2'>First Name: </div>                                    
+                      <div>
+                        <input name="firstname" type="text" placeholder={fname} value={fmFirstName} 
+                          onChange={(e) => { setFmFirstName(e.target.value); }} className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />
+                      </div>
+                    </div>
+
+                    <div className='flex display-inline justify-left'>
+                      <div className='text-right w-48 mt-2'>Last Name: </div>                                       
+                        <div className=''>
+                          <input name="lastname" type="text" text={lname} 
+                            placeholder={lname} value={fmLastName} 
+                            onChange={(e) => { setFmLastName(e.target.value); }} 
+                            className={'border border-gray-300 w-64 ml-4 mt-2 pl-2'} />                     
+                        </div>                 
+                    </div>
+
+                    <div className='flex display-inline justify-left m-6 '>                     
+                      {/*
+                      <div className='flex display-inline justify-left'>
+                        <div className='mr-6 '>Email confirmation : </div>
+                        <div  className="flex display-inline">
+                          <input type="radio" className='ml-4 mr-4' value="Yes" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}}  />&nbsp;Yes
+                          <div className='ml-4 text-sm'> </div>
+                          <input type="radio" className='l-4' value="No" defaultChecked="false" name="userInfoEmail" onClick={() => {setUserInfoEmail(true)}} />&nbsp;No
+                        </div>
+                      </div> 
+                      */}                
+                    </div>
+                    
+                    <div>
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='text-right w-48 mt-2'>
+                          <button id='btnCancel' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {cancelInfo()}}>Cancel</button>
+                        </div>
+                        <div className='text-right ml-4 mt-2 pl-2'>
+                          <button id='btnUpdateInfo' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {updateInfo()}}>Update User Info</button>
+                        </div>          
+                      </div>
+                    </div>
+                  </div>
+                }
+            </form>
           </div>
-        </div>             
+          <div className='primaryCaret border border-gray-200 m-2 px-6 pb-6 pt-6'>                
+            {uPUpdate === true ?                        
+              <div>
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>Current Password: </div>
+                  <div>
+                    <input name="curPassword" type="password" onChange={(e) => { setOldPwd(e.target.value); }} placeholder=' Old Password ' 
+                      className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />                  
+                      {oldPwdError === true && <div className="curPwdError" >Password Does Not Match</div>}
+                  </div>
+                </div>                
+                <div className='flex display-inline justify-left pt-8'>
+                  <div className='text-right w-48 mt-2' >New Password: </div>
+                  <div>
+                    <input name="newPassword" type="password" onChange={(e) => { setNewPwd(e.target.value); }} placeholder=' New Password ' 
+                      className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />                  
+                  </div>
+                </div>                  
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>Confirm Password: </div>
+                <div>
+                  <input name="confirmPassword" type="password" onChange={(e) => { setNewConfirmPwd(e.target.value); }} placeholder=' Confirm Password ' 
+                    className='border border-gray-300 w-64 ml-4 mt-2 pl-2' />
+                    {newPwdError === true && <div className="curPwdError" >New Passwords Do Not Match</div>}
+                </div>
+                    
+                </div>
+                <div className='flex display-inline justify-right m-6 '>
+                  {/*
+                  <div className='mr-6 '>Email confirmation : </div>
+                  <div  className="flex display-inline">
+                    <input type="radio" className='ml-4 mr-4' value="Yes" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;Yes
+                    <div className='ml-4 text-sm'> </div>
+                    <input type="radio" className='l-4' value="No" defaultChecked="false" name="userPwdEmail" onClick={() => {setUserPwdEmail(true)}}  />&nbsp;No
+                  </div>
+                  */}
+                </div>
+                <div className='flex display-inline justify-right m-6 '>
+                <div className='text-right w-48 mt-2'>
+                  <button id='btnCancel' disabled={loading} 
+                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={() => {cancelPwdInfo()}}>Cancel</button>
+                </div>
+                <div className='text-right ml-4 mt-2 pl-2'>
+                  <button id='btnPassword' disabled={loading} 
+                    className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                    onClick={() => {updatePwdInfo()}}>Update Password</button>
+                </div>          
+                </div>
+
+              </div>          
+            :
+              <div>
+                <div className='flex display-inline justify-left'>
+                  <div className='text-right w-48 mt-2'>Password: </div>
+                  <div className='w-64 ml-4 mt-2 pl-2'>{prePassword}</div>
+                </div>
+                <div className='flex display-inline justify-right m-6 '>
+                  <div className='text-right w-48 mt-2'> </div>
+                  <div className='text-right mt-2'>
+                    <button id='btnEditPwdInfo' 
+                      className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                      onClick={() => {editPwdInfo()}}>Edit Info</button>
+                  </div>          
+                </div>
+              </div>
+            }     
+          </div>
+        </div> 
+      </div>
+    </div>             
   </div>
   <div>
-        <div id='blkCaretInfo' className='block'>
-          <div className='flex display-inline justify-center '>
-            <div id='bxCaretInfo' className='block border border-gray-300'>
-              <form onSubmit={handleSubmit(onSubmit)}>
+    <div id='blkCaretInfo' className='block'>
+      <div className='flex display-inline justify-center '>
+        <div id='bxCaretInfo' className='block border border-gray-300'>
+          <form onSubmit={handleSubmit(onSubmit)}>
 
-                <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                  {uWUpdate === false ?
-                    <div>
+            <div className='primaryCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+              {uWUpdate === false ?
+                <div>
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Primary Caret: </div>
+                    <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret}</div>                           
+                  </div>
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Chain: </div>                         
+                    <div className='w-64 ml-4 mt-2 pl-2'>{primaryChain}</div>
+                  </div>
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Wallet: </div>
+                    <div className='w-auto ml-4 mt-2 pl-2'>{primaryWallet}</div>
+                  </div>
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>IPFS Published: </div>
+                    <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>{primaryIpfs}</div>
+                  </div>
+                  <div className='flex display-inline justify-right m-6 '>
+                    <div className='text-right w-48 mt-2'>                         
+                    </div>
+                      {primaryWalletIsSet === true ?
+                        <div>
+                          <div className=' flex display-inline '>
+                            <div className='m-2'> <FcLock /></div>
+                            <div className='text-left text-1xl text-emerald-300 mt-2'>Primary Caret Locked</div>
+                          </div>
+                        </div>
+                      :
+                        <div>                             
+                          <div className='text-right ml-4 mt-2'>
+                            <button id='btnEditPrimaryWalletInfo' 
+                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                              onClick={() => {editWInfo()}}>
+                            Edit Info</button>
+                          </div>
+                        </div>                          
+                      }
+                  </div>                        
+                </div>
+              :
+                <div>    
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Primary Caret: </div>
+                    <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret}</div>                           
+                  </div>
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Chain : </div>
+                    <div className=''>
+                      <select id='primarychain' name="primarychain" placeholder=""
+                      text={primaryChain} onChange={(e) => { setChain(e.target.value); setChLoaded(false) }} 
+                      className='border border-gray-300 h-10 pt-2 ml-4 pl-2' defaultValue={primaryChain} >
+                        <option >{primaryChain}</option>
+                        <option value="BTC">Bitcoin</option>
+                        <option value="CHIA">Chia</option>
+                        <option value="DOGE">Doge</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="LTC">LiteCoin</option>
+                        <option value="MATIC">Matic</option>
+                        
+                      </select>
+                    </div>  
+                  </div>                   
+                  <div className='flex display-inline justify-left'>
+                    <div className='text-right w-48 mt-2'>Wallet: </div>
+                    <input name="primarywallet" disabled={chLoaded} type="text" text={primaryWallet} defaultValue={primaryWallet} placeholder='Add a wallet address'
+                    onChange={(e) => { setAccount(e.target.value); }} className='border border-gray-300 ml-4 mt-2 pl-2' /> 
+                  </div> 
+                  <div className='flex display-inline justify-right m-6 '>
+                  {/*
+                    <div className='mr-6 '>Email confirmation : </div>
+                    <div  className="flex display-inline">
+                      <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;Yes
+                    <div className='ml-4 text-sm'> </div>
+                      <input type="radio" className='l-4' value="No" defaultChecked="false" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;No
+                    </div>
+                  */}
+                  </div>       
+                  <div className='flex display-inline justify-right m-6 '>
+                    <div className='text-right w-48 mt-2'>
+                      <button id='btnCancel' disabled={loading} 
+                        className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                        onClick={() => {cancelWInfo()}}>Cancel</button>
+                    </div>
+                    <div className='text-right ml-4 mt-2 pl-2'>
+                    <button id='btnChain' disabled={loading} 
+                      className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                      onClick={() => {updateWInfo()}}>Update Master Chain</button>
+                    </div>          
+                  </div>                           
+                </div>
+              }
+            </div>              
+            {premPlan === true &&
+              <div>
+                {uW2Update === false ?
+                  <div>
+                    <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
                       <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Primary Caret: </div>
-                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
+                        <div className='text-right w-48 mt-2'>Caret 2: </div>
+                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret2}</div>                           
                       </div>
                       <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Chain: </div>                         
-                        <div className='w-64 ml-4 mt-2 pl-2'>{primaryChain}</div>
+                        <div className='text-right w-48 mt-2'>Chain 2: </div>                         
+                        <div className='w-64 ml-4 mt-2 pl-2'>{secondChain}</div>
                       </div>
                       <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Wallet: </div>
-                        <div className='w-auto ml-4 mt-2 pl-2'>{primaryWallet}</div>
+                        <div className='text-right w-48 mt-2'>Wallet 2: </div>
+                        <div className='w-144 ml-4 mt-2 pl-2'>{secondWallet}</div>
                       </div>
                       <div className='flex display-inline justify-left'>
                         <div className='text-right w-48 mt-2'>IPFS Published: </div>
-                        <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
+                        <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>{secondIpfs}</div>
                       </div>
-                      <div className='flex display-inline justify-right m-6 '>
-                        <div className='text-right w-48 mt-2'> </div>
-                          {primaryWalletIsSet === false &&
-                            <div>
-                              <div className='text-right ml-4 mt-2'>
-                                <button id='btnEditPrimaryWalletInfo' 
-                                  className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                                  onClick={() => {editWInfo()}}>
-                                Edit Info</button>
-                              </div> 
-                            </div>
-                          }
-                      </div>                        
+                      {preventWallet2 === true ?
+                        <div>
+                          <div className='flex display-inline justify-right m-6 '>
+                          <div className='text-right w-16 mt-2'> </div>
+                            <div className='text-left text-1xl text-red-300 mt-2'>Primary Caret Info required to unlock ^{caret2}</div>
+
+                          </div>
+                        </div>
+                      :
+                        <div>
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='text-right w-48 mt-2'></div>
+                            {secondWalletIsSet === true ?
+                              <div>
+                                <div className=' flex display-inline '>
+                                  <div className='m-2'> <FcLock /></div>
+                                  <div className='text-left text-1xl text-emerald-300 mt-2'>2nd Caret Locked</div>
+                                </div>
+                              </div>
+                            :
+                              <div>                                  
+                                <div className='text-right ml-4 mt-2'>
+                                  <button id='btnEdit2Info' className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                    onClick={() => {editW2Info()}}>Edit Info</button>
+                                </div>          
+                              </div>
+                            }                                     
+                          </div>  
+                        </div>                                                   
+                      }                      
                     </div>
-                  :
-                    <div>    
+                  </div>
+                :
+                  <div> 
+                    <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
                       <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Primary Caret: </div>
-                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret}</div>                           
+                        <div className='text-right w-48 mt-2'>Caret 2: </div>
+                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret2}</div>                           
                       </div>
                       <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Chain : </div>
+                        <div className='text-right w-48 mt-2'>Chain 2: </div>
                         <div className=''>
-                          <select id='primarychain' name="primarychain" placeholder=""
-                          text={primaryChain} onChange={(e) => { setChain(e.target.value); }} 
-                          className='border border-gray-300 h-10 pt-2 ml-4 pl-2' >
-                            <option value="" >Chain</option>
-                            <option value="Eth">Ethereum</option>
-                            <option value="Btc">Bitcoin</option>
-                            <option value="Matic">Matic</option>
-                            <option value="Doge">Doge</option>
+                          <select id='secondchain' name="secondchain" placeholder="" 
+                          text={secondChain} onChange={(e) => { setChain2(e.target.value); setChLoaded2(false)}} 
+                          className='border border-gray-300 h-10 pt-2 ml-4 pl-2' defaultValue={secondChain}>
+                            <option >{secondChain}</option>
+                            <option value="BTC">Bitcoin</option>
+                            <option value="CHIA">Chia</option>
+                            <option value="DOGE">Doge</option>
+                            <option value="ETH">Ethereum</option>
+                            <option value="LTC">LiteCoin</option>
+                            <option value="MATIC">Matic</option>
                           </select>
                         </div>  
-                      </div>                   
+                      </div>                            
                       <div className='flex display-inline justify-left'>
-                        <div className='text-right w-48 mt-2'>Wallet: </div>
-                        <input name="primarywallet" type="text" text={primaryWallet} placeholder={primaryWallet}
-                        onChange={(e) => { setAccount(e.target.value); }} className='border border-gray-300 ml-4 mt-2 pl-2' /> 
+                        <div className='text-right w-48 mt-2'>Wallet 2: </div>
+                        <input name="secondwallet" disabled={chLoaded2} type="text" text={secondWallet} defaultValue={secondWallet} placeholder='Add a wallet address'
+                          onChange={(e) => { setAccount2(e.target.value); }} 
+                          className='border border-gray-300 ml-4 mt-2 pl-2' />
+                      </div> 
+
+                      <div className='flex display-inline justify-right m-6 '>
+                        {/*
+                        <div className='mr-6 '>Email confirmation : </div>
+                        <div  className="flex display-inline">
+                          <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletsecondEmail" 
+                            onClick={() => {setUserWallet2Email(true)}}  />&nbsp;Yes
+                        <div className='ml-4 text-sm'> </div>
+                          <input type="radio" className='l-4' 
+                            value="No" defaultChecked="false" name="userWallet2Email" onClick={() => {setUserWallet2Email(true)}}  />&nbsp;No
+                        </div>
+                        */}
+                      </div>                 
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='text-right w-48 mt-2'>
+                          <button id='btnW2Cancel' disabled={loading} 
+                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {cancelW2Info()}}>Cancel</button>
+                        </div>
+                        <div className='text-right ml-4 mt-2 pl-2'>
+                        <button id='btnW2Chain' disabled={loading} 
+                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                          onClick={() => {updateW2Info()}}>Update Second Chain</button>
+                        </div>          
+                      </div>                           
+                    </div>
+                  </div>
+                }
+                {uW3Update === false ?
+                  <div>
+                    <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Caret 3: </div>
+                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret3}</div>                           
+                      </div>
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Chain 3: </div>                         
+                        <div className='w-64 ml-4 mt-2 pl-2'>{thirdChain}</div>
+                      </div>
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Wallet 3: </div>
+                        <div className='w-144 ml-4 mt-2 pl-2'>{thirdWallet}</div>
+                      </div>
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>IPFS Published: </div>
+                        <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>{thirdIpfs}</div>
+                      </div>
+                      {preventWallet3 === true ?
+                        <div>
+
+                          <div className='flex display-inline justify-right m-6 '>
+                            <div className='text-right w-16 mt-2'> </div>
+                            <div className='text-left text-1xl text-red-300 mt-2'>2nd Caret Info required to unlock ^{caret3}</div>
+
+                          </div>
+                        </div>
+                      :
+                      <div>
+                      <div className='flex display-inline justify-right m-6 '>
+                        <div className='text-right w-48 mt-2'></div>
+                        {thirdWalletIsSet === true ?
+                          <div>
+                            <div className=' flex display-inline '>
+                              <div className='m-2'> <FcLock /></div>
+                              <div className='text-left text-1xl text-emerald-300 mt-2'>3rd Caret Locked</div>
+                            </div>
+                          </div>
+                        :
+                          <div>                                  
+                            <div className='text-right ml-4 mt-2'>
+                              <button id='btnEdit3Info' className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                                onClick={() => {editW3Info()}}>Edit Info</button>
+                            </div>          
+                          </div>
+                        }                                     
+                      </div>  
+                    </div>  
+                      }
+                    </div>
+                  </div>
+                :
+                  <div> 
+                    <div className='thirdCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Caret 3: </div>
+                        <div className='font-bold w-64 ml-4 mt-2 pl-2'>^{caret3}</div>                           
+                      </div>
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Chain 3: </div>
+                        <div className=''>
+                          <select id='thirdchain' name="thirdchain" placeholder="" 
+                            text={thirdChain} onChange={(e) => { setChain3(e.target.value); setChLoaded3(false)}} 
+                            className='border border-gray-300 h-10 pt-2 ml-4 pl-2' defaultValue={thirdChain}>
+                              <option >{thirdChain}</option>
+                              <option value="BTC">Bitcoin</option>
+                              <option value="CHIA">Chia</option>
+                              <option value="DOGE">Doge</option>
+                              <option value="ETH">Ethereum</option>
+                              <option value="LTC">LiteCoin</option>
+                              <option value="MATIC">Matic</option>
+                          </select>
+                        </div>  
+                      </div>                            
+                      <div className='flex display-inline justify-left'>
+                        <div className='text-right w-48 mt-2'>Wallet 3: </div>
+                        <input name="thirdwallet" disabled={chLoaded3} type="text" text={thirdWallet} defaultValue={thirdWallet} placeholder='Add a wallet address'
+                          onChange={(e) => { setAccount3(e.target.value); }} 
+                          className='border border-gray-300 ml-4 mt-2 pl-2' />
                       </div> 
                       <div className='flex display-inline justify-right m-6 '>
                       {/*
                         <div className='mr-6 '>Email confirmation : </div>
                         <div  className="flex display-inline">
-                          <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;Yes
+                        <input type="radio" className='ml-4 mr-4' 
+                          value="Yes" name="userWalletThirdEmail" 
+                          onClick={() => {setUserWallet3Email(true)}}  />&nbsp;Yes
                         <div className='ml-4 text-sm'> </div>
-                          <input type="radio" className='l-4' value="No" defaultChecked="false" name="userWalletEmail" onClick={() => {setUserWalletEmail(true)}}  />&nbsp;No
+                        <input type="radio" className='l-4' 
+                          value="No" defaultChecked="false" name="userWallet3Email" 
+                          onClick={() => {setUserWallet3Email(true)}}  />&nbsp;No
                         </div>
                       */}
-                      </div>       
+                      </div>                 
                       <div className='flex display-inline justify-right m-6 '>
                         <div className='text-right w-48 mt-2'>
-                          <button id='btnCancel' disabled={loading} 
-                            className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                            onClick={() => {cancelWInfo()}}>Cancel</button>
+                          <button id='btnW3Cancel' disabled={loading} className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+                            onClick={() => {cancelW3Info()}}>Cancel</button>
                         </div>
                         <div className='text-right ml-4 mt-2 pl-2'>
-                        <button id='btnChain' disabled={loading} 
-                          className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                          onClick={() => {updateWInfo()}}>Update Master Chain</button>
+                        <button id='btnW3Chain' disabled={loading} className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
+
+                          onClick={() => {updateW3Info()}}>Update Third Chain</button>
                         </div>          
                       </div>                           
                     </div>
-                  }
-                </div>              
-                {premPlan === true &&
-                  <div>
-                    {uW2Update === false ?
-                      <div>
-                        <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Caret 2: </div>
-                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Chain 2: </div>                         
-                            <div className='w-64 ml-4 mt-2 pl-2'>{secondChain}</div>
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Wallet 2: </div>
-                            <div className='w-144 ml-4 mt-2 pl-2'>{secondWallet}</div>
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>IPFS Published: </div>
-                            <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
-                          </div>
-                          <div className='flex display-inline justify-right m-6 '>
-                            <div className='text-right w-48 mt-2'> </div>
-                            <div className='text-right ml-4 mt-2 pl-2'>
-                              <button id='btnEdit2Info' className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                                onClick={() => {editW2Info()}}>Edit Info</button>
-                            </div>          
-                          </div>                        
-                        </div>
-                      </div>
-                    :
-                      <div> 
-                        <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Caret 2: </div>
-                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Chain 2: </div>
-                            <div className=''>
-                              <select id='secondchain' name="secondchain" placeholder="" 
-                              text={secondChain} onChange={(e) => { setChain2(e.target.value); }} 
-                              className='border border-gray-300 h-10 pt-2 ml-4 pl-2' >
-                                <option value="">Chain</option>
-                                <option value="Eth">Ethereum</option>
-                                <option value="Btc">Bitcoin</option>
-                                <option value="Matic">Matic</option>
-                                <option value="Doge">Doge</option>
-                              </select>
-                            </div>  
-                          </div>                            
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Wallet 2: </div>
-                            <input name="primarywallet" type="text" text={secondWallet} placeholder={secondWallet}
-                              onChange={(e) => { setAccount2(e.target.value); }} 
-                              className='border border-gray-300 ml-4 mt-2 pl-2' />
-                          </div> 
-
-                          <div className='flex display-inline justify-right m-6 '>
-                            {/*
-                            <div className='mr-6 '>Email confirmation : </div>
-                            <div  className="flex display-inline">
-                              <input type="radio" className='ml-4 mr-4' value="Yes" name="userWalletsecondEmail" 
-                                onClick={() => {setUserWallet2Email(true)}}  />&nbsp;Yes
-                            <div className='ml-4 text-sm'> </div>
-                              <input type="radio" className='l-4' 
-                                value="No" defaultChecked="false" name="userWallet2Email" onClick={() => {setUserWallet2Email(true)}}  />&nbsp;No
-                            </div>
-                            */}
-                          </div>                 
-                          <div className='flex display-inline justify-right m-6 '>
-                            <div className='text-right w-48 mt-2'>
-                              <button id='btnW2Cancel' disabled={loading} 
-                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                                onClick={() => {cancelW2Info()}}>Cancel</button>
-                            </div>
-                            <div className='text-right ml-4 mt-2 pl-2'>
-                            <button id='btnW2Chain' disabled={loading} 
-                              className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                              onClick={() => {updateW2Info()}}>Update Second Chain</button>
-                            </div>          
-                          </div>                           
-                        </div>
-                      </div>
-                    }
-                    {uW3Update === false ?
-                      <div>
-                        <div className='secondCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Caret 3: </div>
-                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret3}</div>                           
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Chain 3: </div>                         
-                            <div className='w-64 ml-4 mt-2 pl-2'>{thirdChain}</div>
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Wallet 3: </div>
-                            <div className='w-144 ml-4 mt-2 pl-2'>{thirdWallet}</div>
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>IPFS Published: </div>
-                            <div className='primaryIFPS w-64 ml-4 mt-2 pl-2'>FALSE</div>
-                          </div>
-                          <div className='flex display-inline justify-right m-6 '>
-                            <div className='text-right w-48 mt-2'> </div>
-                            <div className='text-right ml-4 '>
-                              <button id='btnEdit3Info' 
-                                className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                                onClick={() => {editW3Info()}}>Edit Info</button>
-                            </div>          
-                          </div>                        
-                        </div>
-                      </div>
-                    :
-                      <div> 
-                        <div className='thirdCaret border border-gray-200 m-2 pr-6 pb-6 pt-6'>   
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Caret 3: </div>
-                            <div className='font-bold w-64 ml-4 mt-2 pl-2'>{caret2}</div>                           
-                          </div>
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Chain 3: </div>
-                            <div className=''>
-                              <select id='thirdchain' name="thirdchain" placeholder="" 
-                                text={thirdChain} onChange={(e) => { setChain3(e.target.value); }} 
-                                className='border border-gray-300 h-10 pt-2 ml-4 pl-2' >
-                                  <option value="">Chain</option>
-                                  <option value="Eth">Ethereum</option>
-                                  <option value="Btc">Bitcoin</option>
-                                  <option value="Matic">Matic</option>
-                                  <option value="Doge">Doge</option>
-                              </select>
-                            </div>  
-                          </div>                            
-                          <div className='flex display-inline justify-left'>
-                            <div className='text-right w-48 mt-2'>Wallet 3: </div>
-                            <input name="thirdwallet" type="text"  text={thirdWallet} placeholder={thirdWallet}
-                              onChange={(e) => { setAccount3(e.target.value); }} 
-                              className='border border-gray-300 ml-4 mt-2 pl-2' />
-                          </div> 
-                          <div className='flex display-inline justify-right m-6 '>
-                          {/*
-                            <div className='mr-6 '>Email confirmation : </div>
-                            <div  className="flex display-inline">
-                            <input type="radio" className='ml-4 mr-4' 
-                              value="Yes" name="userWalletThirdEmail" 
-                              onClick={() => {setUserWallet3Email(true)}}  />&nbsp;Yes
-                            <div className='ml-4 text-sm'> </div>
-                            <input type="radio" className='l-4' 
-                              value="No" defaultChecked="false" name="userWallet3Email" 
-                              onClick={() => {setUserWallet3Email(true)}}  />&nbsp;No
-                            </div>
-                          */}
-                          </div>                 
-                          <div className='flex display-inline justify-right m-6 '>
-                            <div className='text-right w-48 mt-2'>
-                              <button id='btnW3Cancel' disabled={loading} className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-                                onClick={() => {cancelW3Info()}}>Cancel</button>
-                            </div>
-                            <div className='text-right ml-4 mt-2 pl-2'>
-                            <button id='btnW3Chain' disabled={loading} className="inline-block px-6 py-2.5 bg-blue-400 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-500 hover:shadow-lg focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-600 active:shadow-lg transition duration-150 ease-in-out"
-
-                              onClick={() => {updateW3Info()}}>Update Third Chain</button>
-                            </div>          
-                          </div>                           
-                        </div>
-                      </div>
-                    }
                   </div>
                 }
+              </div>
+            }
 
-              </form>
-            </div>
-          </div>     
+          </form>
         </div>
+      </div>     
+    </div>
   </div>
 </div>
     </div>       
-
       {isAdmin === true &&
         <div>
           <div className='block py-10 mb-6'>

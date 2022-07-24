@@ -160,7 +160,7 @@ export default function PurchaseComplete() {
     };
     const options = {
       pinataMetadata: {
-        name: '^'+wordIn,
+        name: '^' + wordIn,
         keyvalue: 'caret.cloud',
         pinataOptions: {
           cidVersion: 0

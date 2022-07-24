@@ -42,12 +42,6 @@
     padding-left: 15px;
   }
 
-  .bxPrice {
-    /* Mobile by default as Roy pointed out */
-    display: flex;
-    flex-direction: column;
-
-  }
 
   #bxFree {
     min-width: 250px;
@@ -121,6 +115,13 @@
     @media screen and (min-width: 321px)
     and (max-width: 770px) {
 
+      .bxPrice {
+        /* Mobile by default as Roy pointed out */
+        display: flex;
+        flex-direction:column;
+    
+      }
+
       #bxUserInfo,  #bxAdminInfo, #bxCaretInfo {
         padding: 5px 5px 5px 5px;
         min-width: 560px;
@@ -135,6 +136,13 @@
   
     @media screen and (min-width: 771px) 
     and (max-width: 1023px) {
+
+      .bxPrice {
+        /* Mobile by default as Roy pointed out */
+        display: flex;
+        flex-direction: grid;
+    
+      }
 
       #bxUserInfo,  #bxAdminInfo, #bxCaretInfo {
         padding: 5px 5px 5px 5px;
@@ -156,6 +164,13 @@
     }
   
     @media screen and (min-width: 1024px)  {
+
+      .bxPrice {
+        /* Mobile by default as Roy pointed out */
+        display: flex;
+        flex-direction: grid;
+    
+      }
   
       #bxUserInfo,  #bxAdminInfo, #bxCaretInfo {
         padding: 5px 5px 5px 5px;

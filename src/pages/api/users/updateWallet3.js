@@ -8,8 +8,7 @@ export default async(req, res) => {
         let email = dataArr[0]
         let pChain = dataArr[1] 
         let pAccount = dataArr[2]
-        let pCaret2 = dataArr[3]
-     
+        let pCaret = dataArr[3]
 
         const curDate = new Date().toISOString()
 
@@ -18,10 +17,10 @@ export default async(req, res) => {
             email: email,
            },        
         data: {
+            fkword3 : 1,
+            caret3:pCaret,
             chain3: pChain,
             account3: pAccount,
-
-
             dateupdated: curDate,
         }, 
    

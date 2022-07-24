@@ -159,11 +159,9 @@ export default function PurchaseChoice() {
             }else{
               setCarrotIsAvail(' is NOT available ')
               setCarrotAvail(false)
-            }
-            
-        }
-      
-    }
+            }           
+        } 
+      }
   }
 
   async function caretAvailCheck(data) { 
@@ -184,7 +182,7 @@ export default function PurchaseChoice() {
 
   async function caretNumCheck(data) { 
     var formData = JSON.stringify(data)
-    /console.log('numCheck 2 ' + formData)
+    //console.log('numCheck 2 ' + formData)
     const response = await fetch('../api/validate/returnCarrot', {
       method: 'POST',
       body: formData, 
@@ -197,7 +195,6 @@ export default function PurchaseChoice() {
     return stepThree
   }
 
-
   var validationProcess = ''
   if(carrotAvail === false){
     validationProcess = Yup.object().shape({
@@ -205,9 +202,8 @@ export default function PurchaseChoice() {
         .min(5, 'Caret choice must be at least 5 characters') 
         .max(15, 'Caret choice must be less than 15 characters')
         .matches(/^[aA-zZ0-9-_\s]+$/, "Only Alpha characters are allowed for Caret choice")
-    });
-    
-  } else {
+    });   
+  }else{
     if(walletState === true){
      validationProcess = Yup.object().shape({
         email: Yup.string()
@@ -222,7 +218,7 @@ export default function PurchaseChoice() {
           .min(12, 'Wallet Addres must be at least 12 characters')
           .max(100, 'wallet address to long'),         
       });
-    } else {
+    }else{
       validationProcess = Yup.object().shape({
        email: Yup.string()
           .required('Email is required')
@@ -277,7 +273,7 @@ export default function PurchaseChoice() {
     //setUserCountCheck(userCountCheck + 1) 
     
     // is it in db
-    //console.log('in db ' + carrotInDb + ' wallet State ' + walletState )
+    /console.log('in db ' + carrotInDb + ' wallet State ' + walletState )
     //console.log('pre validate data: ' + JSON.stringify(data))
     // get keys
     preKeys()
@@ -286,12 +282,14 @@ export default function PurchaseChoice() {
     var append = numberCount
     var cWallet = ''
     var cChain = ''
+    var cIpfs = 0
     var cPwd = ''
     var cidWallet = ''
     // set wallet state
     if(walletState === true){
       cChain = data.chain
       cWallet = data.account
+      cIpfs = 1
       cidWallet = '_' + cChain +  ':' + cWallet
       setCidDbWallet(true)
     }else{
@@ -299,7 +297,6 @@ export default function PurchaseChoice() {
       cidWallet = '_NONE:TBD'
       setCidDbWallet(false)
     }
-
     var cPrice = ''
     var planChoice = ''
     var numChoice = ''
@@ -337,7 +334,6 @@ export default function PurchaseChoice() {
       cPrice = 0;
       planChoice = 1
     }
-
     var cSitepublickey = secureKeys[0]
     var cSiteprivatekey = secureKeys[1]
     var cPublickey = secureKeys[2]
@@ -357,6 +353,7 @@ export default function PurchaseChoice() {
     // get new user ID
     var cUserEmail = data.email
     var curDate = new Date().toISOString()
+
     var cUpdateWord = []
     cUpdateWord.push(cUserEmail)
     cUpdateWord.push(cWord)
@@ -374,6 +371,7 @@ export default function PurchaseChoice() {
     cUpdateWord.push(cPend)
     cUpdateWord.push(cSold)
     cUpdateWord.push(cPromo)
+    cUpdateWord.push(cIpfs)
 
     // user
     preAddUser(data)
@@ -461,7 +459,6 @@ export default function PurchaseChoice() {
   async function preSalesData(data){
     //console.log('sales user data ' + JSON.stringify( data))
     var formData = data
-   
     const response = await fetch(server + '/api/carrotSold', {
       method: 'POST',
       body: formData, 
@@ -469,7 +466,8 @@ export default function PurchaseChoice() {
         'Content-Type':'applications/json'
       },
     })
-    const stepSales= await response.json() 
+    const stepSales= await response.json()
+    return stepSales 
   }
 
   async function prePymt(user) {
@@ -511,9 +509,12 @@ export default function PurchaseChoice() {
     var pwd = ''
     var uname = ''
     var planChoice = 1
-
+    var fkword = 0
+    //console.log(' wall state ' + walletState)
     if(walletState === false){
-        pwd = bcrypt.hashSync(user.password, 10) 
+      pwd = bcrypt.hashSync(user.password, 10) 
+    }else{
+      fkword = 1
     }
 
     if(pymtChoice === 'Prem'){
@@ -540,14 +541,14 @@ export default function PurchaseChoice() {
 
     const response = await fetch(server + '/api/carrotRegister', {
         method: 'POST',
-        body:  [JSON.stringify(user.email),uname,pwd,JSON.stringify(user.chain), JSON.stringify(user.account), planChoice],
+        body:  [JSON.stringify(user.email),uname,pwd,JSON.stringify(user.chain), JSON.stringify(user.account), planChoice, fkword],
         headers: {
-        'Content-Type':'applications/json'
+          'Content-Type':'applications/json'
         },
     })
 
     const regSuccess = await response.json()      
-    setNewUser(regSuccess)
+    return regSuccess
 
   }
 
@@ -596,7 +597,7 @@ export default function PurchaseChoice() {
   }
 
   async function insertCarrot(data){
-    //console.log(' user data ' + JSON.stringify( data))
+    //console.log('insert user data ' + JSON.stringify( data))
     const response = await fetch(server + '/api/insertCarrot', {
       method: 'POST',
       body:  data,
@@ -610,7 +611,7 @@ export default function PurchaseChoice() {
   }
 
   async function updateCarrot(data){
-    //console.log(' user data ' + JSON.stringify( data))
+    //console.log('update user data ' + JSON.stringify( data))
     const response = await fetch(server + '/api/updateCarrot', {
       method: 'POST',
       body:  data,
@@ -889,10 +890,12 @@ export default function PurchaseChoice() {
                                     <div className=''>
                                         <select id='selChain' name="chain" {...register('chain')} value={chainValue} onChange={(e) => { setChainValue(e.target.value); }} className={`form-control ${errors.chain ? 'is-invalid' : ''}`} >
                                         <option value="" disabled hidden>chain</option>
-                                            <option value="Eth">Ethereum</option>
-                                            <option value="Btc">Bitcoin</option>
-                                            <option value="Matic">Matic</option>
-                                            <option value="Doge">Doge</option>
+                                        <option value="BTC">Bitcoin</option>
+                                        <option value="CHIA">Chia</option>
+                                        <option value="DOGE">Doge</option>
+                                        <option value="ETH">Ethereum</option>
+                                        <option value="LTC">LiteCoin</option>
+                                        <option value="MATIC">Matic</option>
                                         </select>
                                     </div>
                                     <div className='ml-4 text-sm'> ( example: Bitcoin )</div>
@@ -928,13 +931,15 @@ export default function PurchaseChoice() {
                   </div>
                 </div>
                   <div className='flex row display-inline justify-center mb-2'>
-                    <div id='promoErr' className={promoError}> That Promo Code Is Incorrect</div>
+                    <div id='promoErr' className={promoError}> That Promo Code Is Incorrect or Expired</div>
                     <div id='promoApp' className={promoApplied}> Your Promo Code Was Applied</div>
                   </div>        
               </div>
+
               <div className=''></div>
               <div className='purRow8'>        
                 <div id='boxPrice' className='bxPrice justify-center items-center gap-4'>
+
                   <div className='bg-slate-200 text-3xl pt-4 mt-4 mb-6 rounded-xl'> FREE Option
                       <div className=''>
                         <div className=''>
@@ -1097,6 +1102,7 @@ export default function PurchaseChoice() {
                       </div>
                     </div>
                   </div> 
+
                 </div>
               </div>             
              </form> 
