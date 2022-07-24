@@ -273,7 +273,7 @@ export default function PurchaseChoice() {
     //setUserCountCheck(userCountCheck + 1) 
     
     // is it in db
-    /console.log('in db ' + carrotInDb + ' wallet State ' + walletState )
+    //console.log('in db ' + carrotInDb + ' wallet State ' + walletState )
     //console.log('pre validate data: ' + JSON.stringify(data))
     // get keys
     preKeys()
